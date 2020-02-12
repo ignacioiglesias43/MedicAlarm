@@ -8,10 +8,7 @@ export default class Login extends Component {
       <View style={styles.container}>
         <View style={styles.header}>
           <View style={styles.logoContainer}>
-            <Image
-              style={styles.logo}
-              source={require('../img/Oikya_Front_Logo.png')}
-            />
+            <Image style={styles.logo} source={require('../img/logo.png')} />
             <Text style={styles.title}>MedicAlarm</Text>
           </View>
           <View style={styles.formContainer}>
@@ -31,7 +28,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#2980b9',
+    backgroundColor: '#afc9ff',
   },
   logoContainer: {
     alignItems: 'center',

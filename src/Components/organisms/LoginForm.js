@@ -3,42 +3,74 @@ import {
   StyleSheet,
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import {
+  TextInput,
+  Button,
+  Switch,
+  ActivityIndicator,
+  Colors,
+} from 'react-native-paper';
 
 export default class Login extends Component {
+  state = {
+    isSwitchOn: false,
+    loadNextPage: false,
+  };
   render() {
+    const {isSwitchOn} = this.state;
+    const {loadNextPage} = this.state;
     return (
       <KeyboardAvoidingView behavior="padding" style={styles.container} enabled>
         <TextInput
-          style={styles.input}
           keyboardType="email-address"
+          mode="outlined"
           autoCapitalize="none"
           autoCorrect={false}
           onSubmitEditing={() => this.passwordInput.focus()}
-          placeholder="Correo Electrónico"
-          returnKeyLabel="siguiente"
+          label="Correo Electrónico"
+          returnKeyLabel="Sig."
         />
         <TextInput
-          style={styles.input}
           autoCapitalize="none"
+          mode="outlined"
           autoCorrect={false}
-          placeholder="Contraseña"
+          label="Contraseña"
           returnKeyLabel="entrar"
           secureTextEntry
           ref={input => (this.passwordInput = input)}
         />
-
+        <View style={styles.switchContainer}>
+          <Text>Recordarme</Text>
+          <Switch
+            value={isSwitchOn}
+            color="#6200EE"
+            onValueChange={() => {
+              this.setState({isSwitchOn: !isSwitchOn});
+            }}
+          />
+        </View>
         <TouchableOpacity style={styles.buttonContainer}>
-          <Text style={styles.buttonText}>Iniciar Sesión</Text>
+          <Button
+            mode="contained"
+            onPress={() => {
+              this.setState({loadNextPage: !loadNextPage});
+            }}>
+            Iniciar Sesión
+          </Button>
         </TouchableOpacity>
         <Text style={styles.hintText}>¿No tienes cuenta?</Text>
         <TouchableOpacity style={styles.registerContainer}>
-          <Text style={styles.registerText}>Registrate aquí</Text>
+          <Button>Registrate aquí</Button>
         </TouchableOpacity>
+        <ActivityIndicator
+          animating={loadNextPage}
+          color="#6200EE"
+          size="large"
+        />
       </KeyboardAvoidingView>
     );
   }
@@ -55,7 +87,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   buttonContainer: {
-    backgroundColor: 'red',
     paddingVertical: 10,
   },
   buttonText: {
@@ -71,5 +102,11 @@ const styles = StyleSheet.create({
   registerText: {
     textAlign: 'center',
     color: 'red',
+  },
+  switchContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignSelf: 'flex-end',
+    paddingVertical: 10,
   },
 });
