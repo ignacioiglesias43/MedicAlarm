@@ -17,56 +17,59 @@ import {
 
 export default class Login extends Component {
   state = {
-    isSwitchOn: false,
     loadNextPage: false,
   };
   render() {
-    const {isSwitchOn} = this.state;
     const {loadNextPage} = this.state;
     return (
       <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+        <TextInput
+          mode="outlined"
+          onSubmitEditing={() => this.emailInput.focus()}
+          label="Nombre(s) y Apellidos"
+          returnKeyType={'next'}
+        />
         <TextInput
           keyboardType="email-address"
           mode="outlined"
           autoCapitalize="none"
           autoCorrect={false}
+          ref={input => (this.emailInput = input)}
           onSubmitEditing={() => this.passwordInput.focus()}
           label="Correo Electrónico"
           returnKeyType={'next'}
         />
         <TextInput
-          underlineColorAndroid="#FF7058"
           autoCapitalize="none"
           mode="outlined"
           autoCorrect={false}
           label="Contraseña"
-          returnKeyType={'go'}
+          returnKeyType={'next'}
           secureTextEntry
           ref={input => (this.passwordInput = input)}
+          onSubmitEditing={() => this.phoneInput.focus()}
         />
-        <View style={styles.switchContainer}>
-          <Text style={{color: 'white'}}>Recordarme</Text>
-          <Switch
-            value={isSwitchOn}
-            color="#FF7058"
-            onValueChange={() => {
-              this.setState({isSwitchOn: !isSwitchOn});
-            }}
-          />
-        </View>
-        <TouchableOpacity style={styles.buttonContainer}>
+        <TextInput
+          autoCapitalize="none"
+          mode="outlined"
+          autoCorrect={false}
+          label="Teléfono"
+          returnKeyType={'go'}
+          keyboardType="phone-pad"
+          ref={input => (this.phoneInput = input)}
+        />
+        <View style={styles.buttonContainer}>
           <Button
             mode="contained"
             color="#FF7058"
             onPress={() => {
               this.setState({loadNextPage: !loadNextPage});
             }}>
-            <Text style={{color: 'white'}}>Iniciar Sesión</Text>
+            <Text style={{color: 'white'}}>Registrarse</Text>
           </Button>
-        </TouchableOpacity>
-        <Text style={styles.hintText}>¿No tienes cuenta?</Text>
+        </View>
         <TouchableOpacity style={styles.registerContainer}>
-          <Button color="#FF7058">Registrate aquí</Button>
+          <Button color="#FF7058">Iniciar Sesión</Button>
         </TouchableOpacity>
         <ActivityIndicator
           animating={loadNextPage}
