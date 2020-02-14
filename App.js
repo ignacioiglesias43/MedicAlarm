@@ -1,5 +1,6 @@
 import React from 'react';
 import Login from './src/Views/Login';
+import Home from './src/Views/Home';
 import {
   SafeAreaView,
   StyleSheet,
@@ -17,7 +18,7 @@ const App: () => React$Node = () => {
   return (
     <>
       <PaperProvider>
-        <Login />
+        <Home />
       </PaperProvider>
     </>
   );

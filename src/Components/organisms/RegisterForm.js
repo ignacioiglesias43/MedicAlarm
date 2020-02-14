@@ -23,12 +23,29 @@ export default class Login extends Component {
     const {loadNextPage} = this.state;
     return (
       <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
-        <TextInput
-          mode="outlined"
-          onSubmitEditing={() => this.emailInput.focus()}
-          label="Nombre(s) y Apellidos"
-          returnKeyType={'next'}
-        />
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}>
+          <TextInput
+            style={{width: '48%'}}
+            mode="outlined"
+            onSubmitEditing={() => this.lastNameInput.focus()}
+            label="Nombre"
+            returnKeyType={'next'}
+          />
+          <TextInput
+            style={{width: '48%'}}
+            mode="outlined"
+            ref={input => (this.lastNameInput = input)}
+            onSubmitEditing={() => this.emailInput.focus()}
+            label="Apellido"
+            returnKeyType={'next'}
+          />
+        </View>
+
         <TextInput
           keyboardType="email-address"
           mode="outlined"

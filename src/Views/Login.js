@@ -16,7 +16,7 @@ export default class Login extends Component {
             </View>
           </View>
           <View style={styles.formContainer}>
-            <LoginForm />
+            <RegisterForm />
           </View>
         </View>
       </View>
