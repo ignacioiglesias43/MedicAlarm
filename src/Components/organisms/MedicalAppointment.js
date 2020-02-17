@@ -35,6 +35,12 @@ export default class MyComponent extends React.Component {
           <DataTable.Cell numeric>12:30</DataTable.Cell>
         </DataTable.Row>
 
+        <DataTable.Row onPress={() => console.log('Pressed')}>
+          <DataTable.Cell>Ignacio Iglesias</DataTable.Cell>
+          <DataTable.Cell numeric>17-02-2020</DataTable.Cell>
+          <DataTable.Cell numeric>18:30</DataTable.Cell>
+        </DataTable.Row>
+
         <DataTable.Pagination
           page={1}
           numberOfPages={3}
