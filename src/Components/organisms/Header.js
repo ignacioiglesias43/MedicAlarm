@@ -10,10 +10,9 @@ export default class Header extends Component {
   _handleMore = () => console.log('Shown more');
   render() {
     return (
-      <Appbar.Header style={{backgroundColor: '#FF7058'}}>
-        <Appbar.BackAction onPress={this._goBack} />
-        <Appbar.Content title="Paciente" />
-        <Appbar.Action icon="magnify" onPress={this._handleSearch} />
+      <Appbar.Header style={{backgroundColor: '#afc9ff'}}>
+        <Appbar.Action icon="menu" onPress={this._goBack} />
+        <Appbar.Content />
         <Appbar.Action icon="dots-vertical" onPress={this._handleMore} />
       </Appbar.Header>
     );

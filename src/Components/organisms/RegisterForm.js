@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  Picker,
 } from 'react-native';
 import {
   TextInput,
@@ -13,6 +14,8 @@ import {
   Switch,
   ActivityIndicator,
   Colors,
+  List,
+  Checkbox,
 } from 'react-native-paper';
 
 export default class Login extends Component {
@@ -75,6 +78,7 @@ export default class Login extends Component {
           keyboardType="phone-pad"
           ref={input => (this.phoneInput = input)}
         />
+        {/* TODO: Investigar como hacer un combobox */}
         <View style={styles.buttonContainer}>
           <Button
             mode="contained"
