@@ -10,8 +10,6 @@ import {
   TextInput,
   StatusBar,
 } from 'react-native';
-
-import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {Provider as PaperProvider} from 'react-native-paper';
 
 const App: () => React$Node = () => {
