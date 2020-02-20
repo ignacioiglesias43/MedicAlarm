@@ -18,10 +18,25 @@ import {
   Checkbox,
 } from 'react-native-paper';
 
-export default class Login extends Component {
+export default class RegisterForm extends Component {
+  constructor(props) {
+    super(props);
+  }
   state = {
     loadNextPage: false,
   };
+  navigateBack() {
+    setTimeout(() => {
+      this.props.navigation.navigate('Salir');
+    }, 1000);
+  }
+  register() {
+    this.setState({loadNextPage: !this.state.loadNextPage});
+    setTimeout(() => {
+      this.setState({loadNextPage: !this.state.loadNextPage});
+      this.props.navigation.navigate('Salir');
+    }, 1000);
+  }
   render() {
     const {loadNextPage} = this.state;
     return (
@@ -84,14 +99,20 @@ export default class Login extends Component {
             mode="contained"
             color="#FF7058"
             onPress={() => {
-              this.setState({loadNextPage: !loadNextPage});
+              this.register();
             }}>
             <Text style={{color: 'white'}}>Registrarse</Text>
           </Button>
         </View>
-        <TouchableOpacity style={styles.registerContainer}>
-          <Button color="#FF7058">Iniciar Sesión</Button>
-        </TouchableOpacity>
+        <View style={styles.registerContainer}>
+          <Button
+            color="#FF7058"
+            onPress={() => {
+              this.navigateBack();
+            }}>
+            Iniciar Sesión
+          </Button>
+        </View>
         <ActivityIndicator
           animating={loadNextPage}
           color="#FF7058"

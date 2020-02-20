@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, Image, Text} from 'react-native';
-import LoginForm from './../Components/organisms/LoginForm';
 import RegisterForm from './../Components/organisms/RegisterForm';
 
-export default class Login extends Component {
+export default class Register extends Component {
   render() {
     return (
       <View style={styles.container}>
@@ -16,7 +15,7 @@ export default class Login extends Component {
             </View>
           </View>
           <View style={styles.formContainer}>
-            <LoginForm navigation={this.props.navigation} />
+            <RegisterForm navigation={this.props.navigation} />
           </View>
         </View>
       </View>

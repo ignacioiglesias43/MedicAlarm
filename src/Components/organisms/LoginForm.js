@@ -16,13 +16,27 @@ import {
 } from 'react-native-paper';
 
 export default class Login extends Component {
+  constructor(props) {
+    super(props);
+  }
   state = {
     isSwitchOn: false,
     loadNextPage: false,
   };
+  navigateHome() {
+    this.setState({loadNextPage: !this.state.loadNextPage});
+    setTimeout(() => {
+      this.setState({loadNextPage: !this.state.loadNextPage});
+      this.props.navigation.navigate('Home');
+    }, 1000);
+  }
+  navigateRegister() {
+    setTimeout(() => {
+      this.props.navigation.navigate('Registro');
+    }, 1000);
+  }
   render() {
-    const {isSwitchOn} = this.state;
-    const {loadNextPage} = this.state;
+    const {isSwitchOn, loadNextPage} = this.state;
     return (
       <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
         <TextInput
@@ -54,20 +68,26 @@ export default class Login extends Component {
             }}
           />
         </View>
-        <TouchableOpacity style={styles.buttonContainer}>
+        <View style={styles.buttonContainer}>
           <Button
             mode="contained"
             color="#FF7058"
             onPress={() => {
-              this.setState({loadNextPage: !loadNextPage});
+              this.navigateHome();
             }}>
             <Text style={{color: 'white'}}>Iniciar Sesión</Text>
           </Button>
-        </TouchableOpacity>
+        </View>
         <Text style={styles.hintText}>¿No tienes cuenta?</Text>
-        <TouchableOpacity style={styles.registerContainer}>
-          <Button color="#FF7058">Registrate aquí</Button>
-        </TouchableOpacity>
+        <View style={styles.registerContainer}>
+          <Button
+            color="#FF7058"
+            onPress={() => {
+              this.navigateRegister();
+            }}>
+            Registrate aquí
+          </Button>
+        </View>
         <ActivityIndicator
           animating={loadNextPage}
           color="#FF7058"
