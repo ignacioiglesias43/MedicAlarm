@@ -10,7 +10,7 @@ export default class PatientsList extends Component {
           <View style={styles.principalView}>
             <View style={styles.content}>
               <Avatar.Image
-                size={80}
+                size={60}
                 source={require('../../img/usuario.png')}
                 style={{backgroundColor: 'white'}}
               />
@@ -51,6 +51,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     marginLeft: 40,
-    paddingTop: 20,
+    paddingTop: 10,
   },
 });

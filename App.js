@@ -35,9 +35,10 @@ export default function App() {
             <View
               style={{
                 display: 'flex',
-                flexDirection: 'column',
+                flexDirection: 'row',
                 alignItems: 'center',
                 backgroundColor: '#afc9ff',
+                padding: 10,
               }}>
               <Image
                 source={require('./src/img/logo.png')}
