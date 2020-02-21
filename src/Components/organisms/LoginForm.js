@@ -27,7 +27,7 @@ export default class Login extends Component {
     this.setState({loadNextPage: !this.state.loadNextPage});
     setTimeout(() => {
       this.setState({loadNextPage: !this.state.loadNextPage});
-      this.props.navigation.navigate('Home');
+      this.props.navigation.navigate('Inicio');
     }, 1000);
   }
   navigateRegister() {

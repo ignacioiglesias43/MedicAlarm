@@ -7,7 +7,7 @@ export default class Patients extends Component {
   render() {
     return (
       <ScrollView style={{flex: 1}}>
-        <AppHeader title="Pacientes" />
+        <AppHeader title="Pacientes" navigation={this.props.navigation} />
         <PatientsList />
       </ScrollView>
     );

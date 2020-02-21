@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, Image, Text} from 'react-native';
+import {StyleSheet, View, Text, Image} from 'react-native';
 import AppHeader from '../../Components/organisms/Header';
 import MedicalAppointment from '../../Components/organisms/MedicalAppointment';
 import {Avatar, Title, Button, Colors} from 'react-native-paper';
@@ -8,7 +8,7 @@ export default class Home extends Component {
   render() {
     return (
       <View style={{flex: 1}}>
-        <AppHeader title="Home" />
+        <AppHeader title="Inicio" navigation={this.props.navigation} />
         <View
           style={{
             padding: 20,
