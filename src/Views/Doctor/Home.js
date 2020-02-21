@@ -1,14 +1,14 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, Image, Text} from 'react-native';
-import AppHeader from './../Components/organisms/Header';
-import MedicalAppointment from './../Components/organisms/MedicalAppointment';
+import AppHeader from '../../Components/organisms/Header';
+import MedicalAppointment from '../../Components/organisms/MedicalAppointment';
 import {Avatar, Title, Button, Colors} from 'react-native-paper';
 
 export default class Home extends Component {
   render() {
     return (
       <View style={{flex: 1}}>
-        <AppHeader />
+        <AppHeader title="Home" />
         <View
           style={{
             padding: 20,
@@ -17,7 +17,7 @@ export default class Home extends Component {
           }}>
           <Avatar.Image
             size={130}
-            source={require('../img/avatar.png')}
+            source={require('../../img/avatar.png')}
             style={{backgroundColor: 'white'}}
           />
           <Title>Dr.Simi</Title>
@@ -37,30 +37,3 @@ export default class Home extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  header: {
-    top: 200,
-    borderRadius: 38888,
-    borderColor: 'black',
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#FF7058',
-  },
-  logoContainer: {
-    alignItems: 'center',
-    flexGrow: 1,
-    justifyContent: 'center',
-  },
-  formContainer: {},
-  logo: {
-    height: 80,
-    width: 80,
-  },
-  title: {
-    textAlign: 'center',
-    display: 'flex',
-    flexDirection: 'row',
-  },
-});

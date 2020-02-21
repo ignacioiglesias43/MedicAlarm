@@ -37,30 +37,3 @@ export default class Alarms extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  header: {
-    top: 200,
-    borderRadius: 38888,
-    borderColor: 'black',
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#FF7058',
-  },
-  logoContainer: {
-    alignItems: 'center',
-    flexGrow: 1,
-    justifyContent: 'center',
-  },
-  formContainer: {},
-  logo: {
-    height: 80,
-    width: 80,
-  },
-  title: {
-    textAlign: 'center',
-    display: 'flex',
-    flexDirection: 'row',
-  },
-});

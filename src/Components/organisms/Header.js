@@ -9,7 +9,7 @@ export default class Header extends Component {
     return (
       <Appbar.Header style={{backgroundColor: '#afc9ff'}}>
         <Appbar.Action icon="menu" onPress={this._openMenu} />
-        <Appbar.Content title="Home" />
+        <Appbar.Content title={this.props.title} />
       </Appbar.Header>
     );
   }
