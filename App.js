@@ -78,7 +78,7 @@ export default function App() {
             </DrawerContentScrollView>
           </SafeAreaView>
         )}>
-        <Stack.Screen
+        <Drawer.Screen
           name="Inicio"
           component={Home}
           icon={() => <Icon name="home" />}

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, Image, Text} from 'react-native';
-import AppHeader from './../Components/organisms/Header';
-import MedicalAppointment from './../Components/organisms/MedicalAppointment';
+import AppHeader from '../../Components/organisms/Header';
+import MedicalAppointment from '../../Components/organisms/MedicalAppointment';
 import {Avatar, Title, Button, Colors} from 'react-native-paper';
 
 export default class Alarms extends Component {
