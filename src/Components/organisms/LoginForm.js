@@ -32,7 +32,7 @@ export default class Login extends Component {
   }
   navigateRegister() {
     setTimeout(() => {
-      this.props.navigation.navigate('Registro');
+      this.props.navigation.push('Registro');
     }, 1000);
   }
   render() {

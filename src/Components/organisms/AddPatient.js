@@ -3,26 +3,23 @@ import {StyleSheet, View} from 'react-native';
 import {Container, Header, Button, Icon} from 'native-base';
 import {FAB, Searchbar} from 'react-native-paper';
 import AppHeader from '../../Components/organisms/Header';
-import PatientsList from '../../Components/organisms/PatientsList';
+import AddPatientsList from '../../Components/organisms/AddPatientsList';
 
-export default class Patients extends Component {
+export default class AddPatients extends Component {
   constructor(props) {
     super(props);
   }
   state = {
     firstQuery: '',
   };
-  navigate = () => {
-    this.props.navigation.navigate('Agregar Paciente');
-  };
   render() {
     const {firstQuery} = this.state;
     return (
       <View style={{flex: 1}}>
         <AppHeader
-          title="Pacientes"
+          title="Agregar Pacientes"
           navigation={this.props.navigation}
-          icon="menu"
+          icon="arrow-left"
         />
         <Searchbar
           placeholder="Search"
@@ -32,13 +29,8 @@ export default class Patients extends Component {
           value={firstQuery}
         />
         <View style={{flex: 1}}>
-          <PatientsList />
+          <AddPatientsList />
         </View>
-        <FAB
-          style={styles.fab}
-          icon="account-plus-outline"
-          onPress={() => this.navigate()}
-        />
       </View>
     );
   }

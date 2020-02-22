@@ -8,7 +8,11 @@ export default class Home extends Component {
   render() {
     return (
       <View style={{flex: 1}}>
-        <AppHeader title="Inicio" navigation={this.props.navigation} />
+        <AppHeader
+          title="Inicio"
+          navigation={this.props.navigation}
+          icon="menu"
+        />
         <View
           style={{
             padding: 20,

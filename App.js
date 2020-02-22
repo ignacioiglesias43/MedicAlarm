@@ -22,14 +22,38 @@ import Login from './src/Views/Login';
 import Home from './src/Views/Doctor/Home';
 import Patients from './src/Views/Doctor/Patients';
 import Register from './src/Views/Register';
+import AddPatient from './src/Components/organisms/AddPatient';
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
+/**Descripcion: Esta funcion almacena las ventanas para agregar y ver pacientes */
+function PatientsViews() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}>
+      <Stack.Screen name="Pacientes" component={Patients} navigation />
+      <Stack.Screen name="Agregar Paciente" component={AddPatient} />
+    </Stack.Navigator>
+  );
+}
+/**Descripcion: Esta funcion almacena las ventanas de Login y Registro */
+function RegisterLogin() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}>
+      <Stack.Screen name="Login" component={Login} navigation />
+      <Stack.Screen name="Registro" component={Register} />
+    </Stack.Navigator>
+  );
+}
 export default function App() {
   return (
     <NavigationContainer>
-      {/* <Stack.Navigator></Stack.Navigator> */}
       <Drawer.Navigator
-        initialRouteName="Inicio"
+        initialRouteName="Pacientes"
         drawerContent={props => (
           <SafeAreaView style={{flex: 1}}>
             <View
@@ -54,24 +78,16 @@ export default function App() {
             </DrawerContentScrollView>
           </SafeAreaView>
         )}>
-        <Drawer.Screen
+        <Stack.Screen
           name="Inicio"
           component={Home}
           icon={() => <Icon name="home" />}
         />
-        <Drawer.Screen name="Pacientes" component={Patients} />
+        <Drawer.Screen name="Pacientes" component={PatientsViews} />
         <Drawer.Screen
           name="Salir"
-          component={Login}
+          component={RegisterLogin}
           options={{gestureEnabled: false}}
-        />
-        <Drawer.Screen
-          name="Registro"
-          component={Register}
-          options={{
-            gestureEnabled: false,
-            drawerLabel: () => null,
-          }}
         />
       </Drawer.Navigator>
     </NavigationContainer>

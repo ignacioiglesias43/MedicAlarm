@@ -27,14 +27,14 @@ export default class RegisterForm extends Component {
   };
   navigateBack() {
     setTimeout(() => {
-      this.props.navigation.navigate('Salir');
+      this.props.navigation.goBack();
     }, 1000);
   }
   register() {
     this.setState({loadNextPage: !this.state.loadNextPage});
     setTimeout(() => {
       this.setState({loadNextPage: !this.state.loadNextPage});
-      this.props.navigation.navigate('Salir');
+      this.props.navigation.push('Login');
     }, 1000);
   }
   render() {
