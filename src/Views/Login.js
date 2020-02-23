@@ -8,14 +8,7 @@ export default class Login extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <View style={styles.logoContainer}>
-            <Image style={styles.logo} source={require('../img/logo.png')} />
-            <View style={styles.title}>
-              <Text style={{fontSize: 25, color: 'white'}}>Medic</Text>
-              <Text style={{fontSize: 25, color: '#FF7058'}}>Alarm</Text>
-            </View>
-          </View>
-          <View style={styles.formContainer}>
+          <View>
             <LoginForm navigation={this.props.navigation} />
           </View>
         </View>

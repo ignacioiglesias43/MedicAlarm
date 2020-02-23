@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, Image, Text} from 'react-native';
+import {StyleSheet, View, Image, Text, SafeAreaView} from 'react-native';
 import RegisterForm from './../Components/organisms/RegisterForm';
 
 export default class Register extends Component {
@@ -7,16 +7,7 @@ export default class Register extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <View style={styles.logoContainer}>
-            <Image style={styles.logo} source={require('../img/logo.png')} />
-            <View style={styles.title}>
-              <Text style={{fontSize: 25, color: 'white'}}>Medic</Text>
-              <Text style={{fontSize: 25, color: '#FF7058'}}>Alarm</Text>
-            </View>
-          </View>
-          <View style={styles.formContainer}>
-            <RegisterForm navigation={this.props.navigation} />
-          </View>
+          <RegisterForm navigation={this.props.navigation} />
         </View>
       </View>
     );
@@ -25,27 +16,10 @@ export default class Register extends Component {
 
 const styles = StyleSheet.create({
   header: {
-    top: 200,
-    borderRadius: 38888,
-    borderColor: 'black',
+    top: 150,
   },
   container: {
     flex: 1,
     backgroundColor: '#afc9ff',
-  },
-  logoContainer: {
-    alignItems: 'center',
-    flexGrow: 1,
-    justifyContent: 'center',
-  },
-  formContainer: {},
-  logo: {
-    height: 80,
-    width: 80,
-  },
-  title: {
-    textAlign: 'center',
-    display: 'flex',
-    flexDirection: 'row',
   },
 });

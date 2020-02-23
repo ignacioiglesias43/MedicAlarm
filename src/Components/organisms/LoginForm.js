@@ -5,7 +5,7 @@ import {
   Text,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Platform,
+  Image,
 } from 'react-native';
 import {
   TextInput,
@@ -38,7 +38,17 @@ export default class Login extends Component {
   render() {
     const {isSwitchOn, loadNextPage} = this.state;
     return (
-      <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior="position"
+        enabled>
+        <View style={styles.logoContainer}>
+          <Image style={styles.logo} source={require('../../img/logo.png')} />
+          <View style={styles.title}>
+            <Text style={{fontSize: 25, color: 'white'}}>Medic</Text>
+            <Text style={{fontSize: 25, color: '#FF7058'}}>Alarm</Text>
+          </View>
+        </View>
         <TextInput
           keyboardType="email-address"
           mode="outlined"
@@ -128,5 +138,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignSelf: 'flex-end',
     paddingVertical: 10,
+  },
+  logoContainer: {
+    alignItems: 'center',
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
+  logo: {
+    height: 80,
+    width: 80,
+  },
+  title: {
+    textAlign: 'center',
+    display: 'flex',
+    flexDirection: 'row',
   },
 });

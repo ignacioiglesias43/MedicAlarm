@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
-  Picker,
+  Image,
 } from 'react-native';
 import {
   TextInput,
@@ -16,6 +16,7 @@ import {
   Colors,
   List,
   Checkbox,
+  RadioButton,
 } from 'react-native-paper';
 
 export default class RegisterForm extends Component {
@@ -24,6 +25,7 @@ export default class RegisterForm extends Component {
   }
   state = {
     loadNextPage: false,
+    checked: 'patient',
   };
   navigateBack() {
     setTimeout(() => {
@@ -38,9 +40,19 @@ export default class RegisterForm extends Component {
     }, 1000);
   }
   render() {
-    const {loadNextPage} = this.state;
+    const {loadNextPage, checked} = this.state;
     return (
-      <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior="position"
+        enabled>
+        <View style={styles.logoContainer}>
+          <Image style={styles.logo} source={require('../../img/logo.png')} />
+          <View style={styles.title}>
+            <Text style={{fontSize: 25, color: 'white'}}>Medic</Text>
+            <Text style={{fontSize: 25, color: '#FF7058'}}>Alarm</Text>
+          </View>
+        </View>
         <View
           style={{
             display: 'flex',
@@ -63,7 +75,6 @@ export default class RegisterForm extends Component {
             returnKeyType={'next'}
           />
         </View>
-
         <TextInput
           keyboardType="email-address"
           mode="outlined"
@@ -93,7 +104,47 @@ export default class RegisterForm extends Component {
           keyboardType="phone-pad"
           ref={input => (this.phoneInput = input)}
         />
-        {/* TODO: Investigar como hacer un combobox */}
+
+        <View style={styles.radioButtonContainer}>
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <Text style={{color: 'white'}}>
+              Registrarme como:{'\t'}
+              {'\t'}
+              {'\t'}
+              {'\t'}
+              {'\t'}Paciente
+            </Text>
+            <RadioButton
+              value="patient"
+              color="#FF7058"
+              status={checked === 'patient' ? 'checked' : 'unchecked'}
+              onPress={() => {
+                this.setState({checked: 'patient'});
+              }}
+            />
+          </View>
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <Text style={{color: 'white'}}>Médico</Text>
+            <RadioButton
+              value="doctor"
+              color="#FF7058"
+              status={checked === 'doctor' ? 'checked' : 'unchecked'}
+              onPress={() => {
+                this.setState({checked: 'doctor'});
+              }}
+            />
+          </View>
+        </View>
         <View style={styles.buttonContainer}>
           <Button
             mode="contained"
@@ -108,7 +159,7 @@ export default class RegisterForm extends Component {
           <Button
             color="#FF7058"
             onPress={() => {
-              this.navigateBack();
+              this.props.navigation.goBack();
             }}>
             Iniciar Sesión
           </Button>
@@ -148,10 +199,24 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'red',
   },
-  switchContainer: {
+  radioButtonContainer: {
     display: 'flex',
     flexDirection: 'row',
     alignSelf: 'flex-end',
     paddingVertical: 10,
+  },
+  logoContainer: {
+    alignItems: 'center',
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
+  logo: {
+    height: 80,
+    width: 80,
+  },
+  title: {
+    textAlign: 'center',
+    display: 'flex',
+    flexDirection: 'row',
   },
 });
