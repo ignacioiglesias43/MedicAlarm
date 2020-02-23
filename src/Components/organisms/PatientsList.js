@@ -15,31 +15,45 @@ import {
   Thumbnail,
   Text,
 } from 'native-base';
+import {View, FlatList} from 'react-native';
 import {IconButton} from 'react-native-paper';
-
+import data from '../../JSON/patientsAdded.json';
 export default class PatientsList extends Component {
+  constructor(props) {
+    super(props);
+  }
   render() {
     return (
       <Container>
-        <Content>
-          <List style={{paddingTop: 20}}>
-            <ListItem thumbnail icon>
-              <Left>
-                <Thumbnail square source={require('../../img/usuario.png')} />
-              </Left>
-              <Body>
-                <Text>Walter White</Text>
-              </Body>
-              <Right>
-                <IconButton
-                  icon="trash-can-outline"
-                  color="red"
-                  onPress={() => console.log('Pressed')}
-                />
-              </Right>
-            </ListItem>
-          </List>
-        </Content>
+        <View style={{flex: 1, flexDirection: 'column'}}>
+          <FlatList
+            data={data}
+            showsVerticalScrollIndicator={false}
+            renderItem={({item}) => (
+              <List style={{padding: 20}}>
+                <ListItem thumbnail icon>
+                  <Left>
+                    <Thumbnail
+                      square
+                      source={require('../../img/usuario.png')}
+                    />
+                  </Left>
+                  <Body>
+                    <Text>{item.name}</Text>
+                  </Body>
+                  <Right>
+                    <IconButton
+                      icon="trash-can-outline"
+                      color="red"
+                      onPress={() => console.log('Pressed')}
+                    />
+                  </Right>
+                </ListItem>
+              </List>
+            )}
+            keyExtractor={(item, index) => index.toString()}
+          />
+        </View>
       </Container>
     );
   }

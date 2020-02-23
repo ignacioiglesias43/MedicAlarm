@@ -22,7 +22,7 @@ export default class AddPatients extends Component {
           icon="arrow-left"
         />
         <Searchbar
-          placeholder="Search"
+          placeholder="Buscar"
           onChangeText={query => {
             this.setState({firstQuery: query});
           }}
