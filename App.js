@@ -53,7 +53,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Drawer.Navigator
-        initialRouteName="Pacientes"
+        initialRouteName="Home"
         drawerContent={props => (
           <SafeAreaView style={{flex: 1}}>
             <View

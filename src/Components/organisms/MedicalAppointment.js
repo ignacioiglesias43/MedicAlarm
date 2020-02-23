@@ -1,5 +1,7 @@
 import * as React from 'react';
 import {DataTable} from 'react-native-paper';
+import {View, Text, FlatList} from 'react-native';
+import data from '../../JSON/appointments.json';
 
 export default class MyComponent extends React.Component {
   render() {
@@ -10,44 +12,17 @@ export default class MyComponent extends React.Component {
           <DataTable.Title numeric>Fecha</DataTable.Title>
           <DataTable.Title numeric>Hora</DataTable.Title>
         </DataTable.Header>
-
-        <DataTable.Row onPress={() => console.log('Pressed')}>
-          <DataTable.Cell>Franco Escamilla</DataTable.Cell>
-          <DataTable.Cell numeric>16-02-2020</DataTable.Cell>
-          <DataTable.Cell numeric>15:30</DataTable.Cell>
-        </DataTable.Row>
-
-        <DataTable.Row onPress={() => console.log('Pressed')}>
-          <DataTable.Cell>Walter White</DataTable.Cell>
-          <DataTable.Cell numeric>16-02-2020</DataTable.Cell>
-          <DataTable.Cell numeric>18:00</DataTable.Cell>
-        </DataTable.Row>
-
-        <DataTable.Row onPress={() => console.log('Pressed')}>
-          <DataTable.Cell>Esmeralda Rubín</DataTable.Cell>
-          <DataTable.Cell numeric>16-02-2020</DataTable.Cell>
-          <DataTable.Cell numeric>20:00</DataTable.Cell>
-        </DataTable.Row>
-
-        <DataTable.Row onPress={() => console.log('Pressed')}>
-          <DataTable.Cell>Darien Ramírez</DataTable.Cell>
-          <DataTable.Cell numeric>17-02-2020</DataTable.Cell>
-          <DataTable.Cell numeric>12:30</DataTable.Cell>
-        </DataTable.Row>
-
-        <DataTable.Row onPress={() => console.log('Pressed')}>
-          <DataTable.Cell>Ignacio Iglesias</DataTable.Cell>
-          <DataTable.Cell numeric>17-02-2020</DataTable.Cell>
-          <DataTable.Cell numeric>18:30</DataTable.Cell>
-        </DataTable.Row>
-
-        <DataTable.Pagination
-          page={1}
-          numberOfPages={3}
-          onPageChange={page => {
-            console.log(page);
-          }}
-          label="1-2 of 6"
+        <FlatList
+          data={data}
+          showsVerticalScrollIndicator={false}
+          renderItem={({item}) => (
+            <DataTable.Row onPress={() => console.log('Pressed')}>
+              <DataTable.Cell>{item.name}</DataTable.Cell>
+              <DataTable.Cell numeric>{item.appointment_date}</DataTable.Cell>
+              <DataTable.Cell numeric>{item.appointment_hour}</DataTable.Cell>
+            </DataTable.Row>
+          )}
+          keyExtractor={(item, index) => index.toString()}
         />
       </DataTable>
     );
