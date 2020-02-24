@@ -9,10 +9,11 @@ import {
   Card,
   CardItem,
   Body,
+  Right,
 } from 'native-base';
 import AppHeader from '../../Components/organisms/Header';
 import MedicalAppointment from '../../Components/organisms/MedicalAppointment';
-import {Avatar, Title, IconButton} from 'react-native-paper';
+import {Avatar, Title, IconButton, Button} from 'react-native-paper';
 
 export default class Home extends Component {
   render() {
@@ -40,12 +41,16 @@ export default class Home extends Component {
           <Content>
             <Card>
               <CardItem header bordered>
-                <Title>Mis Datos</Title>
-                <IconButton
-                  icon="pencil"
-                  size={25}
-                  onPress={() => console.log('Pressed')}
-                />
+                <Body>
+                  <Title>Mis Datos</Title>
+                </Body>
+                <Right>
+                  <IconButton
+                    icon="pencil"
+                    size={25}
+                    onPress={() => console.log('Pressed')}
+                  />
+                </Right>
               </CardItem>
               <CardItem bordered>
                 <Text>Nombre: Simi</Text>
@@ -63,19 +68,25 @@ export default class Home extends Component {
                 <Text>Teléfono: 6122192275</Text>
               </CardItem>
             </Card>
+            <Card>
+              <CardItem header bordered>
+                <Body>
+                  <Title>Mis Citas</Title>
+                </Body>
+                <Right>
+                  <IconButton
+                    icon="eye"
+                    size={25}
+                    onPress={() => console.log('Pressed')}
+                  />
+                </Right>
+              </CardItem>
+              <CardItem>
+                <MedicalAppointment />
+              </CardItem>
+            </Card>
           </Content>
         </Container>
-        {/* <View>
-          <MedicalAppointment />
-        </View>
-        <Button
-          icon="clipboard-plus"
-          mode="contained"
-          color="#FF7058"
-          onPress={() => console.log('Pressed')}
-          style={{alignSelf: 'center'}}>
-          Agendar Cita
-        </Button> */}
       </View>
     );
   }
