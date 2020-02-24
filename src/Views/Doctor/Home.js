@@ -48,7 +48,15 @@ export default class Home extends Component {
                   <IconButton
                     icon="pencil"
                     size={25}
-                    onPress={() => console.log('Pressed')}
+                    onPress={() =>
+                      this.props.navigation.push('EditPersonalInfo', {
+                        name: 'Simi',
+                        professional_id: 12345678,
+                        speciality: 'Psiquiatría',
+                        mail: 'dr_simi@similares.com',
+                        phone: 6122192275,
+                      })
+                    }
                   />
                 </Right>
               </CardItem>

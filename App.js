@@ -18,8 +18,10 @@ import {
   DrawerItemList,
   DrawerContentScrollView,
 } from '@react-navigation/drawer';
+/**Vistas del Doctor */
 import Login from './src/Views/Login';
 import Home from './src/Views/Doctor/Home';
+import MyData from './src/Components/organisms/EditPersonalInfo';
 import Patients from './src/Views/Doctor/Patients';
 import Register from './src/Views/Register';
 import AddPatient from './src/Components/organisms/AddPatient';
@@ -29,9 +31,24 @@ import EditPrescription from './src/Components/organisms/EditPrescription';
 import AddAppointment from './src/Components/organisms/AddAppointment';
 import AppointmentsScreen from './src/Views/Doctor/Appointments';
 import EditAppointment from './src/Components/organisms/EditAppointment';
+/**Termina Vistas del Doctor */
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
+
+/**Descripcion: Almacena las ventanas de inicio y editar datos del Dr */
+function DoctorHome() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}>
+      <Stack.Screen name="Home" component={Home} navigation />
+      <Stack.Screen name="EditPersonalInfo" component={MyData} navigation />
+    </Stack.Navigator>
+  );
+}
+
 /**Descripcion: Esta funcion almacena las ventanas para agregar y ver pacientes */
 function PatientsViews() {
   return (
@@ -113,11 +130,7 @@ export default function App() {
             </DrawerContentScrollView>
           </SafeAreaView>
         )}>
-        <Drawer.Screen
-          name="Inicio"
-          component={Home}
-          icon={() => <Icon name="home" />}
-        />
+        <Drawer.Screen name="Inicio" component={DoctorHome} />
         <Drawer.Screen name="Pacientes" component={PatientsViews} />
         <Drawer.Screen name="Recetas" component={Prescriptions} />
         <Drawer.Screen name="Citas" component={Appointments} />
