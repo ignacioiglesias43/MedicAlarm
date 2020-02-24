@@ -24,6 +24,8 @@ export default class Patients extends Component {
           navigation={this.props.navigation}
           icon="menu"
           showAddAction={true}
+          addIcon="account-plus-outline"
+          navigateRoute="AddPaciente"
         />
         <Searchbar
           placeholder="Buscar"
@@ -32,11 +34,6 @@ export default class Patients extends Component {
           }}
           value={firstQuery}
         />
-        {/* <FAB
-          style={styles.fab}
-          icon="account-plus-outline"
-          onPress={() => this.navigate()}
-        /> */}
         <View style={{flex: 1}}>
           <PatientsList />
         </View>

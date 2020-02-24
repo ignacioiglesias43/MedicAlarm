@@ -15,7 +15,7 @@ export default class Header extends Component {
     }
   };
   addAction = () => {
-    this.props.navigation.navigate('Agregar Paciente');
+    this.props.navigation.navigate(this.props.navigateRoute);
   };
   render() {
     if (this.props.showAddAction) {
@@ -23,7 +23,7 @@ export default class Header extends Component {
         <Appbar.Header style={{backgroundColor: '#afc9ff'}}>
           <Appbar.Action icon={this.props.icon} onPress={this.headerAction} />
           <Appbar.Content title={this.props.title} />
-          <Appbar.Action icon="account-plus-outline" onPress={this.addAction} />
+          <Appbar.Action icon={this.props.addIcon} onPress={this.addAction} />
         </Appbar.Header>
       );
     } else {

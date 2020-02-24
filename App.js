@@ -23,6 +23,8 @@ import Home from './src/Views/Doctor/Home';
 import Patients from './src/Views/Doctor/Patients';
 import Register from './src/Views/Register';
 import AddPatient from './src/Components/organisms/AddPatient';
+import PrescriptionScreen from './src/Views/Doctor/Prescriptions';
+import AddPrescription from './src/Components/organisms/AddPrescription';
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 /**Descripcion: Esta funcion almacena las ventanas para agregar y ver pacientes */
@@ -33,7 +35,7 @@ function PatientsViews() {
         headerShown: false,
       }}>
       <Stack.Screen name="Pacientes" component={Patients} navigation />
-      <Stack.Screen name="Agregar Paciente" component={AddPatient} />
+      <Stack.Screen name="AddPaciente" component={AddPatient} />
     </Stack.Navigator>
   );
 }
@@ -46,6 +48,19 @@ function RegisterLogin() {
       }}>
       <Stack.Screen name="Login" component={Login} navigation />
       <Stack.Screen name="Registro" component={Register} />
+    </Stack.Navigator>
+  );
+}
+
+/**Descripcion: Almacena las ventanas de recetas */
+function Prescriptions() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}>
+      <Stack.Screen name="Recetas" component={PrescriptionScreen} navigation />
+      <Stack.Screen name="AddReceta" component={AddPrescription} />
     </Stack.Navigator>
   );
 }
@@ -84,6 +99,7 @@ export default function App() {
           icon={() => <Icon name="home" />}
         />
         <Drawer.Screen name="Pacientes" component={PatientsViews} />
+        <Drawer.Screen name="Recetas" component={Prescriptions} />
         <Drawer.Screen
           name="Salir"
           component={RegisterLogin}
