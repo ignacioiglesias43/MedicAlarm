@@ -25,6 +25,7 @@ import Register from './src/Views/Register';
 import AddPatient from './src/Components/organisms/AddPatient';
 import PrescriptionScreen from './src/Views/Doctor/Prescriptions';
 import AddPrescription from './src/Components/organisms/AddPrescription';
+import EditPrescription from './src/Components/organisms/EditPrescription';
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 /**Descripcion: Esta funcion almacena las ventanas para agregar y ver pacientes */
@@ -61,6 +62,7 @@ function Prescriptions() {
       }}>
       <Stack.Screen name="Recetas" component={PrescriptionScreen} navigation />
       <Stack.Screen name="AddReceta" component={AddPrescription} />
+      <Stack.Screen name="EditReceta" component={EditPrescription} />
     </Stack.Navigator>
   );
 }

@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "name": "Paracetamol"
+  },
+  {
+    "id": 2,
+    "name": "Amoxicilina"
+  },
+  {
+    "id": 3,
+    "name": "Aspirina"
+  },
+  {
+    "id": 4,
+    "name": "Omeprazol"
+  },
+  {
+    "id": 5,
+    "name": "Ramipril"
+  },
+  {
+    "id": 6,
+    "name": "Ibuprofeno"
+  },
+  {
+    "id": 7,
+    "name": "Clorferamina"
+  }
+]

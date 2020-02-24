@@ -22,7 +22,7 @@ export default class PrescriptionsList extends Component {
                     <IconButton
                       icon="pencil"
                       size={20}
-                      onPress={() => console.log('Pressed')}
+                      onPress={() => this.props.navigation.push('EditReceta')}
                     />
                     <IconButton
                       icon="trash-can-outline"

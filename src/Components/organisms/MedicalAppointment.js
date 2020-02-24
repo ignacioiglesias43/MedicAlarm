@@ -3,7 +3,7 @@ import {DataTable} from 'react-native-paper';
 import {View, Text, FlatList} from 'react-native';
 import data from '../../JSON/appointments.json';
 
-export default class MyComponent extends React.Component {
+export default class MedicalAppointment extends React.Component {
   render() {
     return (
       <DataTable>

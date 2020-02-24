@@ -11,11 +11,11 @@ export default class Prescriptions extends Component {
           navigation={this.props.navigation}
           icon="menu"
           showAddAction={true}
-          addIcon="playlist-plus"
+          addIcon="plus"
           navigateRoute="AddReceta"
         />
         <View style={{flex: 1}}>
-          <PrescriptionsList />
+          <PrescriptionsList navigation={this.props.navigation} />
         </View>
       </View>
     );

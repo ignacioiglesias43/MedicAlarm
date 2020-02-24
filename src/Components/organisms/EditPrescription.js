@@ -11,7 +11,6 @@ import {
 } from 'native-base';
 import {ActivityIndicator, Button} from 'react-native-paper';
 import AppHeader from '../../Components/organisms/Header';
-import data from '../../JSON/patientsAdded.json';
 import medicines from '../../JSON/medicines.json';
 export default class AddPrescription extends Component {
   constructor(props) {
@@ -33,37 +32,12 @@ export default class AddPrescription extends Component {
     return (
       <Container>
         <AppHeader
-          title="Agregar Receta"
+          title="Editar Receta"
           navigation={this.props.navigation}
           icon="arrow-left"
         />
         <Content padder>
           <Form>
-            <View>
-              <View>
-                <Text>Seleccione un paciente:</Text>
-              </View>
-              <Item picker>
-                <Picker
-                  style={{width: undefined}}
-                  iosIcon={<Icon name="arrow-down" />}
-                  placeholder="Seleccione un paciente"
-                  placeholderStyle={{color: '#bfc6ea'}}
-                  placeholderIconColor="#007aff"
-                  selectedValue={this.state.patient}
-                  onValueChange={(itemValue, itemIndex) =>
-                    this.setState({patient: itemValue})
-                  }>
-                  {data.map(item => (
-                    <Picker.Item
-                      label={item.name}
-                      value={item.id}
-                      key={item.id}
-                    />
-                  ))}
-                </Picker>
-              </Item>
-            </View>
             <View>
               <View style={{paddingTop: 10}}>
                 <Text>Seleccione un medicamento:</Text>
