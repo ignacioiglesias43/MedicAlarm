@@ -19,7 +19,7 @@ export default class Login extends Component {
 
 const styles = StyleSheet.create({
   header: {
-    top: 200,
+    top: '25%',
     borderRadius: 38888,
     borderColor: 'black',
   },

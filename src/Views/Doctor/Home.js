@@ -77,7 +77,7 @@ export default class Home extends Component {
                   <IconButton
                     icon="eye"
                     size={25}
-                    onPress={() => console.log('Pressed')}
+                    onPress={() => this.props.navigation.navigate('Citas')}
                   />
                 </Right>
               </CardItem>

@@ -26,6 +26,10 @@ import AddPatient from './src/Components/organisms/AddPatient';
 import PrescriptionScreen from './src/Views/Doctor/Prescriptions';
 import AddPrescription from './src/Components/organisms/AddPrescription';
 import EditPrescription from './src/Components/organisms/EditPrescription';
+import AddAppointment from './src/Components/organisms/AddAppointment';
+import AppointmentsScreen from './src/Views/Doctor/Appointments';
+import EditAppointment from './src/Components/organisms/EditAppointment';
+
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 /**Descripcion: Esta funcion almacena las ventanas para agregar y ver pacientes */
@@ -66,6 +70,20 @@ function Prescriptions() {
     </Stack.Navigator>
   );
 }
+
+/**Descripcion: Almacena las ventanas de recetas */
+function Appointments() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}>
+      <Stack.Screen name="Citas" component={AppointmentsScreen} navigation />
+      <Stack.Screen name="AddCita" component={AddAppointment} navigation />
+      <Stack.Screen name="EditCita" component={EditAppointment} navigation />
+    </Stack.Navigator>
+  );
+}
 export default function App() {
   return (
     <NavigationContainer>
@@ -102,6 +120,7 @@ export default function App() {
         />
         <Drawer.Screen name="Pacientes" component={PatientsViews} />
         <Drawer.Screen name="Recetas" component={Prescriptions} />
+        <Drawer.Screen name="Citas" component={Appointments} />
         <Drawer.Screen
           name="Salir"
           component={RegisterLogin}
