@@ -4,7 +4,7 @@ import {Picker, Content, Form, Item, Container} from 'native-base';
 import {ActivityIndicator, Button, TextInput} from 'react-native-paper';
 import AppHeader from '../../Components/organisms/Header';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-export default class EditAlarm extends Component {
+export default class EditAlarms extends Component {
   constructor(props) {
     super(props);
     this.state = {

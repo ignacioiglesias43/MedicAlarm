@@ -12,7 +12,7 @@ import {
 import {ActivityIndicator, Button} from 'react-native-paper';
 import AppHeader from '../../Components/organisms/Header';
 import medicines from '../../JSON/medicines.json';
-export default class AddPrescription extends Component {
+export default class EditPrescription extends Component {
   constructor(props) {
     super(props);
     this.state = {

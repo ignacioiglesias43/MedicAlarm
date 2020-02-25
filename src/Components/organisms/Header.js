@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, Image, Text} from 'react-native';
 import {Appbar} from 'react-native-paper';
-import {NavigationDrawer} from '../organisms/NavigationDrawer';
 
 export default class Header extends Component {
   constructor(props) {

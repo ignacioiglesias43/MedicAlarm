@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-import {Container, Card, CardItem, Body, Right} from 'native-base';
-import {Title, IconButton, Subheading} from 'react-native-paper';
-import {FlatList, View, Alert} from 'react-native';
-import data from '../../JSON/trustedContacts.json';
-export default class ContactList extends Component {
+import {Container, Card, CardItem, Text, Body, Right} from 'native-base';
+import {View, FlatList, Alert} from 'react-native';
+import {IconButton, Title} from 'react-native-paper';
+import data from '../../JSON/patientAppointments.json';
+export default class PatientAppointmentsList extends Component {
   constructor(props) {
     super(props);
   }
@@ -17,32 +17,35 @@ export default class ContactList extends Component {
             showsVerticalScrollIndicator={false}
             renderItem={({item}) => (
               <Card>
-                <CardItem>
+                <CardItem header>
                   <Body>
-                    <Title>{item.name}</Title>
-                    <Subheading>Número de teléfono: {item.phone}</Subheading>
-                    <Subheading>Correo:</Subheading>
-                    <Subheading>{item.mail}</Subheading>
+                    <Title>Dr. {item.name}</Title>
+                    <Text>Fecha: {item.appointment_date}</Text>
+                    <Text>Hora: {item.appointment_hour}</Text>
                   </Body>
                   <Right>
                     <IconButton
                       icon="pencil"
+                      size={20}
                       onPress={() =>
-                        this.props.navigation.push('EditContact', {
-                          name: item.name,
-                          phone: item.phone,
-                          mail: item.mail,
+                        this.props.navigation.push('EditCita', {
+                          id: item.id,
+                          hour: item.appointment_hour,
+                          date: item.appointment_date,
                         })
                       }
                     />
                     <IconButton
                       icon="trash-can-outline"
                       color="red"
+                      size={20}
                       onPress={() =>
                         Alert.alert(
-                          'Eliminar Contacto',
-                          'Está por eliminar a su contacto ' +
+                          'Eliminar Cita',
+                          'Está por eliminar la cita con el Dr. ' +
                             item.name +
+                            ', con id#' +
+                            item.id +
                             '.\n¿Desea Continuar?',
                           [
                             {

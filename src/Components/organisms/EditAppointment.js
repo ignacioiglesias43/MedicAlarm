@@ -13,10 +13,9 @@ import {
 } from 'native-base';
 import {ActivityIndicator, Button} from 'react-native-paper';
 import AppHeader from '../../Components/organisms/Header';
-import data from '../../JSON/patientsAdded.json';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
-export default class AddAppointment extends Component {
+export default class EditAppointment extends Component {
   constructor(props) {
     super(props);
     this.state = {

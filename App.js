@@ -41,6 +41,7 @@ import EditAlarmScreen from './src/Components/organisms/EditAlarms';
 import TrustedContact from './src/Views/Patient/TrustedContact';
 import AddTrustedContact from './src/Components/organisms/AddContact';
 import EditTrustedContact from './src/Components/organisms/EditContact';
+import PatientAppointments from './src/Views/Patient/PatientAppointments';
 /**Termina Vistas del Paciente */
 
 const Stack = createStackNavigator();
@@ -161,6 +162,23 @@ function TrustedContactViews() {
     </Stack.Navigator>
   );
 }
+
+/**Descripcion: Almacena ventanas de citas médicas del paciente */
+function PatientAppointmentsViews() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}>
+      <Stack.Screen
+        name="PatientAppointments"
+        component={PatientAppointments}
+        navigation
+      />
+      <Stack.Screen name="EditCita" component={EditAppointment} />
+    </Stack.Navigator>
+  );
+}
 /**Termina Ventanas de Paciente */
 
 export default function App() {
@@ -201,6 +219,10 @@ export default function App() {
         <Drawer.Screen
           name="Contactos de Confianza"
           component={TrustedContactViews}
+        />
+        <Drawer.Screen
+          name="Citas-Paciente"
+          component={PatientAppointmentsViews}
         />
         <Drawer.Screen
           name="Salir"

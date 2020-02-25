@@ -15,7 +15,7 @@ import {
   Colors,
 } from 'react-native-paper';
 
-export default class Login extends Component {
+export default class LoginForm extends Component {
   constructor(props) {
     super(props);
   }

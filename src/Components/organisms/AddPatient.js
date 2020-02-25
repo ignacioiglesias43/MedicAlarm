@@ -5,7 +5,7 @@ import {FAB, Searchbar} from 'react-native-paper';
 import AppHeader from '../../Components/organisms/Header';
 import AddPatientsList from '../../Components/organisms/AddPatientsList';
 
-export default class AddPatients extends Component {
+export default class AddPatient extends Component {
   constructor(props) {
     super(props);
   }
