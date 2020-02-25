@@ -40,6 +40,11 @@ export default class AddAlarm extends Component {
       this.props.navigation.goBack();
     }, 1000);
   }
+  hideHourPicker = () => {
+    this.setState({
+      isHourVisible: false,
+    });
+  };
   onValueChange(value: string) {
     this.setState({
       selected: value,
