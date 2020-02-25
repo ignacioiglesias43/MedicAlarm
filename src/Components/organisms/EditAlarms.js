@@ -4,7 +4,7 @@ import {Picker, Content, Form, Item, Container} from 'native-base';
 import {ActivityIndicator, Button, TextInput} from 'react-native-paper';
 import AppHeader from '../../Components/organisms/Header';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-export default class AddAlarm extends Component {
+export default class EditAlarm extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -12,8 +12,12 @@ export default class AddAlarm extends Component {
       sendForm: false,
       isHourVisible: false,
       chosenHour: new Date(),
-      selected: '1',
-      hourText: 'Seleccione la hora inicial',
+      subjectText: JSON.stringify(this.props.route.params.subject).replace(
+        /"/g,
+        '',
+      ),
+      selected: this.props.route.params.frequency,
+      hourText: JSON.stringify(this.props.route.params.hour).replace(/"/g, ''),
     };
   }
   handleHourPicker = newDate => {
@@ -50,7 +54,7 @@ export default class AddAlarm extends Component {
     return (
       <Container>
         <AppHeader
-          title="Agregar Alarma"
+          title="Editar Alarma"
           navigation={this.props.navigation}
           icon="arrow-left"
         />
@@ -58,6 +62,7 @@ export default class AddAlarm extends Component {
           <Form>
             <TextInput
               label="Asunto"
+              defaultValue={this.state.subjectText}
               returnKeyType={'next'}
               mode="outlined"
               style={{paddingTop: 5}}
@@ -65,7 +70,9 @@ export default class AddAlarm extends Component {
             <View>
               <Item picker style={{padding: 10}}>
                 <TouchableOpacity onPress={this.showHourPicker}>
-                  <Text style={{color: 'green'}}>{this.state.hourText}</Text>
+                  <Text style={{color: 'green'}}>
+                    Hora: {this.state.hourText}
+                  </Text>
                 </TouchableOpacity>
                 <DateTimePickerModal
                   isVisible={this.state.isHourVisible}

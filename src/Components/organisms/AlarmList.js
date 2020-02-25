@@ -1,44 +1,55 @@
 import React, {Component} from 'react';
-import {Container, Card, CardItem, Text, Body, Right} from 'native-base';
-import {View, FlatList, Alert} from 'react-native';
-import {IconButton, Title} from 'react-native-paper';
-import data from '../../JSON/prescriptions.json';
-export default class PrescriptionsList extends Component {
+import {
+  Container,
+  Header,
+  Content,
+  Card,
+  CardItem,
+  Body,
+  Text,
+  Right,
+} from 'native-base';
+import data from '../../JSON/alarms.json';
+import {Title, IconButton, Subheading} from 'react-native-paper';
+import {FlatList, View, Alert} from 'react-native';
+export default class AlarmList extends Component {
   constructor(props) {
     super(props);
   }
-
   render() {
     return (
       <Container>
-        <View style={{flex: 1, flexDirection: 'column'}}>
+        <View style={{flex: 1}}>
           <FlatList
             data={data}
             showsVerticalScrollIndicator={false}
             renderItem={({item}) => (
               <Card>
-                <CardItem header>
+                <CardItem>
                   <Body>
-                    <Title>{item.name}</Title>
-                    <Text>{item.prescription}</Text>
+                    <Title>{item.subject}</Title>
+                    <Subheading>Siguiente hora: {item.hour}</Subheading>
+                    <Subheading>Frecuencia: {item.frequency}hrs</Subheading>
                   </Body>
                   <Right>
                     <IconButton
                       icon="pencil"
-                      size={20}
-                      onPress={() => this.props.navigation.push('EditReceta')}
+                      onPress={() =>
+                        this.props.navigation.push('EditAlarm', {
+                          subject: item.subject,
+                          hour: item.hour,
+                          frequency: item.frequency,
+                        })
+                      }
                     />
                     <IconButton
                       icon="trash-can-outline"
                       color="red"
-                      size={20}
                       onPress={() =>
                         Alert.alert(
-                          'Eliminar Receta',
-                          'Está por eliminar la receta médica del paciente ' +
-                            item.name +
-                            ', con id#' +
-                            item.id +
+                          'Eliminar Alarma',
+                          'Está por eliminar la alarma ' +
+                            item.subject +
                             '.\n¿Desea Continuar?',
                           [
                             {

@@ -1,21 +1,20 @@
 [
-    {
-      "id": 1,
-      "subject": "Paracetamol",
-      "hour": "10:30",
-      "frequency": "12"
-    },
-    {
-      "id": 2,
-      "subject": "Amoxicilina",
-      "hour": "15:30",
-      "frequency": "6"
-    },
-    {
-      "id": 3,
-      "subject": "Omeprazol",
-      "hour": "18:00",
-      "frequency": "24"
-    } 
-  ]
-  
+  {
+    "id": 1,
+    "subject": "Paracetamol",
+    "hour": "10:30",
+    "frequency": "12"
+  },
+  {
+    "id": 2,
+    "subject": "Amoxicilina",
+    "hour": "15:30",
+    "frequency": "6"
+  },
+  {
+    "id": 3,
+    "subject": "Omeprazol",
+    "hour": "18:00",
+    "frequency": "24"
+  }
+]

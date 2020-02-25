@@ -1,34 +1,14 @@
 import React, {Component} from 'react';
 import {Container, Card, CardItem, Text, Body, Right} from 'native-base';
-import {View, FlatList} from 'react-native';
+import {View, FlatList, Alert} from 'react-native';
 import {IconButton, Title} from 'react-native-paper';
 import data from '../../JSON/appointments.json';
-import AwesomeAlert from 'react-native-awesome-alerts';
 export default class AppointmentsList extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      showAlert: false,
-      alerTitle: 'Eliminar Cita Médica',
-      alertMessage: '',
-    };
   }
-  showAlert = item => {
-    this.setState({
-      showAlert: true,
-      alertMessage:
-        'Está apunto de eliminar la cita médica de su paciente ' +
-        item.name +
-        '. \n¿Desea continuar?',
-    });
-  };
-  hideAlert = () => {
-    this.setState({
-      showAlert: false,
-    });
-  };
+
   render() {
-    const {showAlert} = this.state;
     return (
       <Container>
         <View style={{flex: 1, flexDirection: 'column'}}>
@@ -60,32 +40,32 @@ export default class AppointmentsList extends Component {
                       icon="trash-can-outline"
                       color="red"
                       size={20}
-                      onPress={() => this.showAlert(item)}
+                      onPress={() =>
+                        Alert.alert(
+                          'Eliminar Cita',
+                          'Está por eliminar la cita del paciente ' +
+                            item.name +
+                            ', con id#' +
+                            item.id +
+                            '.\n¿Desea Continuar?',
+                          [
+                            {
+                              text: 'Cancelar',
+                              style: 'cancel',
+                            },
+                            {
+                              text: 'Eliminar',
+                            },
+                          ],
+                          {cancelable: false},
+                        )
+                      }
                     />
                   </Right>
                 </CardItem>
               </Card>
             )}
             keyExtractor={(item, index) => index.toString()}
-          />
-          <AwesomeAlert
-            show={showAlert}
-            showProgress={false}
-            title={this.state.alerTitle}
-            message={this.state.alertMessage}
-            closeOnTouchOutside={false}
-            closeOnHardwareBackPress={false}
-            showCancelButton={true}
-            showConfirmButton={true}
-            cancelText="Cancelar"
-            confirmText="Eliminar"
-            confirmButtonColor="#DD6B55"
-            onCancelPressed={() => {
-              this.hideAlert();
-            }}
-            onConfirmPressed={() => {
-              this.hideAlert();
-            }}
           />
         </View>
       </Container>

@@ -37,6 +37,7 @@ import EditAppointment from './src/Components/organisms/EditAppointment';
 import HomePatient from './src/Views/Patient/HomePatient';
 import Alarms from './src/Views/Patient/Alarms';
 import AddAlarm from './src/Components/organisms/AddAlarm';
+import EditAlarmScreen from './src/Components/organisms/EditAlarms';
 /**Termina Vistas del Paciente */
 
 const Stack = createStackNavigator();
@@ -123,7 +124,7 @@ function PatientHome() {
         headerShown: false,
       }}>
       <Stack.Screen name="Home" component={HomePatient} navigation />
-      <Stack.Screen name="EditPersonalInfo" component={MyData} navigation />
+      <Stack.Screen name="EditPersonalInfo" component={MyData} />
     </Stack.Navigator>
   );
 }
@@ -135,7 +136,8 @@ function AlarmViews() {
         headerShown: false,
       }}>
       <Stack.Screen name="Alarms" component={Alarms} navigation />
-      <Stack.Screen name="AddAlarm" component={AddAlarm} navigation />
+      <Stack.Screen name="AddAlarm" component={AddAlarm} />
+      <Stack.Screen name="EditAlarm" component={EditAlarmScreen} />
     </Stack.Navigator>
   );
 }

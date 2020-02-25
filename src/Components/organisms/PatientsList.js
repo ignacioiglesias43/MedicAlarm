@@ -15,35 +15,15 @@ import {
   Thumbnail,
   Text,
 } from 'native-base';
-import {View, FlatList} from 'react-native';
+import {View, FlatList, Alert} from 'react-native';
 import {IconButton} from 'react-native-paper';
-import AwesomeAlert from 'react-native-awesome-alerts';
 import data from '../../JSON/patientsAdded.json';
 export default class PatientsList extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      showAlert: false,
-      alerTitle: 'Eliminar Paciente',
-      alertMessage: '',
-    };
   }
-  showAlert = item => {
-    this.setState({
-      showAlert: true,
-      alertMessage:
-        'Está apunto de eliminar de su lista de contactos al paciente ' +
-        item.name +
-        '. \n¿Desea continuar?',
-    });
-  };
-  hideAlert = () => {
-    this.setState({
-      showAlert: false,
-    });
-  };
+
   render() {
-    const {showAlert} = this.state;
     return (
       <Container>
         <View style={{flex: 1, flexDirection: 'column'}}>
@@ -66,32 +46,30 @@ export default class PatientsList extends Component {
                     <IconButton
                       icon="trash-can-outline"
                       color="red"
-                      onPress={() => this.showAlert(item)}
+                      onPress={() =>
+                        Alert.alert(
+                          'Eliminar Paciente',
+                          'Está por eliminar de su lista de contactos al paciente ' +
+                            item.name +
+                            '.\n¿Desea Continuar?',
+                          [
+                            {
+                              text: 'Cancelar',
+                              style: 'cancel',
+                            },
+                            {
+                              text: 'Eliminar',
+                            },
+                          ],
+                          {cancelable: false},
+                        )
+                      }
                     />
                   </Right>
                 </ListItem>
               </List>
             )}
             keyExtractor={(item, index) => index.toString()}
-          />
-          <AwesomeAlert
-            show={showAlert}
-            showProgress={false}
-            title={this.state.alerTitle}
-            message={this.state.alertMessage}
-            closeOnTouchOutside={false}
-            closeOnHardwareBackPress={false}
-            showCancelButton={true}
-            showConfirmButton={true}
-            cancelText="Cancelar"
-            confirmText="Eliminar"
-            confirmButtonColor="#DD6B55"
-            onCancelPressed={() => {
-              this.hideAlert();
-            }}
-            onConfirmPressed={() => {
-              this.hideAlert();
-            }}
           />
         </View>
       </Container>
