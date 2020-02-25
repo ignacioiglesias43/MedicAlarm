@@ -13,7 +13,7 @@ import {
 import {ActivityIndicator, Button, TextInput} from 'react-native-paper';
 import AppHeader from '../../Components/organisms/Header';
 
-export default class AddAppointment extends Component {
+export default class EditPersonalInfo extends Component {
   constructor(props) {
     super(props);
     this.state = {

@@ -38,6 +38,9 @@ import HomePatient from './src/Views/Patient/HomePatient';
 import Alarms from './src/Views/Patient/Alarms';
 import AddAlarm from './src/Components/organisms/AddAlarm';
 import EditAlarmScreen from './src/Components/organisms/EditAlarms';
+import TrustedContact from './src/Views/Patient/TrustedContact';
+import AddTrustedContact from './src/Components/organisms/AddContact';
+import EditTrustedContact from './src/Components/organisms/EditContact';
 /**Termina Vistas del Paciente */
 
 const Stack = createStackNavigator();
@@ -128,7 +131,7 @@ function PatientHome() {
     </Stack.Navigator>
   );
 }
-/**Descripcion: Almacena  ventanas de Alarmas */
+/**Descripcion: Almacena ventanas de Alarmas */
 function AlarmViews() {
   return (
     <Stack.Navigator
@@ -138,6 +141,23 @@ function AlarmViews() {
       <Stack.Screen name="Alarms" component={Alarms} navigation />
       <Stack.Screen name="AddAlarm" component={AddAlarm} />
       <Stack.Screen name="EditAlarm" component={EditAlarmScreen} />
+    </Stack.Navigator>
+  );
+}
+/**Descripcion: Almacena ventanas de Contactos de confianza */
+function TrustedContactViews() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}>
+      <Stack.Screen
+        name="TrustedContact"
+        component={TrustedContact}
+        navigation
+      />
+      <Stack.Screen name="AddContacto" component={AddTrustedContact} />
+      <Stack.Screen name="EditContact" component={EditTrustedContact} />
     </Stack.Navigator>
   );
 }
@@ -178,6 +198,10 @@ export default function App() {
         <Drawer.Screen name="Citas" component={Appointments} />
         <Drawer.Screen name="Inicio Paciente" component={PatientHome} />
         <Drawer.Screen name="Alarmas" component={AlarmViews} />
+        <Drawer.Screen
+          name="Contactos de Confianza"
+          component={TrustedContactViews}
+        />
         <Drawer.Screen
           name="Salir"
           component={RegisterLogin}
