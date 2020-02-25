@@ -37,6 +37,11 @@ export default class EditAlarms extends Component {
       isHourVisible: true,
     });
   };
+  hideHourPicker = () => {
+    this.setState({
+      isHourVisible: false,
+    });
+  };
   sendAlarm() {
     this.setState({sendForm: !this.state.sendForm});
     setTimeout(() => {
