@@ -33,9 +33,16 @@ import AppointmentsScreen from './src/Views/Doctor/Appointments';
 import EditAppointment from './src/Components/organisms/EditAppointment';
 /**Termina Vistas del Doctor */
 
+/**Vistas del Paciente */
+import HomePatient from './src/Views/Patient/HomePatient';
+import Alarms from './src/Views/Patient/Alarms';
+import AddAlarm from './src/Components/organisms/AddAlarm';
+/**Termina Vistas del Paciente */
+
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
+/**Ventanas de DR */
 /**Descripcion: Almacena las ventanas de inicio y editar datos del Dr */
 function DoctorHome() {
   return (
@@ -58,18 +65,6 @@ function PatientsViews() {
       }}>
       <Stack.Screen name="Pacientes" component={Patients} navigation />
       <Stack.Screen name="AddPaciente" component={AddPatient} />
-    </Stack.Navigator>
-  );
-}
-/**Descripcion: Esta funcion almacena las ventanas de Login y Registro */
-function RegisterLogin() {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}>
-      <Stack.Screen name="Login" component={Login} navigation />
-      <Stack.Screen name="Registro" component={Register} />
     </Stack.Navigator>
   );
 }
@@ -101,6 +96,51 @@ function Appointments() {
     </Stack.Navigator>
   );
 }
+/**Termina Ventanas de DR */
+
+/**Ventanas de todos */
+/**Descripcion: Esta funcion almacena las ventanas de Login y Registro */
+function RegisterLogin() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}>
+      <Stack.Screen name="Login" component={Login} navigation />
+      <Stack.Screen name="Registro" component={Register} />
+    </Stack.Navigator>
+  );
+}
+
+/**Termina ventanas de todos */
+
+/**Iinicia Ventanas de Paciente */
+/**Descripcion: Almacena las ventanas de inicio y editar datos del paciente */
+function PatientHome() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}>
+      <Stack.Screen name="Home" component={HomePatient} navigation />
+      <Stack.Screen name="EditPersonalInfo" component={MyData} navigation />
+    </Stack.Navigator>
+  );
+}
+/**Descripcion: Almacena  ventanas de Alarmas */
+function AlarmViews() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}>
+      <Stack.Screen name="Alarms" component={Alarms} navigation />
+      <Stack.Screen name="AddAlarm" component={AddAlarm} navigation />
+    </Stack.Navigator>
+  );
+}
+/**Termina Ventanas de Paciente */
+
 export default function App() {
   return (
     <NavigationContainer>
@@ -134,6 +174,8 @@ export default function App() {
         <Drawer.Screen name="Pacientes" component={PatientsViews} />
         <Drawer.Screen name="Recetas" component={Prescriptions} />
         <Drawer.Screen name="Citas" component={Appointments} />
+        <Drawer.Screen name="Inicio Paciente" component={PatientHome} />
+        <Drawer.Screen name="Alarmas" component={AlarmViews} />
         <Drawer.Screen
           name="Salir"
           component={RegisterLogin}

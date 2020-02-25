@@ -17,7 +17,7 @@ export default class PrescriptionsList extends Component {
     this.setState({
       showAlert: true,
       alertMessage:
-        'Está apunto de eliminar la receta médica de su paciente ' +
+        'Está apunto de eliminar la receta médica del paciente ' +
         item.name +
         '. \n¿Desea continuar?',
     });

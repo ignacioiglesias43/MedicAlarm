@@ -12,10 +12,10 @@ import {
   Right,
 } from 'native-base';
 import AppHeader from '../../Components/organisms/Header';
-import MedicalAppointment from '../../Components/organisms/MedicalAppointment';
 import {Avatar, Title, IconButton, Button} from 'react-native-paper';
+import MedicalAlarms from '../../Components/organisms/MedicalAlarms';
 
-export default class Home extends Component {
+export default class HomePatient extends Component {
   render() {
     return (
       <View style={{flex: 1, backgroundColor: 'white'}}>
@@ -32,10 +32,10 @@ export default class Home extends Component {
           }}>
           <Avatar.Image
             size={130}
-            source={require('../../img/avatar.png')}
+            source={require('../../img/usuario.png')}
             style={{backgroundColor: 'white'}}
           />
-          <Title>Dr.Simi</Title>
+          <Title>Ignacio Iglesias</Title>
         </View>
         <Container>
           <Content>
@@ -50,29 +50,21 @@ export default class Home extends Component {
                     size={25}
                     onPress={() =>
                       this.props.navigation.push('EditPersonalInfo', {
-                        name: 'Alejandro Samuel',
-                        lastname: 'Simi',
-                        professional_id: 12345678,
-                        speciality: 'Psiquiatría',
-                        mail: 'dr_simi@similares.com',
+                        name: 'Ignacio',
+                        lastname: 'Iglesias',
+                        mail: 'iiglesiascampoy@gmail.com',
                         phone: 6122192275,
-                        userType: 'doctor',
+                        userType: 'patient',
                       })
                     }
                   />
                 </Right>
               </CardItem>
               <CardItem bordered>
-                <Text>Nombre: Alejandro Samuel</Text>
+                <Text>Nombre: Ignacio Iglesias</Text>
               </CardItem>
               <CardItem bordered>
-                <Text>Cédula: 12345678</Text>
-              </CardItem>
-              <CardItem bordered>
-                <Text>Especialidad: Psiquiatría</Text>
-              </CardItem>
-              <CardItem bordered>
-                <Text>Correo: dr_simi@similares.com</Text>
+                <Text>Correo: iiglesiascampoy@gmail.com</Text>
               </CardItem>
               <CardItem bordered>
                 <Text>Teléfono: 6122192275</Text>
@@ -81,17 +73,17 @@ export default class Home extends Component {
             <Card>
               <CardItem header bordered>
                 <Body>
-                  <Title>Mis Citas</Title>
+                  <Title>Mis Alarmas</Title>
                 </Body>
                 <Right>
                   <IconButton
                     icon="eye"
                     size={25}
-                    onPress={() => this.props.navigation.navigate('Citas')}
+                    onPress={() => this.props.navigation.navigate('Alarmas')}
                   />
                 </Right>
               </CardItem>
-              <MedicalAppointment />
+              <MedicalAlarms />
             </Card>
           </Content>
         </Container>
