@@ -9,7 +9,7 @@ import {
   Icon,
   Textarea,
 } from 'native-base';
-import {ActivityIndicator, Button} from 'react-native-paper';
+import {ActivityIndicator, Button, IconButton} from 'react-native-paper';
 import AppHeader from '../../Components/organisms/Header';
 import data from '../../JSON/patientsAdded.json';
 import medicines from '../../JSON/medicines.json';
@@ -18,7 +18,9 @@ export default class AddPrescription extends Component {
     super(props);
     this.state = {
       patient: '',
+      medicine: '',
       sendForm: false,
+      addAnother: false,
     };
   }
   sendPrescription() {
@@ -75,9 +77,9 @@ export default class AddPrescription extends Component {
                   placeholder="Seleccione un paciente"
                   placeholderStyle={{color: '#bfc6ea'}}
                   placeholderIconColor="#007aff"
-                  selectedValue={this.state.patient}
+                  selectedValue={this.state.medicine}
                   onValueChange={(itemValue, itemIndex) =>
-                    this.setState({patient: itemValue})
+                    this.setState({medicine: itemValue})
                   }>
                   {medicines.map(item => (
                     <Picker.Item
@@ -88,6 +90,16 @@ export default class AddPrescription extends Component {
                   ))}
                 </Picker>
               </Item>
+            </View>
+            <View style={{alignSelf: 'center'}}>
+              <Button
+                icon="plus-circle"
+                mode="text"
+                color="#FF7058"
+                size={20}
+                onPress={() => this.setState({addAnother: true})}>
+                Añadir otro medicamento
+              </Button>
             </View>
             <Item picker>
               <Textarea

@@ -35,7 +35,10 @@ export default class TrustedContact extends Component {
           value={firstQuery}
         />
         <View style={{flex: 1}}>
-          <ContactList navigation={this.props.navigation} />
+          <ContactList
+            navigation={this.props.navigation}
+            query={this.state.firstQuery}
+          />
         </View>
       </View>
     );

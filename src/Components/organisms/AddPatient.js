@@ -29,7 +29,7 @@ export default class AddPatient extends Component {
           value={firstQuery}
         />
         <View style={{flex: 1}}>
-          <AddPatientsList />
+          <AddPatientsList query={this.state.firstQuery} />
         </View>
       </View>
     );

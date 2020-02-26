@@ -16,36 +16,37 @@ import {
   Text,
 } from 'native-base';
 import {IconButton} from 'react-native-paper';
-import {View, FlatList} from 'react-native';
+import {View, ScrollView} from 'react-native';
 import data from '../../JSON/patients.json';
 
 export default class AddPatientsList extends Component {
+  constructor(props) {
+    super(props);
+  }
   render() {
+    let filteredContacts = data.filter(contact => {
+      return contact.name.indexOf(this.props.query) !== -1;
+    });
     return (
       <Container>
-        <View style={{flex: 1}}>
-          <FlatList
-            data={data}
-            showsVerticalScrollIndicator={false}
-            renderItem={({item}) => (
-              <List style={{paddingTop: 20}}>
-                <ListItem icon>
-                  <Body>
-                    <Text>{item.name}</Text>
-                  </Body>
-                  <Right>
-                    <IconButton
-                      icon="plus-circle"
-                      color="#afc9ff"
-                      onPress={() => console.log('Pressed')}
-                    />
-                  </Right>
-                </ListItem>
-              </List>
-            )}
-            keyExtractor={(item, index) => index.toString()}
-          />
-        </View>
+        <ScrollView>
+          {filteredContacts.map(item => (
+            <List style={{paddingTop: 20}} key={item.id}>
+              <ListItem icon>
+                <Body>
+                  <Text>{item.name}</Text>
+                </Body>
+                <Right>
+                  <IconButton
+                    icon="plus-circle"
+                    color="#afc9ff"
+                    onPress={() => console.log('Pressed')}
+                  />
+                </Right>
+              </ListItem>
+            </List>
+          ))}
+        </ScrollView>
       </Container>
     );
   }

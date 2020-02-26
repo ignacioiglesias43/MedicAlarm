@@ -1,17 +1,17 @@
 import React, {Component} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Container, Header, Icon} from 'native-base';
-import {Button, Searchbar} from 'react-native-paper';
+import {Title, Searchbar} from 'react-native-paper';
 import AppHeader from '../../Components/organisms/Header';
 import PatientsList from '../../Components/organisms/PatientsList';
 
 export default class Patients extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      firstQuery: '',
+    };
   }
-  state = {
-    firstQuery: '',
-  };
   navigate = () => {
     this.props.navigation.navigate('Agregar Paciente');
   };
@@ -35,7 +35,7 @@ export default class Patients extends Component {
           value={firstQuery}
         />
         <View style={{flex: 1}}>
-          <PatientsList />
+          <PatientsList query={this.state.firstQuery} />
         </View>
       </View>
     );
