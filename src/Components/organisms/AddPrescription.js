@@ -11,6 +11,7 @@ import {
 } from 'native-base';
 import {ActivityIndicator, Button, IconButton} from 'react-native-paper';
 import AppHeader from '../../Components/organisms/Header';
+import SearchableDropdown from 'react-native-searchable-dropdown';
 import data from '../../JSON/patientsAdded.json';
 import medicines from '../../JSON/medicines.json';
 export default class AddPrescription extends Component {
@@ -21,6 +22,7 @@ export default class AddPrescription extends Component {
       medicine: '',
       sendForm: false,
       addAnother: false,
+      selectedItems: [],
     };
   }
   sendPrescription() {
@@ -30,6 +32,7 @@ export default class AddPrescription extends Component {
       this.props.navigation.goBack();
     }, 1000);
   }
+  /**TODO: Terminar la interfaz de añadir receta */
   render() {
     const {sendForm} = this.state;
     return (
@@ -40,76 +43,54 @@ export default class AddPrescription extends Component {
           icon="arrow-left"
         />
         <Content padder>
-          <Form>
-            <View>
-              <View>
-                <Text>Seleccione un paciente:</Text>
-              </View>
-              <Item picker>
-                <Picker
-                  style={{width: undefined}}
-                  iosIcon={<Icon name="arrow-down" />}
-                  placeholder="Seleccione un paciente"
-                  placeholderStyle={{color: '#bfc6ea'}}
-                  placeholderIconColor="#007aff"
-                  selectedValue={this.state.patient}
-                  onValueChange={(itemValue, itemIndex) =>
-                    this.setState({patient: itemValue})
-                  }>
-                  {data.map(item => (
-                    <Picker.Item
-                      label={item.name}
-                      value={item.id}
-                      key={item.id}
-                    />
-                  ))}
-                </Picker>
-              </Item>
-            </View>
-            <View>
-              <View style={{paddingTop: 10}}>
-                <Text>Seleccione un medicamento:</Text>
-              </View>
-              <Item picker>
-                <Picker
-                  style={{width: undefined}}
-                  iosIcon={<Icon name="arrow-down" />}
-                  placeholder="Seleccione un paciente"
-                  placeholderStyle={{color: '#bfc6ea'}}
-                  placeholderIconColor="#007aff"
-                  selectedValue={this.state.medicine}
-                  onValueChange={(itemValue, itemIndex) =>
-                    this.setState({medicine: itemValue})
-                  }>
-                  {medicines.map(item => (
-                    <Picker.Item
-                      label={item.name}
-                      value={item.id}
-                      key={item.id}
-                    />
-                  ))}
-                </Picker>
-              </Item>
-            </View>
-            <View style={{alignSelf: 'center'}}>
-              <Button
-                icon="plus-circle"
-                mode="text"
-                color="#FF7058"
-                size={20}
-                onPress={() => this.setState({addAnother: true})}>
-                Añadir otro medicamento
-              </Button>
-            </View>
-            <Item picker>
-              <Textarea
-                rowSpan={10}
-                bordered
-                style={{width: '100%'}}
-                placeholder="Mensaje"
-              />
-            </Item>
-          </Form>
+          <SearchableDropdown
+            onItemSelect={item => {
+              const items = data;
+              items.push(item);
+              this.setState({selectedItems: items});
+            }}
+            containerStyle={{padding: 5}}
+            onRemoveItem={(item, index) => {
+              const items = data.filter(sitem => sitem.id !== item.id);
+              this.setState({selectedItems: items});
+            }}
+            itemStyle={{
+              padding: 10,
+              marginTop: 2,
+              backgroundColor: '#ddd',
+              borderColor: '#bbb',
+              borderWidth: 1,
+              borderRadius: 5,
+            }}
+            itemTextStyle={{color: '#222'}}
+            itemsContainerStyle={{maxHeight: 140}}
+            items={data}
+            resetValue={false}
+            textInputProps={{
+              placeholder: 'Seleccione un paciente',
+              underlineColorAndroid: 'transparent',
+              style: {
+                padding: 12,
+                borderWidth: 1,
+                borderColor: '#ccc',
+                borderRadius: 5,
+              },
+              onTextChange: text => console.log(text),
+            }}
+            listProps={{
+              nestedScrollEnabled: true,
+            }}
+          />
+          <View style={{alignSelf: 'center'}}>
+            <Button
+              icon="plus-circle"
+              mode="text"
+              color="#FF7058"
+              size={20}
+              onPress={() => this.setState({addAnother: true})}>
+              Añadir otro medicamento
+            </Button>
+          </View>
           <View style={{paddingTop: 15}}>
             <Button
               color="#FF7058"
