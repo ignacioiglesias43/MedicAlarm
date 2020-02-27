@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, FlatList, Text} from 'react-native';
+import {View, StyleSheet, Text} from 'react-native';
 import {
   Picker,
   Content,
@@ -9,7 +9,7 @@ import {
   Icon,
   Textarea,
 } from 'native-base';
-import {ActivityIndicator, Button, IconButton} from 'react-native-paper';
+import {ActivityIndicator, Button, TextInput} from 'react-native-paper';
 import AppHeader from '../../Components/organisms/Header';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 import data from '../../JSON/patientsAdded.json';
@@ -22,7 +22,8 @@ export default class AddPrescription extends Component {
       medicine: '',
       sendForm: false,
       addAnother: false,
-      selectedItems: [],
+      selectedPatient: '',
+      selectedMedicines: [],
     };
   }
   sendPrescription() {
@@ -32,7 +33,6 @@ export default class AddPrescription extends Component {
       this.props.navigation.goBack();
     }, 1000);
   }
-  /**TODO: Terminar la interfaz de añadir receta */
   render() {
     const {sendForm} = this.state;
     return (
@@ -45,23 +45,13 @@ export default class AddPrescription extends Component {
         <Content padder>
           <SearchableDropdown
             onItemSelect={item => {
-              const items = data;
-              items.push(item);
-              this.setState({selectedItems: items});
+              this.setState({selectedPatient: item.id});
             }}
             containerStyle={{padding: 5}}
-            onRemoveItem={(item, index) => {
-              const items = data.filter(sitem => sitem.id !== item.id);
-              this.setState({selectedItems: items});
+            onRemoveItem={() => {
+              this.setState({selectedPatient: ''});
             }}
-            itemStyle={{
-              padding: 10,
-              marginTop: 2,
-              backgroundColor: '#ddd',
-              borderColor: '#bbb',
-              borderWidth: 1,
-              borderRadius: 5,
-            }}
+            itemStyle={styles.itemStyle}
             itemTextStyle={{color: '#222'}}
             itemsContainerStyle={{maxHeight: 140}}
             items={data}
@@ -81,6 +71,55 @@ export default class AddPrescription extends Component {
               nestedScrollEnabled: true,
             }}
           />
+          <SearchableDropdown
+            onItemSelect={item => {
+              const items = this.state.selectedMedicines;
+              items.push(item.id);
+              this.setState({selectedMedicines: items});
+            }}
+            containerStyle={{padding: 5}}
+            onRemoveItem={(item, index) => {
+              const items = this.state.selectedMedicines.filter(
+                sitem => sitem.id !== item.id,
+              );
+              this.setState({selectedMedicines: items});
+            }}
+            itemStyle={styles.itemStyle}
+            itemTextStyle={{color: '#222'}}
+            itemsContainerStyle={{maxHeight: '100%'}}
+            items={medicines}
+            resetValue={false}
+            textInputProps={{
+              placeholder: 'Seleccione un medicamento',
+              underlineColorAndroid: 'transparent',
+              style: {
+                padding: 12,
+                borderWidth: 1,
+                borderColor: '#ccc',
+                borderRadius: 5,
+              },
+              onTextChange: text => console.log(text),
+            }}
+            listProps={{
+              nestedScrollEnabled: true,
+            }}
+          />
+          <View style={{padding: 5}}>
+            <Textarea
+              style={{
+                padding: 12,
+                borderWidth: 1,
+                borderColor: '#ccc',
+                borderRadius: 5,
+                width: '100%',
+                textDecorationColor: '#222',
+              }}
+              rowSpan={5}
+              bordered
+              placeholder="Indicaciones"
+            />
+          </View>
+
           <View style={{alignSelf: 'center'}}>
             <Button
               icon="plus-circle"
@@ -111,3 +150,14 @@ export default class AddPrescription extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  itemStyle: {
+    padding: 10,
+    marginTop: 2,
+    backgroundColor: '#ddd',
+    borderColor: '#bbb',
+    borderWidth: 1,
+    borderRadius: 5,
+  },
+});
