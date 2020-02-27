@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 import {
   Picker,
@@ -24,6 +24,7 @@ export default class AddPrescription extends Component {
       addAnother: false,
       selectedPatient: '',
       selectedMedicines: [],
+      quantity: 1,
     };
   }
   sendPrescription() {
@@ -42,7 +43,7 @@ export default class AddPrescription extends Component {
           navigation={this.props.navigation}
           icon="arrow-left"
         />
-        <Content padder>
+        <Fragment>
           <SearchableDropdown
             onItemSelect={item => {
               this.setState({selectedPatient: item.id});
@@ -72,9 +73,11 @@ export default class AddPrescription extends Component {
             }}
           />
           <SearchableDropdown
+            multi={true}
+            selectedItems={this.state.selectedMedicines}
             onItemSelect={item => {
               const items = this.state.selectedMedicines;
-              items.push(item.id);
+              items.push(item);
               this.setState({selectedMedicines: items});
             }}
             containerStyle={{padding: 5}}
@@ -86,11 +89,12 @@ export default class AddPrescription extends Component {
             }}
             itemStyle={styles.itemStyle}
             itemTextStyle={{color: '#222'}}
-            itemsContainerStyle={{maxHeight: '100%'}}
+            itemsContainerStyle={{maxHeight: 140}}
             items={medicines}
+            chip={true}
             resetValue={false}
             textInputProps={{
-              placeholder: 'Seleccione un medicamento',
+              placeholder: 'Seleccione uno o más medicamentos',
               underlineColorAndroid: 'transparent',
               style: {
                 padding: 12,
@@ -98,7 +102,6 @@ export default class AddPrescription extends Component {
                 borderColor: '#ccc',
                 borderRadius: 5,
               },
-              onTextChange: text => console.log(text),
             }}
             listProps={{
               nestedScrollEnabled: true,
@@ -112,15 +115,14 @@ export default class AddPrescription extends Component {
                 borderColor: '#ccc',
                 borderRadius: 5,
                 width: '100%',
-                textDecorationColor: '#222',
               }}
               rowSpan={5}
               bordered
               placeholder="Indicaciones"
+              placeholderTextColor="#cc"
             />
           </View>
-
-          <View style={{alignSelf: 'center'}}>
+          {/* <View style={{alignSelf: 'center'}}>
             <Button
               icon="plus-circle"
               mode="text"
@@ -129,7 +131,7 @@ export default class AddPrescription extends Component {
               onPress={() => this.setState({addAnother: true})}>
               Añadir otro medicamento
             </Button>
-          </View>
+          </View> */}
           <View style={{paddingTop: 15}}>
             <Button
               color="#FF7058"
@@ -145,7 +147,7 @@ export default class AddPrescription extends Component {
             size="large"
             style={{paddingTop: 15}}
           />
-        </Content>
+        </Fragment>
       </Container>
     );
   }
