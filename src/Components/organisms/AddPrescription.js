@@ -43,103 +43,110 @@ export default class AddPrescription extends Component {
           navigation={this.props.navigation}
           icon="arrow-left"
         />
-        <Fragment>
-          <SearchableDropdown
-            onItemSelect={item => {
-              this.setState({selectedPatient: item.id});
-            }}
-            containerStyle={{padding: 5}}
-            onRemoveItem={() => {
-              this.setState({selectedPatient: ''});
-            }}
-            itemStyle={styles.itemStyle}
-            itemTextStyle={{color: '#222'}}
-            itemsContainerStyle={{maxHeight: 140}}
-            items={data}
-            resetValue={false}
-            textInputProps={{
-              placeholder: 'Seleccione un paciente',
-              underlineColorAndroid: 'transparent',
-              style: {
-                padding: 12,
-                borderWidth: 1,
-                borderColor: '#ccc',
-                borderRadius: 5,
-              },
-              onTextChange: text => console.log(text),
-            }}
-            listProps={{
-              nestedScrollEnabled: true,
-            }}
-          />
-          <SearchableDropdown
-            multi={true}
-            selectedItems={this.state.selectedMedicines}
-            onItemSelect={item => {
-              const items = this.state.selectedMedicines;
-              items.push(item);
-              this.setState({selectedMedicines: items});
-            }}
-            containerStyle={{padding: 5}}
-            onRemoveItem={(item, index) => {
-              const items = this.state.selectedMedicines.filter(
-                sitem => sitem.id !== item.id,
-              );
-              this.setState({selectedMedicines: items});
-            }}
-            itemStyle={styles.itemStyle}
-            itemTextStyle={{color: '#222'}}
-            itemsContainerStyle={{maxHeight: 140}}
-            items={medicines}
-            chip={true}
-            resetValue={false}
-            textInputProps={{
-              placeholder: 'Seleccione uno o más medicamentos',
-              underlineColorAndroid: 'transparent',
-              style: {
-                padding: 12,
-                borderWidth: 1,
-                borderColor: '#ccc',
-                borderRadius: 5,
-              },
-            }}
-            listProps={{
-              nestedScrollEnabled: true,
-            }}
-          />
-          {this.state.selectedMedicines.map(item => (
-            <View style={{padding: 5}} key={item.id}>
-              <Textarea
-                style={{
-                  padding: 12,
-                  borderWidth: 1,
-                  borderColor: '#ccc',
-                  borderRadius: 5,
-                  width: '100%',
+        <Content>
+          <Fragment>
+            <View>
+              <SearchableDropdown
+                onItemSelect={item => {
+                  this.setState({selectedPatient: item.id});
                 }}
-                rowSpan={5}
-                bordered
-                placeholder={'Indicaciones de ' + item.name}
-                placeholderTextColor="#cc"
+                containerStyle={{padding: 5}}
+                onRemoveItem={() => {
+                  this.setState({selectedPatient: ''});
+                }}
+                itemStyle={styles.itemStyle}
+                itemTextStyle={{color: '#222'}}
+                itemsContainerStyle={{maxHeight: 140}}
+                items={data}
+                resetValue={false}
+                textInputProps={{
+                  placeholder: 'Seleccione un paciente',
+                  underlineColorAndroid: 'transparent',
+                  style: {
+                    padding: 12,
+                    borderWidth: 1,
+                    borderColor: '#ccc',
+                    borderRadius: 5,
+                  },
+                  onTextChange: text => console.log(text),
+                }}
+                listProps={{
+                  nestedScrollEnabled: true,
+                }}
               />
             </View>
-          ))}
-          <View style={{paddingTop: 15, paddingLeft: 5, paddingRight: 5}}>
-            <Button
+            <View>
+              <SearchableDropdown
+                multi={true}
+                selectedItems={this.state.selectedMedicines}
+                onItemSelect={item => {
+                  const items = this.state.selectedMedicines;
+                  items.push(item);
+                  this.setState({selectedMedicines: items});
+                }}
+                containerStyle={{padding: 5}}
+                onRemoveItem={(item, index) => {
+                  const items = this.state.selectedMedicines.filter(
+                    sitem => sitem.id !== item.id,
+                  );
+                  this.setState({selectedMedicines: items});
+                }}
+                itemStyle={styles.itemStyle}
+                itemTextStyle={{color: '#222'}}
+                itemsContainerStyle={{maxHeight: 140}}
+                items={medicines}
+                chip={true}
+                resetValue={false}
+                textInputProps={{
+                  placeholder: 'Seleccione uno o más medicamentos',
+                  underlineColorAndroid: 'transparent',
+                  style: {
+                    padding: 12,
+                    borderWidth: 1,
+                    borderColor: '#ccc',
+                    borderRadius: 5,
+                  },
+                }}
+                listProps={{
+                  nestedScrollEnabled: true,
+                }}
+              />
+            </View>
+            {this.state.selectedMedicines.map(item => (
+              <View style={{padding: 5}} key={item.id}>
+                <Text>{item.name}</Text>
+                <Textarea
+                  style={{
+                    padding: 12,
+                    borderWidth: 1,
+                    borderColor: '#ccc',
+                    borderRadius: 5,
+                    width: '100%',
+                  }}
+                  rowSpan={5}
+                  bordered
+                  placeholder="Indicaciones"
+                  placeholderTextColor="#cc"
+                />
+              </View>
+            ))}
+            <View style={{paddingTop: 15, paddingLeft: 5, paddingRight: 5}}>
+              <Button
+                color="#FF7058"
+                mode="contained"
+                dark={true}
+                onPress={() => this.sendPrescription()}>
+                Enviar
+              </Button>
+            </View>
+            <ActivityIndicator
+              animating={sendForm}
               color="#FF7058"
-              mode="contained"
-              dark={true}
-              onPress={() => this.sendPrescription()}>
-              Enviar
-            </Button>
-          </View>
-          <ActivityIndicator
-            animating={sendForm}
-            color="#FF7058"
-            size="large"
-            style={{paddingTop: 15}}
-          />
-        </Fragment>
+              size="large"
+              style={{paddingTop: 15}}
+            />
+          </Fragment>
+        </Content>
       </Container>
     );
   }
