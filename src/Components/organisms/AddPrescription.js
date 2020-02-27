@@ -107,32 +107,24 @@ export default class AddPrescription extends Component {
               nestedScrollEnabled: true,
             }}
           />
-          <View style={{padding: 5}}>
-            <Textarea
-              style={{
-                padding: 12,
-                borderWidth: 1,
-                borderColor: '#ccc',
-                borderRadius: 5,
-                width: '100%',
-              }}
-              rowSpan={5}
-              bordered
-              placeholder="Indicaciones"
-              placeholderTextColor="#cc"
-            />
-          </View>
-          {/* <View style={{alignSelf: 'center'}}>
-            <Button
-              icon="plus-circle"
-              mode="text"
-              color="#FF7058"
-              size={20}
-              onPress={() => this.setState({addAnother: true})}>
-              Añadir otro medicamento
-            </Button>
-          </View> */}
-          <View style={{paddingTop: 15}}>
+          {this.state.selectedMedicines.map(item => (
+            <View style={{padding: 5}} key={item.id}>
+              <Textarea
+                style={{
+                  padding: 12,
+                  borderWidth: 1,
+                  borderColor: '#ccc',
+                  borderRadius: 5,
+                  width: '100%',
+                }}
+                rowSpan={5}
+                bordered
+                placeholder={'Indicaciones de ' + item.name}
+                placeholderTextColor="#cc"
+              />
+            </View>
+          ))}
+          <View style={{paddingTop: 15, paddingLeft: 5, paddingRight: 5}}>
             <Button
               color="#FF7058"
               mode="contained"
