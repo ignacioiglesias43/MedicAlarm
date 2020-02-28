@@ -7,7 +7,6 @@
     "birth_date": "01-02-59",
     "appointment_hour": "15:30",
     "medicine": "Paracetamol",
-    "medicine_id": "1",
     "indications": "1 cada 12 horas"
   },
   {
@@ -18,7 +17,6 @@
     "birth_date": "11-19-99",
     "appointment_hour": "12:30",
     "medicine": "Amoxicilina",
-    "medicine_id": "2",
     "indications": "2 cada 6 horas"
   },
   {
@@ -29,7 +27,6 @@
     "birth_date": "06-26-65",
     "appointment_hour": "14:30",
     "medicine": "Aspirina",
-    "medicine_id": "3",
     "indications": "1 cada 24 horas"
   },
   {
@@ -40,7 +37,6 @@
     "birth_date": "07-29-74",
     "appointment_hour": "15:20",
     "medicine": "Omeprazol",
-    "medicine_id": "4",
     "indications": "1 cada 12 horas"
   },
   {
@@ -50,8 +46,7 @@
     "appointment_date": "02-29-20",
     "birth_date": "01-04-94",
     "appointment_hour": "16:30",
-    "medicine": "Clorferamina",
-    "medicine_id": "7",
+    "medicine": "Ramipril",
     "indications": "1 cada 6 horas"
   }
 ]

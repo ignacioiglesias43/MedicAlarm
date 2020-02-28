@@ -26,7 +26,7 @@ export default class PrescriptionsList extends Component {
                     size={20}
                     onPress={() =>
                       this.props.navigation.push('EditReceta', {
-                        id: item.medicine_id,
+                        id: item.id,
                         name: item.medicine,
                         indications: item.indications,
                       })

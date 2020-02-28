@@ -4,7 +4,6 @@ import {Content, Container, Textarea} from 'native-base';
 import {ActivityIndicator, Button} from 'react-native-paper';
 import AppHeader from '../../Components/organisms/Header';
 import SearchableDropdown from 'react-native-searchable-dropdown';
-import data from '../../JSON/patientsAdded.json';
 import medicines from '../../JSON/medicines.json';
 export default class EditPrescription extends Component {
   constructor(props) {
@@ -16,24 +15,23 @@ export default class EditPrescription extends Component {
       addAnother: false,
       selectedPatient: '',
       selectedMedicines: [],
-      quantity: 1,
     };
   }
   sendPrescription() {
-    /* this.setState({sendForm: !this.state.sendForm});
+    this.setState({sendForm: !this.state.sendForm});
     setTimeout(() => {
       this.setState({sendForm: !this.state.sendForm});
       this.props.navigation.goBack();
     }, 1000);
-     */
-    console.log(this.state.selectedMedicines);
   }
   componentDidMount() {
-    console.log(this.props.route.params);
     this.setState({
       selectedMedicines: [
         ...this.state.selectedMedicines,
-        this.props.route.params,
+        {
+          id: this.props.route.params.id,
+          name: this.props.route.params.name,
+        },
       ],
     });
   }
@@ -48,44 +46,41 @@ export default class EditPrescription extends Component {
         />
         <Content>
           <Fragment>
-            <View>
-              <SearchableDropdown
-                multi={true}
-                selectedItems={this.state.selectedItems}
-                defaultIndex={this.props.route.params.id}
-                onItemSelect={item => {
-                  const items = this.state.selectedMedicines;
-                  items.push(item);
-                  this.setState({selectedMedicines: items});
-                }}
-                containerStyle={{padding: 5}}
-                onRemoveItem={item => {
-                  const items = this.state.selectedMedicines.filter(
-                    sitem => sitem.id !== item.id,
-                  );
-                  this.setState({selectedMedicines: items});
-                }}
-                itemStyle={styles.itemStyle}
-                itemTextStyle={{color: '#222'}}
-                itemsContainerStyle={{maxHeight: 140}}
-                items={medicines}
-                chip={true}
-                resetValue={false}
-                textInputProps={{
-                  placeholder: 'Seleccione uno o más medicamentos',
-                  underlineColorAndroid: 'transparent',
-                  style: {
-                    padding: 12,
-                    borderWidth: 1,
-                    borderColor: '#ccc',
-                    borderRadius: 5,
-                  },
-                }}
-                listProps={{
-                  nestedScrollEnabled: true,
-                }}
-              />
-            </View>
+            <SearchableDropdown
+              multi={true}
+              selectedItems={this.state.selectedMedicines}
+              onItemSelect={item => {
+                const items = this.state.selectedMedicines;
+                items.push(item);
+                this.setState({selectedMedicines: items});
+              }}
+              containerStyle={{padding: 5}}
+              onRemoveItem={item => {
+                const items = this.state.selectedMedicines.filter(
+                  sitem => sitem.id !== item.id,
+                );
+                this.setState({selectedMedicines: items});
+              }}
+              itemStyle={styles.itemStyle}
+              itemTextStyle={{color: '#222'}}
+              itemsContainerStyle={{maxHeight: 140}}
+              items={medicines}
+              chip={true}
+              resetValue={false}
+              textInputProps={{
+                placeholder: 'Seleccione uno o más medicamentos',
+                underlineColorAndroid: 'transparent',
+                style: {
+                  padding: 12,
+                  borderWidth: 1,
+                  borderColor: '#ccc',
+                  borderRadius: 5,
+                },
+              }}
+              listProps={{
+                nestedScrollEnabled: true,
+              }}
+            />
             {this.state.selectedMedicines.map(item => (
               <View style={{padding: 5}} key={item.id}>
                 <Text>{item.name}</Text>
@@ -101,7 +96,10 @@ export default class EditPrescription extends Component {
                   bordered
                   placeholder="Indicaciones"
                   placeholderTextColor="#cc"
-                  value={item.indications}
+                  value={
+                    item.id === this.props.route.params.id &&
+                    this.props.route.params.indications
+                  }
                 />
               </View>
             ))}
