@@ -1,15 +1,7 @@
 import React, {Component, Fragment} from 'react';
 import {View, StyleSheet, Text} from 'react-native';
-import {
-  Picker,
-  Content,
-  Form,
-  Item,
-  Container,
-  Icon,
-  Textarea,
-} from 'native-base';
-import {ActivityIndicator, Button, TextInput} from 'react-native-paper';
+import {Content, Container, Textarea} from 'native-base';
+import {ActivityIndicator, Button} from 'react-native-paper';
 import AppHeader from '../../Components/organisms/Header';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 import data from '../../JSON/patientsAdded.json';
@@ -28,11 +20,12 @@ export default class AddPrescription extends Component {
     };
   }
   sendPrescription() {
-    this.setState({sendForm: !this.state.sendForm});
+    /* this.setState({sendForm: !this.state.sendForm});
     setTimeout(() => {
       this.setState({sendForm: !this.state.sendForm});
       this.props.navigation.goBack();
-    }, 1000);
+    }, 1000); */
+    console.log(this.state.selectedMedicines);
   }
   render() {
     const {sendForm} = this.state;

@@ -6,7 +6,9 @@
     "appointment_date": "02-29-20",
     "birth_date": "01-02-59",
     "appointment_hour": "15:30",
-    "prescription": "Paracetamol 1 cada 12 horas"
+    "medicine": "Paracetamol",
+    "medicine_id": "1",
+    "indications": "1 cada 12 horas"
   },
   {
     "id": 2,
@@ -15,7 +17,9 @@
     "appointment_date": "03-02-20",
     "birth_date": "11-19-99",
     "appointment_hour": "12:30",
-    "prescription": "Amoxicilina 2 cada 6 horas"
+    "medicine": "Amoxicilina",
+    "medicine_id": "2",
+    "indications": "2 cada 6 horas"
   },
   {
     "id": 3,
@@ -24,7 +28,9 @@
     "appointment_date": "03-08-20",
     "birth_date": "06-26-65",
     "appointment_hour": "14:30",
-    "prescription": "Aspirina 1 cada 3 horas"
+    "medicine": "Aspirina",
+    "medicine_id": "3",
+    "indications": "1 cada 24 horas"
   },
   {
     "id": 4,
@@ -33,7 +39,9 @@
     "appointment_date": "03-16-20",
     "birth_date": "07-29-74",
     "appointment_hour": "15:20",
-    "prescription": "Omeprazol 1 cada 12 horas"
+    "medicine": "Omeprazol",
+    "medicine_id": "4",
+    "indications": "1 cada 12 horas"
   },
   {
     "id": 5,
@@ -42,6 +50,8 @@
     "appointment_date": "02-29-20",
     "birth_date": "01-04-94",
     "appointment_hour": "16:30",
-    "prescription": "Ramipril 1 cada 6 horas"
+    "medicine": "Clorferamina",
+    "medicine_id": "7",
+    "indications": "1 cada 6 horas"
   }
 ]

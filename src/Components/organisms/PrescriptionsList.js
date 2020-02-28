@@ -17,13 +17,20 @@ export default class PrescriptionsList extends Component {
               <CardItem header>
                 <Body>
                   <Title>{item.name}</Title>
-                  <Text>{item.prescription}</Text>
+                  <Text>{item.medicine}</Text>
+                  <Text>{item.indications}</Text>
                 </Body>
                 <Right>
                   <IconButton
                     icon="pencil"
                     size={20}
-                    onPress={() => this.props.navigation.push('EditReceta')}
+                    onPress={() =>
+                      this.props.navigation.push('EditReceta', {
+                        id: item.medicine_id,
+                        name: item.medicine,
+                        indications: item.indications,
+                      })
+                    }
                   />
                   <IconButton
                     icon="trash-can-outline"
