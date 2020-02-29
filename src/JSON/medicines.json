@@ -1,30 +1,37 @@
 [
   {
     "id": 1,
-    "name": "Paracetamol"
+    "name": "Paracetamol",
+    "administration_route": "Oral"
   },
   {
     "id": 2,
-    "name": "Amoxicilina"
+    "name": "Amoxicilina",
+    "administration_route": "Oral"
   },
   {
     "id": 3,
-    "name": "Aspirina"
+    "name": "Aspirina",
+    "administration_route": "Oral"
   },
   {
     "id": 4,
-    "name": "Omeprazol"
+    "name": "Omeprazol",
+    "administration_route": "Oral"
   },
   {
     "id": 5,
-    "name": "Ramipril"
+    "name": "Ramipril",
+    "administration_route": "Oral"
   },
   {
     "id": 6,
-    "name": "Ibuprofeno"
+    "name": "Ibuprofeno",
+    "administration_route": "Oral"
   },
   {
     "id": 7,
-    "name": "Clorferamina"
+    "name": "Clorferamina",
+    "administration_route": "Oral"
   }
 ]

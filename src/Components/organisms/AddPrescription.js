@@ -20,12 +20,11 @@ export default class AddPrescription extends Component {
     };
   }
   sendPrescription() {
-    /* this.setState({sendForm: !this.state.sendForm});
+    this.setState({sendForm: !this.state.sendForm});
     setTimeout(() => {
       this.setState({sendForm: !this.state.sendForm});
       this.props.navigation.goBack();
-    }, 1000); */
-    console.log(this.state.selectedMedicines);
+    }, 1000);
   }
   render() {
     const {sendForm} = this.state;

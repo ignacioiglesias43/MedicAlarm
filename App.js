@@ -31,6 +31,9 @@ import EditPrescription from './src/Components/organisms/EditPrescription';
 import AddAppointment from './src/Components/organisms/AddAppointment';
 import AppointmentsScreen from './src/Views/Doctor/Appointments';
 import EditAppointment from './src/Components/organisms/EditAppointment';
+import MedicinesScreen from './src/Views/Doctor/Medicines';
+import EditMedicine from './src/Components/organisms/EditMedicine';
+import AddMedicine from './src/Components/organisms/AddMedicine';
 /**Termina Vistas del Doctor */
 
 /**Vistas del Paciente */
@@ -98,6 +101,24 @@ function Appointments() {
       <Stack.Screen name="Citas" component={AppointmentsScreen} navigation />
       <Stack.Screen name="AddCita" component={AddAppointment} navigation />
       <Stack.Screen name="EditCita" component={EditAppointment} navigation />
+    </Stack.Navigator>
+  );
+}
+
+/**Descripcion: Almacena las vistas de medicamentos */
+function Medicines() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}>
+      <Stack.Screen
+        name="Medicamentos"
+        component={MedicinesScreen}
+        navigation
+      />
+      <Stack.Screen name="AddMedicine" component={AddMedicine} navigation />
+      <Stack.Screen name="EditMedicine" component={EditMedicine} navigation />
     </Stack.Navigator>
   );
 }
@@ -213,6 +234,7 @@ export default function App() {
         <Drawer.Screen name="Inicio" component={DoctorHome} />
         <Drawer.Screen name="Pacientes" component={PatientsViews} />
         <Drawer.Screen name="Recetas" component={Prescriptions} />
+        <Drawer.Screen name="Medicamentos" component={Medicines} />
         <Drawer.Screen name="Citas" component={Appointments} />
         <Drawer.Screen name="Inicio Paciente" component={PatientHome} />
         <Drawer.Screen name="Alarmas" component={AlarmViews} />
