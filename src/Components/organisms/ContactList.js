@@ -22,8 +22,6 @@ export default class ContactList extends Component {
                 <Body>
                   <Title>{item.name}</Title>
                   <Subheading>Número de teléfono: {item.phone}</Subheading>
-                  <Subheading>Correo:</Subheading>
-                  <Subheading>{item.mail}</Subheading>
                 </Body>
                 <Right>
                   <IconButton
@@ -32,7 +30,6 @@ export default class ContactList extends Component {
                       this.props.navigation.push('EditContact', {
                         name: item.name,
                         phone: item.phone,
-                        mail: item.mail,
                       })
                     }
                   />

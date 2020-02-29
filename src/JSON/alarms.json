@@ -3,18 +3,36 @@
     "id": 1,
     "subject": "Paracetamol",
     "hour": "10:30",
-    "frequency": "12"
+    "frequency": "12",
+    "trusted_contact": {
+      "id": 1,
+      "name": "Kylie Espinoza",
+      "mail": "non@neceleifend.co.uk",
+      "phone": 6121041432
+    }
   },
   {
     "id": 2,
     "subject": "Amoxicilina",
     "hour": "15:30",
-    "frequency": "6"
+    "frequency": "6",
+    "trusted_contact": {
+      "id": 2,
+      "name": "Byron Daugherty",
+      "mail": "posuere@egetodio.org",
+      "phone": 6121417535
+    }
   },
   {
     "id": 3,
     "subject": "Omeprazol",
     "hour": "18:00",
-    "frequency": "24"
+    "frequency": "24",
+    "trusted_contact": {
+      "id": 3,
+      "name": "Davis Parks",
+      "mail": "sapien.Nunc@estmauris.com",
+      "phone": 6121519535
+    }
   }
 ]

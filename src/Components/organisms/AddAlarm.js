@@ -1,9 +1,12 @@
 import React, {Component} from 'react';
-import {View, TouchableOpacity, Text} from 'react-native';
+import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
 import {Picker, Content, Form, Item, Container} from 'native-base';
 import {ActivityIndicator, Button, TextInput} from 'react-native-paper';
 import AppHeader from '../../Components/organisms/Header';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import SearchableDropdown from 'react-native-searchable-dropdown';
+import data from '../../JSON/trustedContacts.json';
+
 export default class AddAlarm extends Component {
   constructor(props) {
     super(props);
@@ -14,6 +17,7 @@ export default class AddAlarm extends Component {
       chosenHour: new Date(),
       selected: '1',
       hourText: 'Seleccione la hora inicial',
+      selectedTrustedContact: [],
     };
   }
   handleHourPicker = newDate => {
@@ -123,6 +127,42 @@ export default class AddAlarm extends Component {
                 </Picker>
               </Item>
             </View>
+            <View>
+              <SearchableDropdown
+                selectedItems={this.state.selectedTrustedContact}
+                onItemSelect={item => {
+                  const items = this.state.selectedTrustedContact;
+                  items.push(item);
+                  this.setState({selectedTrustedContact: items});
+                }}
+                containerStyle={{padding: 5}}
+                onRemoveItem={(item, index) => {
+                  const items = this.state.selectedTrustedContact.filter(
+                    sitem => sitem.id !== item.id,
+                  );
+                  this.setState({selectedTrustedContact: items});
+                }}
+                itemStyle={styles.itemStyle}
+                itemTextStyle={{color: '#222'}}
+                itemsContainerStyle={{maxHeight: 140}}
+                items={data}
+                resetValue={false}
+                textInputProps={{
+                  placeholder: 'Seleccione un contacto de emergencia',
+                  underlineColorAndroid: 'transparent',
+                  style: {
+                    padding: 12,
+                    borderWidth: 1,
+                    borderColor: '#ccc',
+                    borderRadius: 5,
+                  },
+                  onTextChange: text => console.log(text),
+                }}
+                listProps={{
+                  nestedScrollEnabled: true,
+                }}
+              />
+            </View>
           </Form>
           <View style={{paddingTop: 15}}>
             <Button
@@ -144,3 +184,14 @@ export default class AddAlarm extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  itemStyle: {
+    padding: 10,
+    marginTop: 2,
+    backgroundColor: '#ddd',
+    borderColor: '#bbb',
+    borderWidth: 1,
+    borderRadius: 5,
+  },
+});

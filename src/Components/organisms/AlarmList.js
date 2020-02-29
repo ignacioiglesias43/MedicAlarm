@@ -30,15 +30,20 @@ export default class AlarmList extends Component {
                     <Title>{item.subject}</Title>
                     <Subheading>Siguiente hora: {item.hour}</Subheading>
                     <Subheading>Frecuencia: {item.frequency}hrs</Subheading>
+                    <Subheading>
+                      Avisar a: {item.trusted_contact.name}
+                    </Subheading>
                   </Body>
                   <Right>
                     <IconButton
                       icon="pencil"
                       onPress={() =>
                         this.props.navigation.push('EditAlarm', {
+                          id: item.id,
                           subject: item.subject,
                           hour: item.hour,
                           frequency: item.frequency,
+                          trusted_contact: item.trusted_contact,
                         })
                       }
                     />

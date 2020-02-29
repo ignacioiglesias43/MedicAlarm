@@ -14,9 +14,8 @@ export default class AddPrescription extends Component {
       medicine: '',
       sendForm: false,
       addAnother: false,
-      selectedPatient: '',
+      selectedPatient: [],
       selectedMedicines: [],
-      quantity: 1,
     };
   }
   sendPrescription() {
@@ -39,12 +38,18 @@ export default class AddPrescription extends Component {
           <Fragment>
             <View>
               <SearchableDropdown
+                selectedItems={this.state.selectedPatient}
                 onItemSelect={item => {
-                  this.setState({selectedPatient: item.id});
+                  const items = this.state.selectedPatient;
+                  items.push(item);
+                  this.setState({selectedPatient: items});
                 }}
                 containerStyle={{padding: 5}}
-                onRemoveItem={() => {
-                  this.setState({selectedPatient: ''});
+                onRemoveItem={(item, index) => {
+                  const items = this.state.selectedPatient.filter(
+                    sitem => sitem.id !== item.id,
+                  );
+                  this.setState({selectedPatient: items});
                 }}
                 itemStyle={styles.itemStyle}
                 itemTextStyle={{color: '#222'}}

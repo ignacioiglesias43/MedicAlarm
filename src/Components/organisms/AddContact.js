@@ -10,7 +10,6 @@ export default class AddContact extends Component {
     this.state = {
       sendForm: false,
       nameText: '',
-      mailText: '',
       phoneText: '',
     };
   }
@@ -42,21 +41,9 @@ export default class AddContact extends Component {
           <TextInput
             label="No. Teléfono"
             ref={input => (this.phoneInput = input)}
-            onSubmitEditing={() => this.emailInput.focus()}
             value={this.state.phoneText}
-            returnKeyType={'next'}
-            keyboardType="phone-pad"
-            mode="outlined"
-            style={{paddingTop: 10}}
-          />
-          <TextInput
-            label="Correo"
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType="email-address"
             returnKeyType={'go'}
-            ref={input => (this.emailInput = input)}
-            value={this.state.mailText}
+            keyboardType="phone-pad"
             mode="outlined"
             style={{paddingTop: 10}}
           />
