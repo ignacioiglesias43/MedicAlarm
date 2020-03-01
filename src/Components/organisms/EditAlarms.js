@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
 import {Picker, Content, Form, Item, Container} from 'native-base';
-import {ActivityIndicator, Button, TextInput} from 'react-native-paper';
+import {ActivityIndicator, Button, TextInput, Switch} from 'react-native-paper';
 import AppHeader from '../../Components/organisms/Header';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import SearchableDropdown from 'react-native-searchable-dropdown';
@@ -11,13 +11,11 @@ export default class EditAlarms extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isSwitchOn: this.props.route.params.monitoring,
       patient: '',
       sendForm: false,
       isHourVisible: false,
       chosenHour: new Date(),
-      currentId: JSON.stringify(
-        this.props.route.params.trusted_contact.id,
-      ).replace(/"/g, ''),
       selectedTrustedContact: [],
       subjectText: JSON.stringify(this.props.route.params.subject).replace(
         /"/g,
@@ -70,7 +68,7 @@ export default class EditAlarms extends Component {
     });
   }
   render() {
-    const {sendForm, currentId} = this.state;
+    const {sendForm, isSwitchOn} = this.state;
     return (
       <Container>
         <AppHeader
@@ -164,7 +162,6 @@ export default class EditAlarms extends Component {
                 itemTextStyle={{color: '#222'}}
                 itemsContainerStyle={{maxHeight: 140}}
                 items={data}
-                defaultIndex={currentId}
                 resetValue={false}
                 textInputProps={{
                   placeholder: 'Seleccione un contacto de emergencia',
@@ -179,6 +176,16 @@ export default class EditAlarms extends Component {
                 }}
                 listProps={{
                   nestedScrollEnabled: true,
+                }}
+              />
+            </View>
+            <View style={styles.switchContainer}>
+              <Text>Monitorear alarma</Text>
+              <Switch
+                value={isSwitchOn}
+                color="#FF7058"
+                onValueChange={() => {
+                  this.setState({isSwitchOn: !isSwitchOn});
                 }}
               />
             </View>
@@ -211,5 +218,11 @@ const styles = StyleSheet.create({
     borderColor: '#bbb',
     borderWidth: 1,
     borderRadius: 5,
+  },
+  switchContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignSelf: 'flex-end',
+    paddingVertical: 10,
   },
 });

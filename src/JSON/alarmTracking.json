@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "subject": "Paracetamol",
+    "initial_date": "25-02-20",
+    "last_date": "02-03-20",
+    "remaining": 3
+  },
+  {
+    "id": 2,
+    "subject": "Amoxicilina",
+    "initial_date": "25-02-20",
+    "last_date": "02-03-20",
+    "remaining": 3
+  },
+  {
+    "id": 3,
+    "subject": "Omeprazol",
+    "initial_date": "25-02-20",
+    "last_date": "02-03-20",
+    "remaining": 3
+  }
+]

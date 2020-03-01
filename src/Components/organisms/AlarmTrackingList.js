@@ -9,10 +9,10 @@ import {
   Text,
   Right,
 } from 'native-base';
-import data from '../../JSON/alarms.json';
+import data from '../../JSON/alarmTracking.json';
 import {Title, IconButton, Subheading} from 'react-native-paper';
 import {FlatList, View, Alert} from 'react-native';
-export default class AlarmList extends Component {
+export default class AlarmTrackingList extends Component {
   constructor(props) {
     super(props);
   }
@@ -28,26 +28,15 @@ export default class AlarmList extends Component {
                 <CardItem>
                   <Body>
                     <Title>{item.subject}</Title>
-                    <Subheading>Siguiente hora: {item.hour}</Subheading>
-                    <Subheading>Frecuencia: {item.frequency}hrs</Subheading>
                     <Subheading>
-                      Avisar a: {item.trusted_contact.name}
+                      Comenzó a consumir: {item.initial_date}
                     </Subheading>
+                    <Subheading>
+                      Termina de consumir: {item.last_date}
+                    </Subheading>
+                    <Subheading>Días por consumir: {item.remaining}</Subheading>
                   </Body>
                   <Right>
-                    <IconButton
-                      icon="pencil"
-                      onPress={() =>
-                        this.props.navigation.push('EditAlarm', {
-                          id: item.id,
-                          subject: item.subject,
-                          hour: item.hour,
-                          frequency: item.frequency,
-                          trusted_contact: item.trusted_contact,
-                          monitoring: item.monitoring,
-                        })
-                      }
-                    />
                     <IconButton
                       icon="trash-can-outline"
                       color="red"
@@ -56,6 +45,7 @@ export default class AlarmList extends Component {
                           'Eliminar Alarma',
                           'Está por eliminar la alarma ' +
                             item.subject +
+                            ' de su lista de seguimiento' +
                             '.\n¿Desea Continuar?',
                           [
                             {
@@ -64,6 +54,7 @@ export default class AlarmList extends Component {
                             },
                             {
                               text: 'Eliminar',
+                              onPress: () => console.log('Eliminado'),
                             },
                           ],
                           {cancelable: false},

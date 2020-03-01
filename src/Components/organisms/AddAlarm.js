@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
 import {Picker, Content, Form, Item, Container} from 'native-base';
-import {ActivityIndicator, Button, TextInput} from 'react-native-paper';
+import {ActivityIndicator, Button, TextInput, Switch} from 'react-native-paper';
 import AppHeader from '../../Components/organisms/Header';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import SearchableDropdown from 'react-native-searchable-dropdown';
@@ -11,6 +11,7 @@ export default class AddAlarm extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isSwitchOn: false,
       patient: '',
       sendForm: false,
       isHourVisible: false,
@@ -55,7 +56,7 @@ export default class AddAlarm extends Component {
     });
   }
   render() {
-    const {sendForm} = this.state;
+    const {sendForm, isSwitchOn} = this.state;
     return (
       <Container>
         <AppHeader
@@ -163,6 +164,16 @@ export default class AddAlarm extends Component {
                 }}
               />
             </View>
+            <View style={styles.switchContainer}>
+              <Text>Monitorear alarma</Text>
+              <Switch
+                value={isSwitchOn}
+                color="#FF7058"
+                onValueChange={() => {
+                  this.setState({isSwitchOn: !isSwitchOn});
+                }}
+              />
+            </View>
           </Form>
           <View style={{paddingTop: 15}}>
             <Button
@@ -193,5 +204,11 @@ const styles = StyleSheet.create({
     borderColor: '#bbb',
     borderWidth: 1,
     borderRadius: 5,
+  },
+  switchContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignSelf: 'flex-end',
+    paddingVertical: 10,
   },
 });

@@ -45,6 +45,8 @@ import TrustedContact from './src/Views/Patient/TrustedContact';
 import AddTrustedContact from './src/Components/organisms/AddContact';
 import EditTrustedContact from './src/Components/organisms/EditContact';
 import PatientAppointments from './src/Views/Patient/PatientAppointments';
+import Monitoring from './src/Views/Patient/Monitoring';
+import AddTrackingAlarm from './src/Components/organisms/AddTrackingAlarm';
 /**Termina Vistas del Paciente */
 
 const Stack = createStackNavigator();
@@ -200,6 +202,16 @@ function PatientAppointmentsViews() {
     </Stack.Navigator>
   );
 }
+
+/**Descripcion: Almacena vistas de seguimiento del paciente */
+function MonitoringViews() {
+  return (
+    <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Screen name="Monitoring" component={Monitoring} navigation />
+      <Stack.Screen name="AddTrackingAlarm" component={AddTrackingAlarm} />
+    </Stack.Navigator>
+  );
+}
 /**Termina Ventanas de Paciente */
 
 export default function App() {
@@ -246,6 +258,7 @@ export default function App() {
           name="Citas-Paciente"
           component={PatientAppointmentsViews}
         />
+        <Drawer.Screen name="Seguimiento" component={MonitoringViews} />
         <Drawer.Screen
           name="Salir"
           component={RegisterLogin}
