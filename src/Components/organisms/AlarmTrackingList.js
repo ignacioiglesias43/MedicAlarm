@@ -11,7 +11,7 @@ import {
 } from 'native-base';
 import data from '../../JSON/alarmTracking.json';
 import {Title, IconButton, Subheading} from 'react-native-paper';
-import {FlatList, View, Alert} from 'react-native';
+import {FlatList, View, Alert, ProgressBarAndroid} from 'react-native';
 export default class AlarmTrackingList extends Component {
   constructor(props) {
     super(props);
@@ -35,6 +35,11 @@ export default class AlarmTrackingList extends Component {
                       Termina de consumir: {item.last_date}
                     </Subheading>
                     <Subheading>Días por consumir: {item.remaining}</Subheading>
+                    <ProgressBarAndroid
+                      styleAttr="Horizontal"
+                      indeterminate={false}
+                      progress={0.5}
+                    />
                   </Body>
                   <Right>
                     <IconButton
