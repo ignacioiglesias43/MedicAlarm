@@ -47,6 +47,7 @@ import EditTrustedContact from './src/Components/organisms/EditContact';
 import PatientAppointments from './src/Views/Patient/PatientAppointments';
 import Monitoring from './src/Views/Patient/Monitoring';
 import AddTrackingAlarm from './src/Components/organisms/AddTrackingAlarm';
+import PatientPrescriptions from './src/Views/Patient/PatientPrescriptions';
 /**Termina Vistas del Paciente */
 
 const Stack = createStackNavigator();
@@ -253,6 +254,10 @@ export default function App() {
         <Drawer.Screen
           name="Contactos de Confianza"
           component={TrustedContactViews}
+        />
+        <Drawer.Screen
+          name="Recetas-Paciente"
+          component={PatientPrescriptions}
         />
         <Drawer.Screen
           name="Citas-Paciente"

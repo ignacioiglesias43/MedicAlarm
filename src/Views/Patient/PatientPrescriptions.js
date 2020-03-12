@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {View, FlatList, ScrollView} from 'react-native';
 import AppHeader from '../../Components/organisms/Header';
-import PrescriptionsList from '../../Components/organisms/PrescriptionsList';
+import PatientPrescriptionList from '../../Components/organisms/PatientPrescriptionList';
 export default class Prescriptions extends Component {
   render() {
     return (
@@ -10,12 +10,9 @@ export default class Prescriptions extends Component {
           title="Recetas"
           navigation={this.props.navigation}
           icon="menu"
-          showAddAction={true}
-          addIcon="plus"
-          navigateRoute="AddReceta"
         />
         <ScrollView>
-          <PrescriptionsList navigation={this.props.navigation} />
+          <PatientPrescriptionList navigation={this.props.navigation} />
         </ScrollView>
       </View>
     );
