@@ -1,23 +1,22 @@
 import React, {Component} from 'react';
-import {Container, Card, CardItem, Text, Body, Right} from 'native-base';
 import {View, FlatList, Alert, StyleSheet} from 'react-native';
-import {IconButton, Button} from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {Container, Card, CardItem, Text, Body, Right} from 'native-base';
 import data from '../../JSON/prescriptions.json';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-export default class PrescriptionsList extends Component {
+import ExpandibleList from './src/../ExpandibleList';
+export default class PatientPrescriptionList extends Component {
   constructor(props) {
     super(props);
   }
-
   render() {
     return (
       <Container>
         {data.map(item => (
-          <TouchableOpacity style={styles.textView}>
-            <Text style={styles.texto}>Dr. {item.name}</Text>
-            <Icon name="chevron-down" size={30} style={styles.texto} />
-          </TouchableOpacity>
+          <ExpandibleList
+            name={'Dr. ' + item.name}
+            displayCard={false}
+            medicine={item.medicine}
+            indications={item.indications}
+          />
         ))}
       </Container>
     );
@@ -30,7 +29,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   textView: {
-    margin: 10,
     paddingLeft: 10,
     paddingRight: 10,
     backgroundColor: '#E5EDFF',
@@ -38,5 +36,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     height: 50,
+  },
+  container: {
+    margin: 10,
+    marginBottom: 3,
   },
 });
