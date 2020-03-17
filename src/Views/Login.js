@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, Image, Text} from 'react-native';
+import {Dimensions} from 'react-native';
 import LoginForm from './../Components/organisms/LoginForm';
-import RegisterForm from './../Components/organisms/RegisterForm';
+
+const windowHeight = Dimensions.get('window').height;
 
 export default class Login extends Component {
   render() {
@@ -19,9 +21,7 @@ export default class Login extends Component {
 
 const styles = StyleSheet.create({
   header: {
-    top: '25%',
-    borderRadius: 38888,
-    borderColor: 'black',
+    top: windowHeight * 0.15,
   },
   container: {
     flex: 1,

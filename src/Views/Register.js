@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, Image, Text, SafeAreaView} from 'react-native';
+import {Dimensions} from 'react-native';
 import RegisterForm from './../Components/organisms/RegisterForm';
-
+const windowHeight = Dimensions.get('window').height;
 export default class Register extends Component {
   render() {
     return (
@@ -16,7 +17,7 @@ export default class Register extends Component {
 
 const styles = StyleSheet.create({
   header: {
-    top: '15%',
+    top: windowHeight * 0.05,
   },
   container: {
     flex: 1,
