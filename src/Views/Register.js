@@ -17,7 +17,7 @@ export default class Register extends Component {
 
 const styles = StyleSheet.create({
   header: {
-    top: windowHeight * 0.05,
+    top: windowHeight * 0.1,
   },
   container: {
     flex: 1,

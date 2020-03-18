@@ -143,6 +143,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexGrow: 1,
     justifyContent: 'center',
+    marginBottom: 20,
   },
   logo: {
     height: 80,
