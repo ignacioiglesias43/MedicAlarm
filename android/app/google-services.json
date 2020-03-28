@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "977513578257",
+    "firebase_url": "https://medicalarm-47b86.firebaseio.com",
+    "project_id": "medicalarm-47b86",
+    "storage_bucket": "medicalarm-47b86.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:977513578257:android:8cbfdb7e07481a4013d6b0",
+        "android_client_info": {
+          "package_name": "com.medicalarm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "977513578257-d3sp87528e6u2bn60rof13pvo70cangt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0XzNEvNQqgLmbQbemTK5gKtJuHvET4CI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "977513578257-d3sp87528e6u2bn60rof13pvo70cangt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

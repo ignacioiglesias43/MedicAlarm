@@ -1,18 +1,8 @@
 import * as React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  ScrollView,
-  Dimensions,
-  Image,
-  Icon,
-} from 'react-native';
+import {StyleSheet, Text, View, SafeAreaView, Image} from 'react-native';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {Provider as PaperProvider} from 'react-native-paper';
 import {
   createDrawerNavigator,
   DrawerItemList,
@@ -219,7 +209,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Drawer.Navigator
-        initialRouteName="Home"
+        initialRouteName="Salir"
         drawerContent={props => (
           <SafeAreaView style={{flex: 1}}>
             <View

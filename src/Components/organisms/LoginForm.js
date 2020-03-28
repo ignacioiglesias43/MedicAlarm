@@ -1,19 +1,15 @@
 import React, {Component} from 'react';
+import AuthService from '../../Services/auth-service';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 import {
   StyleSheet,
   View,
   Text,
-  TouchableOpacity,
   KeyboardAvoidingView,
   Image,
 } from 'react-native';
-import {
-  TextInput,
-  Button,
-  Switch,
-  ActivityIndicator,
-  Colors,
-} from 'react-native-paper';
+import {TextInput, Button, Switch, ActivityIndicator} from 'react-native-paper';
 
 export default class LoginForm extends Component {
   constructor(props) {
@@ -22,13 +18,37 @@ export default class LoginForm extends Component {
   state = {
     isSwitchOn: false,
     loadNextPage: false,
+    email: '',
+    password: '',
   };
   navigateHome() {
     this.setState({loadNextPage: !this.state.loadNextPage});
     setTimeout(() => {
       this.setState({loadNextPage: !this.state.loadNextPage});
-      this.props.navigation.navigate('Inicio');
+      auth()
+        .signInWithEmailAndPassword(this.state.email, this.state.password)
+        .then(() => {
+          firestore()
+            .collection('users')
+            .where('email', '==', this.state.email)
+            .get()
+            .then(data => {
+              const type = data.docs[0]._data.type; //Así se obtiene el tipo de usuario
+              if (type === 'doctor') {
+                this.props.navigation.navigate('Inicio');
+              } else {
+                this.props.navigation.navigate('Inicio Paciente');
+              }
+            })
+            .catch(error => {
+              console.log(error);
+            });
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }, 1000);
+    // AuthService.logOut();
   }
   navigateRegister() {
     setTimeout(() => {
@@ -57,6 +77,8 @@ export default class LoginForm extends Component {
           onSubmitEditing={() => this.passwordInput.focus()}
           label="Correo Electrónico"
           returnKeyType={'next'}
+          value={this.state.email}
+          onChangeText={email => this.setState({email: email})}
         />
         <TextInput
           underlineColorAndroid="#FF7058"
@@ -67,6 +89,8 @@ export default class LoginForm extends Component {
           returnKeyType={'go'}
           secureTextEntry
           ref={input => (this.passwordInput = input)}
+          value={this.state.password}
+          onChangeText={password => this.setState({password: password})}
         />
         <View style={styles.switchContainer}>
           <Text style={{color: 'white'}}>Recordarme</Text>
