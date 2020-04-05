@@ -39,7 +39,7 @@ import Monitoring from './src/Views/Patient/Monitoring';
 import AddTrackingAlarm from './src/Components/organisms/AddTrackingAlarm';
 import PatientPrescriptions from './src/Views/Patient/PatientPrescriptions';
 /**Termina Vistas del Paciente */
-
+/**Drawers */
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
@@ -119,13 +119,18 @@ function Medicines() {
 
 /**Ventanas de todos */
 /**Descripcion: Esta funcion almacena las ventanas de Login y Registro */
-function RegisterLogin() {
+function RegisterLogin(callBack) {
   return (
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
       }}>
-      <Stack.Screen name="Login" component={Login} navigation />
+      <Stack.Screen
+        name="Login"
+        component={Login}
+        navigation
+        initialParams={{callBack: callBack}}
+      />
       <Stack.Screen name="Registro" component={Register} />
     </Stack.Navigator>
   );
@@ -205,63 +210,76 @@ function MonitoringViews() {
 }
 /**Termina Ventanas de Paciente */
 
-export default function App() {
-  return (
-    <NavigationContainer>
-      <Drawer.Navigator
-        initialRouteName="Salir"
-        drawerContent={props => (
-          <SafeAreaView style={{flex: 1}}>
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                backgroundColor: '#afc9ff',
-                padding: 10,
-              }}>
-              <Image
-                source={require('./src/img/logo.png')}
-                style={{height: 60, width: 60}}
-              />
-              <View style={styles.title}>
-                <Text style={{fontSize: 25, color: 'white'}}>Medic</Text>
-                <Text style={{fontSize: 25, color: '#FF7058'}}>Alarm</Text>
+export default class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      userType: '',
+    };
+  }
+  callBack = (userType) => this.setState({userType: userType});
+  render() {
+    return (
+      <NavigationContainer>
+        <Drawer.Navigator
+          initialRouteName={this.state.userType !== '' ? 'Inicio' : 'Salir'}
+          drawerContent={(props) => (
+            <SafeAreaView style={{flex: 1}}>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  backgroundColor: '#afc9ff',
+                  padding: 10,
+                }}>
+                <Image
+                  source={require('./src/img/logo.png')}
+                  style={{height: 60, width: 60}}
+                />
+                <View style={styles.title}>
+                  <Text style={{fontSize: 25, color: 'white'}}>Medic</Text>
+                  <Text style={{fontSize: 25, color: '#FF7058'}}>Alarm</Text>
+                </View>
               </View>
-            </View>
-            <DrawerContentScrollView {...props}>
-              <DrawerItemList {...props} />
-            </DrawerContentScrollView>
-          </SafeAreaView>
-        )}>
-        <Drawer.Screen name="Inicio" component={DoctorHome} />
-        <Drawer.Screen name="Pacientes" component={PatientsViews} />
-        <Drawer.Screen name="Recetas" component={Prescriptions} />
-        <Drawer.Screen name="Medicamentos" component={Medicines} />
-        <Drawer.Screen name="Citas" component={Appointments} />
-        <Drawer.Screen name="Inicio Paciente" component={PatientHome} />
-        <Drawer.Screen name="Alarmas" component={AlarmViews} />
-        <Drawer.Screen
-          name="Contactos de Confianza"
-          component={TrustedContactViews}
-        />
-        <Drawer.Screen
-          name="Recetas-Paciente"
-          component={PatientPrescriptions}
-        />
-        <Drawer.Screen
-          name="Citas-Paciente"
-          component={PatientAppointmentsViews}
-        />
-        <Drawer.Screen name="Seguimiento" component={MonitoringViews} />
-        <Drawer.Screen
-          name="Salir"
-          component={RegisterLogin}
-          options={{gestureEnabled: false}}
-        />
-      </Drawer.Navigator>
-    </NavigationContainer>
-  );
+              <DrawerContentScrollView {...props}>
+                <DrawerItemList {...props} />
+              </DrawerContentScrollView>
+            </SafeAreaView>
+          )}>
+          <Drawer.Screen name="Inicio" component={DoctorHome} />
+          {this.state.userType === 'doctor' && (
+            <>
+              <Drawer.Screen name="Pacientes" component={PatientsViews} />
+              <Drawer.Screen name="Recetas" component={Prescriptions} />
+              <Drawer.Screen name="Medicamentos" component={Medicines} />
+              <Drawer.Screen name="Citas" component={Appointments} />
+            </>
+          )}
+          {this.state.userType === 'patient' && (
+            <>
+              <Drawer.Screen name="Alarmas" component={AlarmViews} />
+              <Drawer.Screen
+                name="Contactos de Confianza"
+                component={TrustedContactViews}
+              />
+              <Drawer.Screen name="Recetas" component={PatientPrescriptions} />
+              <Drawer.Screen
+                name="Citas"
+                component={PatientAppointmentsViews}
+              />
+              <Drawer.Screen name="Seguimiento" component={MonitoringViews} />
+            </>
+          )}
+          <Drawer.Screen
+            name="Salir"
+            children={() => RegisterLogin(this.callBack.bind(this))}
+            options={{gestureEnabled: false}}
+          />
+        </Drawer.Navigator>
+      </NavigationContainer>
+    );
+  }
 }
 const styles = StyleSheet.create({
   title: {

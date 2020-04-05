@@ -1,22 +1,49 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, Text, Image} from 'react-native';
-import {
-  Container,
-  Form,
-  Item,
-  Input,
-  Content,
-  Card,
-  CardItem,
-  Body,
-  Right,
-} from 'native-base';
+import {View, Text} from 'react-native';
+import {Container, Content, Card, CardItem, Body, Right} from 'native-base';
 import AppHeader from '../../Components/organisms/Header';
 import MedicalAppointment from '../../Components/organisms/MedicalAppointment';
-import {Avatar, Title, IconButton, Button} from 'react-native-paper';
+import MedicalAlarms from '../../Components/organisms/MedicalAlarms';
+import {Avatar, Title, IconButton} from 'react-native-paper';
+import auth from '@react-native-firebase/auth';
 
+import firestore from '@react-native-firebase/firestore';
 export default class Home extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      id: '',
+      data: {},
+    };
+  }
+  componentWillMount() {
+    this.setUserData();
+    console.log(this.props);
+  }
+  setUserData = () => {
+    auth().onAuthStateChanged((user) => {
+      if (user) {
+        firestore()
+          .collection('users')
+          .where('email', '==', user.email)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              console.log(doc.id, ' => ', doc.data());
+              this.setState({
+                id: doc.id,
+                data: doc.data(),
+              });
+            });
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    });
+  };
   render() {
+    const {data, id} = this.state;
     return (
       <View style={{flex: 1, backgroundColor: 'white'}}>
         <AppHeader
@@ -32,10 +59,18 @@ export default class Home extends Component {
           }}>
           <Avatar.Image
             size={130}
-            source={require('../../img/avatar.png')}
+            source={
+              data.type === 'doctor'
+                ? require('../../img/avatar.png')
+                : require('../../img/usuario.png')
+            }
             style={{backgroundColor: 'white'}}
           />
-          <Title>Dr.Simi</Title>
+          <Title>
+            {data.type === 'doctor'
+              ? `Dr. ${data.name} ${data.last_name}`
+              : `${data.name} ${data.last_name}`}
+          </Title>
         </View>
         <Container>
           <Content>
@@ -50,38 +85,45 @@ export default class Home extends Component {
                     size={25}
                     onPress={() =>
                       this.props.navigation.push('EditPersonalInfo', {
-                        name: 'Alejandro Samuel',
-                        lastname: 'Simi',
-                        professional_id: 12345678,
-                        speciality: 'Psiquiatría',
-                        mail: 'dr_simi@similares.com',
-                        phone: 6122192275,
-                        userType: 'doctor',
+                        id: id,
+                        name: data.name,
+                        lastname: data.last_name,
+                        professional_id: data.professional_id,
+                        specialty: data.specialty,
+                        mail: data.email,
+                        phone: data.phone,
+                        userType: data.type,
                       })
                     }
                   />
                 </Right>
               </CardItem>
               <CardItem bordered>
-                <Text>Nombre: Alejandro Samuel</Text>
+                <Text>Nombre: {`${data.name} ${data.last_name}`}</Text>
+              </CardItem>
+              {data.type === 'doctor' && (
+                <>
+                  <CardItem bordered>
+                    <Text>Cédula: {data.professional_id}</Text>
+                  </CardItem>
+                  <CardItem bordered>
+                    <Text>Especialidad: {data.specialty}</Text>
+                  </CardItem>
+                </>
+              )}
+              <CardItem bordered>
+                <Text>Correo: {data.email}</Text>
               </CardItem>
               <CardItem bordered>
-                <Text>Cédula: 12345678</Text>
-              </CardItem>
-              <CardItem bordered>
-                <Text>Especialidad: Psiquiatría</Text>
-              </CardItem>
-              <CardItem bordered>
-                <Text>Correo: dr_simi@similares.com</Text>
-              </CardItem>
-              <CardItem bordered>
-                <Text>Teléfono: 6122192275</Text>
+                <Text>Teléfono: {data.phone}</Text>
               </CardItem>
             </Card>
             <Card>
               <CardItem header bordered>
                 <Body>
-                  <Title>Mis Citas</Title>
+                  <Title>
+                    {data.type === 'doctor' ? 'Mis Citas' : 'Mis Alarmas'}
+                  </Title>
                 </Body>
                 <Right>
                   <IconButton
@@ -91,7 +133,15 @@ export default class Home extends Component {
                   />
                 </Right>
               </CardItem>
-              <MedicalAppointment />
+              {data.type === 'doctor' ? (
+                <>
+                  <MedicalAppointment />
+                </>
+              ) : (
+                <>
+                  <MedicalAlarms />
+                </>
+              )}
             </Card>
           </Content>
         </Container>

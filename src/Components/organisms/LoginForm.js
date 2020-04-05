@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import AuthService from '../../Services/auth-service';
+import {AsyncStorage} from '@react-native-community/async-storage';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {
@@ -8,6 +9,7 @@ import {
   Text,
   KeyboardAvoidingView,
   Image,
+  Alert,
 } from 'react-native';
 import {TextInput, Button, Switch, ActivityIndicator} from 'react-native-paper';
 
@@ -21,10 +23,9 @@ export default class LoginForm extends Component {
     email: '',
     password: '',
   };
-  navigateHome() {
+  login() {
     this.setState({loadNextPage: !this.state.loadNextPage});
     setTimeout(() => {
-      this.setState({loadNextPage: !this.state.loadNextPage});
       auth()
         .signInWithEmailAndPassword(this.state.email, this.state.password)
         .then(() => {
@@ -32,20 +33,36 @@ export default class LoginForm extends Component {
             .collection('users')
             .where('email', '==', this.state.email)
             .get()
-            .then(data => {
-              const type = data.docs[0]._data.type; //Así se obtiene el tipo de usuario
-              if (type === 'doctor') {
-                this.props.navigation.navigate('Inicio');
-              } else {
-                this.props.navigation.navigate('Inicio Paciente');
-              }
+            .then((data) => {
+              this.props.callBack(data.docs[0]._data.type);
+              this.props.navigation.navigate('Inicio', {
+                email: 2,
+              });
+              this.setState({loadNextPage: !this.state.loadNextPage});
             })
-            .catch(error => {
-              console.log(error);
+            .catch((error) => {
+              this.setState({loadNextPage: !this.state.loadNextPage});
+              Alert.alert('Error', error.message);
             });
         })
-        .catch(error => {
-          console.log(error);
+        .catch((error) => {
+          this.setState({loadNextPage: !this.state.loadNextPage});
+          let message = '';
+          switch (error.code) {
+            case 'auth/user-not-found':
+              message = 'El correo electrónico ingresado no está registrado.';
+              break;
+            case 'auth/wrong-password':
+              message = 'La contraseña ingresada es incorrecta.';
+              break;
+            case 'auth/invalid-email':
+              message = 'Correo electrónico inválido.';
+              break;
+            default:
+              message =
+                'Error de conexión, revise si se encuentra conectado a una red.';
+          }
+          Alert.alert('Error', message);
         });
     }, 1000);
     // AuthService.logOut();
@@ -78,7 +95,7 @@ export default class LoginForm extends Component {
           label="Correo Electrónico"
           returnKeyType={'next'}
           value={this.state.email}
-          onChangeText={email => this.setState({email: email})}
+          onChangeText={(email) => this.setState({email: email})}
         />
         <TextInput
           underlineColorAndroid="#FF7058"
@@ -88,9 +105,9 @@ export default class LoginForm extends Component {
           label="Contraseña"
           returnKeyType={'go'}
           secureTextEntry
-          ref={input => (this.passwordInput = input)}
+          ref={(input) => (this.passwordInput = input)}
           value={this.state.password}
-          onChangeText={password => this.setState({password: password})}
+          onChangeText={(password) => this.setState({password: password})}
         />
         <View style={styles.switchContainer}>
           <Text style={{color: 'white'}}>Recordarme</Text>
@@ -107,7 +124,11 @@ export default class LoginForm extends Component {
             mode="contained"
             color="#FF7058"
             onPress={() => {
-              this.navigateHome();
+              if (this.state.email !== '' && this.state.password !== '') {
+                this.login();
+              } else {
+                Alert.alert('Error', 'Todos los campos son necesarios');
+              }
             }}>
             <Text style={{color: 'white'}}>Iniciar Sesión</Text>
           </Button>

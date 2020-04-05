@@ -66,4 +66,3 @@ export default {
       });
   },
 };
-//TODO: Ver como implementar bien esto
