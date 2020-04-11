@@ -1,21 +1,18 @@
 import React, {Component} from 'react';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 import {
   StyleSheet,
   View,
   Text,
-  TouchableOpacity,
   KeyboardAvoidingView,
-  Platform,
   Image,
+  Alert,
 } from 'react-native';
 import {
   TextInput,
   Button,
-  Switch,
   ActivityIndicator,
-  Colors,
-  List,
-  Checkbox,
   RadioButton,
 } from 'react-native-paper';
 
@@ -26,6 +23,11 @@ export default class RegisterForm extends Component {
   state = {
     loadNextPage: false,
     checked: 'patient',
+    name: '',
+    lastName: '',
+    mail: '',
+    password: '',
+    phone: '',
   };
   navigateBack() {
     setTimeout(() => {
@@ -35,8 +37,52 @@ export default class RegisterForm extends Component {
   register() {
     this.setState({loadNextPage: !this.state.loadNextPage});
     setTimeout(() => {
-      this.setState({loadNextPage: !this.state.loadNextPage});
-      this.props.navigation.push('Login');
+      auth()
+        .createUserWithEmailAndPassword(
+          this.state.mail.replace(/\s/g, ''),
+          this.state.password.replace(/\s/g, ''),
+        )
+        .then(() => {
+          firestore()
+            .collection('users')
+            .add({
+              email: this.state.mail.trim(),
+              last_name: this.state.lastName.trim(),
+              name: this.state.name.trim(),
+              phone: this.state.phone.trim(),
+              type: this.state.checked.trim(),
+            })
+            .then(() => {
+              this.props.navigation.push('Login');
+              this.setState({loadNextPage: !this.state.loadNextPage});
+            })
+            .catch(error => {
+              this.setState({loadNextPage: !this.state.loadNextPage});
+              Alert.alert('Error', error.message);
+            });
+        })
+        .catch(error => {
+          this.setState({loadNextPage: !this.state.loadNextPage});
+          let message = '';
+          switch (error.code) {
+            case 'auth/email-already-in-use':
+              message =
+                'El correo electrónico ingresado ya está registrado por otro usuario.';
+              break;
+            case 'auth/waek-password':
+              message =
+                'La contraseña ingresada es demasiado débil, debe tener por lo menos 6 caracteres.';
+              break;
+            case 'auth/invalid-email':
+              message =
+                'Correo electrónico inválido. Por favor ingrese un correo con el siguiente formato: algo@example.com';
+              break;
+            default:
+              message =
+                'Error de conexión, revise si se encuentra conectado a una red.';
+          }
+          Alert.alert('Error', message);
+        });
     }, 1000);
   }
   render() {
@@ -61,6 +107,8 @@ export default class RegisterForm extends Component {
           }}>
           <TextInput
             style={{width: '48%'}}
+            value={this.state.name}
+            onChangeText={name => this.setState({name: name})}
             mode="outlined"
             onSubmitEditing={() => this.lastNameInput.focus()}
             label="Nombre"
@@ -69,6 +117,8 @@ export default class RegisterForm extends Component {
           <TextInput
             style={{width: '48%'}}
             mode="outlined"
+            value={this.state.lastName}
+            onChangeText={lastName => this.setState({lastName: lastName})}
             ref={input => (this.lastNameInput = input)}
             onSubmitEditing={() => this.emailInput.focus()}
             label="Apellido"
@@ -79,6 +129,8 @@ export default class RegisterForm extends Component {
           keyboardType="email-address"
           mode="outlined"
           autoCapitalize="none"
+          value={this.state.mail}
+          onChangeText={mail => this.setState({mail: mail})}
           autoCorrect={false}
           ref={input => (this.emailInput = input)}
           onSubmitEditing={() => this.passwordInput.focus()}
@@ -89,6 +141,8 @@ export default class RegisterForm extends Component {
           autoCapitalize="none"
           mode="outlined"
           autoCorrect={false}
+          value={this.state.password}
+          onChangeText={password => this.setState({password: password})}
           label="Contraseña"
           returnKeyType={'next'}
           secureTextEntry
@@ -99,6 +153,8 @@ export default class RegisterForm extends Component {
           autoCapitalize="none"
           mode="outlined"
           autoCorrect={false}
+          value={this.state.phone}
+          onChangeText={phone => this.setState({phone: phone})}
           label="Teléfono"
           returnKeyType={'go'}
           keyboardType="phone-pad"
@@ -150,7 +206,13 @@ export default class RegisterForm extends Component {
             mode="contained"
             color="#FF7058"
             onPress={() => {
-              this.register();
+              this.state.name !== '' &&
+              this.state.lastName !== '' &&
+              this.state.mail !== '' &&
+              this.state.password !== '' &&
+              this.state.phone !== ''
+                ? this.register()
+                : Alert.alert('Error', 'Todos los campos son necesarios');
             }}>
             <Text style={{color: 'white'}}>Registrarse</Text>
           </Button>

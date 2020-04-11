@@ -1,33 +1,51 @@
 import React, {Component} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, Alert} from 'react-native';
 import {Container, Content, Card, CardItem, Body, Right} from 'native-base';
-import AppHeader from '../../Components/organisms/Header';
-import MedicalAppointment from '../../Components/organisms/MedicalAppointment';
-import MedicalAlarms from '../../Components/organisms/MedicalAlarms';
-import {Avatar, Title, IconButton} from 'react-native-paper';
 import auth from '@react-native-firebase/auth';
-
-import firestore from '@react-native-firebase/firestore';
+import AppHeader from '../Components/organisms/Header';
+import {
+  Avatar,
+  Title,
+  IconButton,
+  Button,
+  ActivityIndicator,
+} from 'react-native-paper';
 export default class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      id: this.props.route.params.data.id,
-      data: this.props.route.params.data.data,
+      id: '',
+      data: {},
+      loadNextPage: false,
     };
   }
-  componentWillReceiveProps() {
+  logout() {
+    this.setState({loadNextPage: !this.state.loadNextPage});
+    setTimeout(() => {
+      auth()
+        .signOut()
+        .then(() => {
+          this.props.route.params.callBack({}, false);
+          this.setState({loadNextPage: !this.state.loadNextPage});
+        })
+        .catch(error => {
+          Alert.alert('Error', error.message);
+        });
+    }, 1000);
+  }
+  componentWillMount() {
+    let d = this.props.route.params.data();
     this.setState({
-      id: this.props.route.params.data.id,
-      data: this.props.route.params.data.data,
+      id: d.id,
+      data: d.data,
     });
   }
   render() {
-    const {data, id} = this.state;
+    const {data, id, loadNextPage} = this.state;
     return (
       <View style={{flex: 1, backgroundColor: 'white'}}>
         <AppHeader
-          title="Inicio"
+          title="Configuracion"
           navigation={this.props.navigation}
           icon="menu"
         />
@@ -41,18 +59,11 @@ export default class Home extends Component {
             size={130}
             source={
               data.type === 'doctor'
-                ? require('../../img/avatar.png')
-                : require('../../img/usuario.png')
+                ? require('../img/avatar.png')
+                : require('../img/usuario.png')
             }
             style={{backgroundColor: 'white'}}
           />
-          <Title>
-            {Object.keys(data).length > 0
-              ? data.type === 'doctor'
-                ? `Dr. ${data.name} ${data.last_name}`
-                : `${data.name} ${data.last_name}`
-              : ''}
-          </Title>
         </View>
         <Container>
           <Content>
@@ -70,10 +81,8 @@ export default class Home extends Component {
                         id: id,
                         name: data.name,
                         lastname: data.last_name,
-                        professional_id: data.professional_id
-                          ? data.professional_id
-                          : '',
-                        specialty: data.specialty ? data.specialty : '',
+                        professional_id: data.professional_id,
+                        specialty: data.specialty,
                         mail: data.email,
                         phone: data.phone,
                         userType: data.type,
@@ -105,28 +114,22 @@ export default class Home extends Component {
             <Card>
               <CardItem header bordered>
                 <Body>
-                  <Title>
-                    {data.type === 'doctor' ? 'Mis Citas' : 'Mis Alarmas'}
-                  </Title>
+                  <Title>Otras opciones</Title>
                 </Body>
-                <Right>
-                  <IconButton
-                    icon="eye"
-                    size={25}
-                    onPress={() => this.props.navigation.navigate('Citas')}
-                  />
-                </Right>
               </CardItem>
-              {data.type === 'doctor' ? (
-                <>
-                  <MedicalAppointment />
-                </>
-              ) : (
-                <>
-                  <MedicalAlarms />
-                </>
-              )}
+              <Button
+                color="#FF7058"
+                onPress={() => {
+                  this.logout();
+                }}>
+                Cerrar Sesión
+              </Button>
             </Card>
+            <ActivityIndicator
+              animating={loadNextPage}
+              color="#FF7058"
+              size="large"
+            />
           </Content>
         </Container>
       </View>

@@ -1,13 +1,18 @@
 import * as React from 'react';
 import {StyleSheet, Text, View, SafeAreaView, Image} from 'react-native';
 import 'react-native-gesture-handler';
-import {NavigationContainer} from '@react-navigation/native';
+import {
+  NavigationContainer,
+  createAppContainer,
+  createSwitchNavigator,
+} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {
   createDrawerNavigator,
   DrawerItemList,
   DrawerContentScrollView,
 } from '@react-navigation/drawer';
+import Configuration from './src/Views/Configuration';
 /**Vistas del Doctor */
 import Login from './src/Views/Login';
 import Home from './src/Views/Doctor/Home';
@@ -45,13 +50,18 @@ const Drawer = createDrawerNavigator();
 
 /**Ventanas de DR */
 /**Descripcion: Almacena las ventanas de inicio y editar datos del Dr */
-function DoctorHome() {
+function DoctorHome(userData) {
   return (
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
       }}>
-      <Stack.Screen name="Home" component={Home} navigation />
+      <Stack.Screen
+        name="Home"
+        component={Home}
+        navigation
+        initialParams={{data: userData}}
+      />
       <Stack.Screen name="EditPersonalInfo" component={MyData} navigation />
     </Stack.Navigator>
   );
@@ -119,7 +129,7 @@ function Medicines() {
 
 /**Ventanas de todos */
 /**Descripcion: Esta funcion almacena las ventanas de Login y Registro */
-function RegisterLogin(callBack) {
+function AuthLogin(callBack) {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -130,8 +140,15 @@ function RegisterLogin(callBack) {
         component={Login}
         navigation
         initialParams={{callBack: callBack}}
+        options={{gestureEnabled: false}}
       />
-      <Stack.Screen name="Registro" component={Register} />
+      <Stack.Screen
+        name="Registro"
+        component={Register}
+        initialParams={{callBack: callBack}}
+        options={{gestureEnabled: false}}
+        navigation
+      />
     </Stack.Navigator>
   );
 }
@@ -214,69 +231,95 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      userType: '',
+      userData: {},
+      isSignedIn: false,
     };
   }
-  callBack = (userType) => this.setState({userType: userType});
+  callBack(userData, isSignedIn) {
+    this.setState({userData: userData, isSignedIn: isSignedIn});
+  }
+  getUserData() {
+    return this.state.userData;
+  }
   render() {
     return (
       <NavigationContainer>
-        <Drawer.Navigator
-          initialRouteName={this.state.userType !== '' ? 'Inicio' : 'Salir'}
-          drawerContent={(props) => (
-            <SafeAreaView style={{flex: 1}}>
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  backgroundColor: '#afc9ff',
-                  padding: 10,
-                }}>
-                <Image
-                  source={require('./src/img/logo.png')}
-                  style={{height: 60, width: 60}}
-                />
-                <View style={styles.title}>
-                  <Text style={{fontSize: 25, color: 'white'}}>Medic</Text>
-                  <Text style={{fontSize: 25, color: '#FF7058'}}>Alarm</Text>
-                </View>
-              </View>
-              <DrawerContentScrollView {...props}>
-                <DrawerItemList {...props} />
-              </DrawerContentScrollView>
-            </SafeAreaView>
-          )}>
-          <Drawer.Screen name="Inicio" component={DoctorHome} />
-          {this.state.userType === 'doctor' && (
-            <>
-              <Drawer.Screen name="Pacientes" component={PatientsViews} />
-              <Drawer.Screen name="Recetas" component={Prescriptions} />
-              <Drawer.Screen name="Medicamentos" component={Medicines} />
-              <Drawer.Screen name="Citas" component={Appointments} />
-            </>
-          )}
-          {this.state.userType === 'patient' && (
-            <>
-              <Drawer.Screen name="Alarmas" component={AlarmViews} />
+        {this.state.isSignedIn ? (
+          <>
+            <Drawer.Navigator
+              initialRouteName="Inicio"
+              drawerContent={props => (
+                <SafeAreaView style={{flex: 1}}>
+                  <View
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      backgroundColor: '#afc9ff',
+                      padding: 10,
+                    }}>
+                    <Image
+                      source={require('./src/img/logo.png')}
+                      style={{height: 60, width: 60}}
+                    />
+                    <View style={styles.title}>
+                      <Text style={{fontSize: 25, color: 'white'}}>Medic</Text>
+                      <Text style={{fontSize: 25, color: '#FF7058'}}>
+                        Alarm
+                      </Text>
+                    </View>
+                  </View>
+                  <DrawerContentScrollView {...props}>
+                    <DrawerItemList {...props} />
+                  </DrawerContentScrollView>
+                </SafeAreaView>
+              )}>
               <Drawer.Screen
-                name="Contactos de Confianza"
-                component={TrustedContactViews}
+                name="Inicio"
+                children={() => DoctorHome(this.state.userData)}
               />
-              <Drawer.Screen name="Recetas" component={PatientPrescriptions} />
+              {this.state.userData.data.type === 'doctor' && (
+                <>
+                  <Drawer.Screen name="Pacientes" component={PatientsViews} />
+                  <Drawer.Screen name="Recetas" component={Prescriptions} />
+                  <Drawer.Screen name="Medicamentos" component={Medicines} />
+                  <Drawer.Screen name="Citas" component={Appointments} />
+                </>
+              )}
+              {this.state.userData.data.type === 'patient' && (
+                <>
+                  <Drawer.Screen name="Alarmas" component={AlarmViews} />
+                  <Drawer.Screen
+                    name="Contactos de Confianza"
+                    component={TrustedContactViews}
+                  />
+                  <Drawer.Screen
+                    name="Recetas"
+                    component={PatientPrescriptions}
+                  />
+                  <Drawer.Screen
+                    name="Citas"
+                    component={PatientAppointmentsViews}
+                  />
+                  <Drawer.Screen
+                    name="Seguimiento"
+                    component={MonitoringViews}
+                  />
+                </>
+              )}
               <Drawer.Screen
-                name="Citas"
-                component={PatientAppointmentsViews}
+                name="Configuracion"
+                component={Configuration}
+                initialParams={{
+                  callBack: this.callBack.bind(this),
+                  data: this.getUserData.bind(this),
+                }}
               />
-              <Drawer.Screen name="Seguimiento" component={MonitoringViews} />
-            </>
-          )}
-          <Drawer.Screen
-            name="Salir"
-            children={() => RegisterLogin(this.callBack.bind(this))}
-            options={{gestureEnabled: false}}
-          />
-        </Drawer.Navigator>
+            </Drawer.Navigator>
+          </>
+        ) : (
+          AuthLogin(this.callBack.bind(this))
+        )}
       </NavigationContainer>
     );
   }

@@ -15,8 +15,13 @@ export default class EditPersonalInfo extends Component {
         /"/g,
         '',
       ),
-      professionalIdText: '',
-      specialityText: '',
+      professionalIdText: JSON.stringify(
+        this.props.route.params.professional_id,
+      ).replace(/"/g, ''),
+      specialityText: JSON.stringify(this.props.route.params.specialty).replace(
+        /"/g,
+        '',
+      ),
       mailText: JSON.stringify(props.route.params.mail).replace(/"/g, ''),
       phoneText: JSON.stringify(props.route.params.phone).replace(/"/g, ''),
       type: JSON.stringify(props.route.params.userType).replace(/"/g, ''),
@@ -42,7 +47,7 @@ export default class EditPersonalInfo extends Component {
             this.props.navigation.goBack();
           }, 1000);
         })
-        .catch((error) => Alert.alert('Error', error.message));
+        .catch(error => Alert.alert('Error', error.message));
     } else {
       firestore()
         .collection('users')
@@ -59,7 +64,7 @@ export default class EditPersonalInfo extends Component {
             this.props.navigation.goBack();
           }, 1000);
         })
-        .catch((error) => Alert.alert('Error', error.message));
+        .catch(error => Alert.alert('Error', error.message));
     }
   }
   render() {
@@ -72,12 +77,6 @@ export default class EditPersonalInfo extends Component {
       phoneText,
     } = this.state;
     if (this.props.route.params.userType === 'doctor') {
-      this.state.professionalIdTex = JSON.stringify(
-        this.props.route.params.professional_id,
-      ).replace(/"/g, '');
-      this.state.specialityText = JSON.stringify(
-        this.props.route.params.specialty,
-      ).replace(/"/g, '');
       return (
         <Container>
           <AppHeader
@@ -91,7 +90,7 @@ export default class EditPersonalInfo extends Component {
               value={nameText}
               returnKeyType={'next'}
               onSubmitEditing={() => this.lastNameInput.focus()}
-              onChangeText={(text) => this.setState({nameText: text})}
+              onChangeText={text => this.setState({nameText: text})}
               mode="outlined"
               style={{paddingTop: 5}}
             />
@@ -99,8 +98,8 @@ export default class EditPersonalInfo extends Component {
               label="Apellido"
               value={lastNameText}
               returnKeyType={'next'}
-              ref={(input) => (this.lastNameInput = input)}
-              onChangeText={(text) => this.setState({lastNameText: text})}
+              ref={input => (this.lastNameInput = input)}
+              onChangeText={text => this.setState({lastNameText: text})}
               onSubmitEditing={() => this.idInput.focus()}
               mode="outlined"
               style={{paddingTop: 5}}
@@ -108,9 +107,9 @@ export default class EditPersonalInfo extends Component {
             <TextInput
               label="Cédula Profesional"
               value={professionalIdText}
-              onChangeText={(text) => this.setState({professionalIdText: text})}
+              onChangeText={text => this.setState({professionalIdText: text})}
               returnKeyType={'next'}
-              ref={(input) => (this.idInput = input)}
+              ref={input => (this.idInput = input)}
               onSubmitEditing={() => this.specialityInput.focus()}
               mode="outlined"
               style={{paddingTop: 10}}
@@ -119,16 +118,16 @@ export default class EditPersonalInfo extends Component {
               label="Especialidad"
               returnKeyType={'next'}
               value={specialityText}
-              onChangeText={(text) => this.setState({specialityText: text})}
-              ref={(input) => (this.specialityInput = input)}
+              onChangeText={text => this.setState({specialityText: text})}
+              ref={input => (this.specialityInput = input)}
               onSubmitEditing={() => this.phoneInput.focus()}
               mode="outlined"
               style={{paddingTop: 10}}
             />
             <TextInput
               label="No. Teléfono"
-              ref={(input) => (this.phoneInput = input)}
-              onChangeText={(text) => this.setState({phoneText: text})}
+              ref={input => (this.phoneInput = input)}
+              onChangeText={text => this.setState({phoneText: text})}
               value={phoneText}
               returnKeyType={'go'}
               keyboardType="phone-pad"
@@ -167,7 +166,7 @@ export default class EditPersonalInfo extends Component {
               value={nameText}
               returnKeyType={'next'}
               onSubmitEditing={() => this.lastNameInput.focus()}
-              onChangeText={(text) => this.setState({nameText: text})}
+              onChangeText={text => this.setState({nameText: text})}
               mode="outlined"
               style={{paddingTop: 5}}
             />
@@ -175,17 +174,17 @@ export default class EditPersonalInfo extends Component {
               label="Apellido"
               value={lastNameText}
               returnKeyType={'next'}
-              ref={(input) => (this.lastNameInput = input)}
-              onChangeText={(text) => this.setState({lastNameText: text})}
+              ref={input => (this.lastNameInput = input)}
+              onChangeText={text => this.setState({lastNameText: text})}
               onSubmitEditing={() => this.phoneInput.focus()}
               mode="outlined"
               style={{paddingTop: 5}}
             />
             <TextInput
               label="No. Teléfono"
-              ref={(input) => (this.phoneInput = input)}
+              ref={input => (this.phoneInput = input)}
               value={phoneText}
-              onChangeText={(text) => this.setState({phoneText: text})}
+              onChangeText={text => this.setState({phoneText: text})}
               returnKeyType={'go'}
               keyboardType="phone-pad"
               mode="outlined"

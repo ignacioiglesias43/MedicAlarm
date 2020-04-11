@@ -1,6 +1,4 @@
 import React, {Component} from 'react';
-import AuthService from '../../Services/auth-service';
-import {AsyncStorage} from '@react-native-community/async-storage';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {
@@ -33,19 +31,20 @@ export default class LoginForm extends Component {
             .collection('users')
             .where('email', '==', this.state.email)
             .get()
-            .then((data) => {
-              this.props.callBack(data.docs[0]._data.type);
-              this.props.navigation.navigate('Inicio', {
-                email: 2,
+            .then(data => {
+              let dataBase = {};
+              data.forEach(d => {
+                dataBase = {id: d.id, data: d.data()};
+                this.props.callBack(dataBase, true);
               });
               this.setState({loadNextPage: !this.state.loadNextPage});
             })
-            .catch((error) => {
+            .catch(error => {
               this.setState({loadNextPage: !this.state.loadNextPage});
               Alert.alert('Error', error.message);
             });
         })
-        .catch((error) => {
+        .catch(error => {
           this.setState({loadNextPage: !this.state.loadNextPage});
           let message = '';
           switch (error.code) {
@@ -56,7 +55,8 @@ export default class LoginForm extends Component {
               message = 'La contraseña ingresada es incorrecta.';
               break;
             case 'auth/invalid-email':
-              message = 'Correo electrónico inválido.';
+              message =
+                'Correo electrónico inválido. Por favor ingrese un correo con el siguiente formato: algo@example.com';
               break;
             default:
               message =
@@ -65,13 +65,8 @@ export default class LoginForm extends Component {
           Alert.alert('Error', message);
         });
     }, 1000);
-    // AuthService.logOut();
   }
-  navigateRegister() {
-    setTimeout(() => {
-      this.props.navigation.push('Registro');
-    }, 1000);
-  }
+
   render() {
     const {isSwitchOn, loadNextPage} = this.state;
     return (
@@ -95,7 +90,7 @@ export default class LoginForm extends Component {
           label="Correo Electrónico"
           returnKeyType={'next'}
           value={this.state.email}
-          onChangeText={(email) => this.setState({email: email})}
+          onChangeText={email => this.setState({email: email})}
         />
         <TextInput
           underlineColorAndroid="#FF7058"
@@ -105,9 +100,9 @@ export default class LoginForm extends Component {
           label="Contraseña"
           returnKeyType={'go'}
           secureTextEntry
-          ref={(input) => (this.passwordInput = input)}
+          ref={input => (this.passwordInput = input)}
           value={this.state.password}
-          onChangeText={(password) => this.setState({password: password})}
+          onChangeText={password => this.setState({password: password})}
         />
         <View style={styles.switchContainer}>
           <Text style={{color: 'white'}}>Recordarme</Text>
@@ -138,7 +133,7 @@ export default class LoginForm extends Component {
           <Button
             color="#FF7058"
             onPress={() => {
-              this.navigateRegister();
+              this.props.navigation.push('Registro');
             }}>
             Registrate aquí
           </Button>
