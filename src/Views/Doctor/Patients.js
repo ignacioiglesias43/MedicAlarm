@@ -12,9 +12,6 @@ export default class Patients extends Component {
       firstQuery: '',
     };
   }
-  navigate = () => {
-    this.props.navigation.navigate('Agregar Paciente');
-  };
   render() {
     const {firstQuery} = this.state;
     return (
@@ -26,6 +23,7 @@ export default class Patients extends Component {
           showAddAction={true}
           addIcon="account-plus-outline"
           navigateRoute="AddPaciente"
+          data={this.props.route.params.data}
         />
         <Searchbar
           placeholder="Buscar"
@@ -35,7 +33,10 @@ export default class Patients extends Component {
           value={firstQuery}
         />
         <View style={{flex: 1}}>
-          <PatientsList query={this.state.firstQuery} />
+          <PatientsList
+            query={this.state.firstQuery}
+            data={this.props.route.params.data}
+          />
         </View>
       </View>
     );

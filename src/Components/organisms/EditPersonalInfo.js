@@ -34,17 +34,27 @@ export default class EditPersonalInfo extends Component {
         .collection('users')
         .doc(this.state.id)
         .update({
-          email: this.state.mailText,
-          name: this.state.nameText,
-          last_name: this.state.lastNameText,
-          professional_id: this.state.professionalIdText,
-          specialty: this.state.specialityText,
-          phone: this.state.phoneText,
+          email: this.state.mailText.trim(),
+          name: this.state.nameText.trim(),
+          last_name: this.state.lastNameText.trim(),
+          professional_id: this.state.professionalIdText.trim(),
+          specialty: this.state.specialityText.trim(),
+          phone: this.state.phoneText.trim(),
         })
         .then(() => {
           setTimeout(() => {
             this.setState({sendForm: !this.state.sendForm});
-            this.props.navigation.goBack();
+            let data = {
+              email: this.state.mailText.trim(),
+              name: this.state.nameText.trim(),
+              last_name: this.state.lastNameText.trim(),
+              professional_id: this.state.professionalIdText.trim(),
+              specialty: this.state.specialityText.trim(),
+              phone: this.state.phoneText.trim(),
+              type: this.state.type,
+            };
+            this.props.route.params.callBack(data, this.state.id);
+            this.props.navigation.navigate('Home');
           }, 1000);
         })
         .catch(error => Alert.alert('Error', error.message));
@@ -53,15 +63,23 @@ export default class EditPersonalInfo extends Component {
         .collection('users')
         .doc(this.state.id)
         .update({
-          email: this.state.mailText,
-          name: this.state.nameText,
-          last_name: this.state.lastNameText,
-          phone: this.state.phoneText,
+          email: this.state.mailText.trim(),
+          name: this.state.nameText.trim(),
+          last_name: this.state.lastNameText.trim(),
+          phone: this.state.phoneText.trim(),
         })
         .then(() => {
           setTimeout(() => {
             this.setState({sendForm: !this.state.sendForm});
-            this.props.navigation.goBack();
+            let data = {
+              email: this.state.mailText.trim(),
+              name: this.state.nameText.trim(),
+              last_name: this.state.lastNameText.trim(),
+              phone: this.state.phoneText.trim(),
+              type: this.state.type,
+            };
+            this.props.route.params.callBack(data, this.state.id);
+            this.props.navigation.navigate('Home');
           }, 1000);
         })
         .catch(error => Alert.alert('Error', error.message));

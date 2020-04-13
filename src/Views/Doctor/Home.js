@@ -5,21 +5,18 @@ import AppHeader from '../../Components/organisms/Header';
 import MedicalAppointment from '../../Components/organisms/MedicalAppointment';
 import MedicalAlarms from '../../Components/organisms/MedicalAlarms';
 import {Avatar, Title, IconButton} from 'react-native-paper';
-import auth from '@react-native-firebase/auth';
-
-import firestore from '@react-native-firebase/firestore';
 export default class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      id: this.props.route.params.data.id,
-      data: this.props.route.params.data.data,
+      id: props.route.params.data.id,
+      data: props.route.params.data.data,
     };
   }
-  componentWillReceiveProps() {
+  callBack(data, id) {
     this.setState({
-      id: this.props.route.params.data.id,
-      data: this.props.route.params.data.data,
+      id: id,
+      data: data,
     });
   }
   render() {
@@ -37,17 +34,19 @@ export default class Home extends Component {
             display: 'flex',
             alignItems: 'center',
           }}>
-          <Avatar.Image
-            size={130}
-            source={
-              data.type === 'doctor'
-                ? require('../../img/avatar.png')
-                : require('../../img/usuario.png')
-            }
-            style={{backgroundColor: 'white'}}
-          />
+          {typeof data !== 'undefined' && (
+            <Avatar.Image
+              size={130}
+              source={
+                data.type === 'doctor'
+                  ? require('../../img/avatar.png')
+                  : require('../../img/usuario.png')
+              }
+              style={{backgroundColor: 'white'}}
+            />
+          )}
           <Title>
-            {Object.keys(data).length > 0
+            {typeof data !== 'undefined'
               ? data.type === 'doctor'
                 ? `Dr. ${data.name} ${data.last_name}`
                 : `${data.name} ${data.last_name}`
@@ -77,15 +76,21 @@ export default class Home extends Component {
                         mail: data.email,
                         phone: data.phone,
                         userType: data.type,
+                        callBack: this.callBack.bind(this),
                       })
                     }
                   />
                 </Right>
               </CardItem>
               <CardItem bordered>
-                <Text>Nombre: {`${data.name} ${data.last_name}`}</Text>
+                <Text>
+                  Nombre:{' '}
+                  {typeof data !== 'undefined'
+                    ? `${data.name} ${data.last_name}`
+                    : ''}
+                </Text>
               </CardItem>
-              {data.type === 'doctor' && (
+              {typeof data !== 'undefined' && data.type === 'doctor' && (
                 <>
                   <CardItem bordered>
                     <Text>Cédula: {data.professional_id}</Text>
@@ -96,28 +101,43 @@ export default class Home extends Component {
                 </>
               )}
               <CardItem bordered>
-                <Text>Correo: {data.email}</Text>
+                <Text>
+                  Correo: {typeof data !== 'undefined' ? data.email : ''}
+                </Text>
               </CardItem>
               <CardItem bordered>
-                <Text>Teléfono: {data.phone}</Text>
+                <Text>
+                  Teléfono: {typeof data !== 'undefined' ? data.phone : ''}
+                </Text>
               </CardItem>
             </Card>
             <Card>
               <CardItem header bordered>
                 <Body>
                   <Title>
-                    {data.type === 'doctor' ? 'Mis Citas' : 'Mis Alarmas'}
+                    {typeof data !== 'undefined'
+                      ? data.type === 'doctor'
+                        ? 'Mis Citas'
+                        : 'Mis Alarmas'
+                      : ''}
                   </Title>
                 </Body>
                 <Right>
                   <IconButton
                     icon="eye"
                     size={25}
-                    onPress={() => this.props.navigation.navigate('Citas')}
+                    onPress={() => {
+                      const {navigation} = this.props;
+                      if (typeof data !== 'undefined') {
+                        data.type === 'doctor'
+                          ? navigation.navigate('Citas')
+                          : navigation.navigate('Alarmas');
+                      }
+                    }}
                   />
                 </Right>
               </CardItem>
-              {data.type === 'doctor' ? (
+              {typeof data !== 'undefined' && data.type === 'doctor' ? (
                 <>
                   <MedicalAppointment />
                 </>

@@ -1,11 +1,7 @@
 import * as React from 'react';
 import {StyleSheet, Text, View, SafeAreaView, Image} from 'react-native';
 import 'react-native-gesture-handler';
-import {
-  NavigationContainer,
-  createAppContainer,
-  createSwitchNavigator,
-} from '@react-navigation/native';
+import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {
   createDrawerNavigator,
@@ -68,13 +64,18 @@ function DoctorHome(userData) {
 }
 
 /**Descripcion: Esta funcion almacena las ventanas para agregar y ver pacientes */
-function PatientsViews() {
+function PatientsViews(userData) {
   return (
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
       }}>
-      <Stack.Screen name="Pacientes" component={Patients} navigation />
+      <Stack.Screen
+        name="Pacientes"
+        component={Patients}
+        navigation
+        initialParams={{data: userData}}
+      />
       <Stack.Screen name="AddPaciente" component={AddPatient} />
     </Stack.Navigator>
   );
@@ -131,25 +132,27 @@ function Medicines() {
 /**Descripcion: Esta funcion almacena las ventanas de Login y Registro */
 function AuthLogin(callBack) {
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}>
-      <Stack.Screen
-        name="Login"
-        component={Login}
-        navigation
-        initialParams={{callBack: callBack}}
-        options={{gestureEnabled: false}}
-      />
-      <Stack.Screen
-        name="Registro"
-        component={Register}
-        initialParams={{callBack: callBack}}
-        options={{gestureEnabled: false}}
-        navigation
-      />
-    </Stack.Navigator>
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}>
+        <Stack.Screen
+          name="Login"
+          component={Login}
+          navigation
+          initialParams={{callBack: callBack}}
+          options={{gestureEnabled: false}}
+        />
+        <Stack.Screen
+          name="Registro"
+          component={Register}
+          initialParams={{callBack: callBack}}
+          options={{gestureEnabled: false}}
+          navigation
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
@@ -242,85 +245,76 @@ export default class App extends React.Component {
     return this.state.userData;
   }
   render() {
-    return (
+    return this.state.isSignedIn ? (
       <NavigationContainer>
-        {this.state.isSignedIn ? (
-          <>
-            <Drawer.Navigator
-              initialRouteName="Inicio"
-              drawerContent={props => (
-                <SafeAreaView style={{flex: 1}}>
-                  <View
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      backgroundColor: '#afc9ff',
-                      padding: 10,
-                    }}>
-                    <Image
-                      source={require('./src/img/logo.png')}
-                      style={{height: 60, width: 60}}
-                    />
-                    <View style={styles.title}>
-                      <Text style={{fontSize: 25, color: 'white'}}>Medic</Text>
-                      <Text style={{fontSize: 25, color: '#FF7058'}}>
-                        Alarm
-                      </Text>
-                    </View>
-                  </View>
-                  <DrawerContentScrollView {...props}>
-                    <DrawerItemList {...props} />
-                  </DrawerContentScrollView>
-                </SafeAreaView>
-              )}>
+        <Drawer.Navigator
+          initialRouteName="Inicio"
+          drawerContent={props => (
+            <SafeAreaView style={{flex: 1}}>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  backgroundColor: '#afc9ff',
+                  padding: 10,
+                }}>
+                <Image
+                  source={require('./src/img/logo.png')}
+                  style={{height: 60, width: 60}}
+                />
+                <View style={styles.title}>
+                  <Text style={{fontSize: 25, color: 'white'}}>Medic</Text>
+                  <Text style={{fontSize: 25, color: '#FF7058'}}>Alarm</Text>
+                </View>
+              </View>
+              <DrawerContentScrollView {...props}>
+                <DrawerItemList {...props} />
+              </DrawerContentScrollView>
+            </SafeAreaView>
+          )}>
+          <Drawer.Screen
+            name="Inicio"
+            children={() => DoctorHome(this.state.userData)}
+          />
+          {this.state.userData.data.type === 'doctor' && (
+            <>
               <Drawer.Screen
-                name="Inicio"
-                children={() => DoctorHome(this.state.userData)}
+                name="Pacientes"
+                children={() => PatientsViews(this.state.userData)}
               />
-              {this.state.userData.data.type === 'doctor' && (
-                <>
-                  <Drawer.Screen name="Pacientes" component={PatientsViews} />
-                  <Drawer.Screen name="Recetas" component={Prescriptions} />
-                  <Drawer.Screen name="Medicamentos" component={Medicines} />
-                  <Drawer.Screen name="Citas" component={Appointments} />
-                </>
-              )}
-              {this.state.userData.data.type === 'patient' && (
-                <>
-                  <Drawer.Screen name="Alarmas" component={AlarmViews} />
-                  <Drawer.Screen
-                    name="Contactos de Confianza"
-                    component={TrustedContactViews}
-                  />
-                  <Drawer.Screen
-                    name="Recetas"
-                    component={PatientPrescriptions}
-                  />
-                  <Drawer.Screen
-                    name="Citas"
-                    component={PatientAppointmentsViews}
-                  />
-                  <Drawer.Screen
-                    name="Seguimiento"
-                    component={MonitoringViews}
-                  />
-                </>
-              )}
+              <Drawer.Screen name="Recetas" component={Prescriptions} />
+              <Drawer.Screen name="Medicamentos" component={Medicines} />
+              <Drawer.Screen name="Citas" component={Appointments} />
+            </>
+          )}
+          {this.state.userData.data.type === 'patient' && (
+            <>
+              <Drawer.Screen name="Alarmas" component={AlarmViews} />
               <Drawer.Screen
-                name="Configuracion"
-                component={Configuration}
-                initialParams={{
-                  callBack: this.callBack.bind(this),
-                  data: this.getUserData.bind(this),
-                }}
+                name="Contactos de Confianza"
+                component={TrustedContactViews}
               />
-            </Drawer.Navigator>
-          </>
-        ) : (
-          AuthLogin(this.callBack.bind(this))
-        )}
+              <Drawer.Screen name="Recetas" component={PatientPrescriptions} />
+              <Drawer.Screen
+                name="Citas"
+                component={PatientAppointmentsViews}
+              />
+              <Drawer.Screen name="Seguimiento" component={MonitoringViews} />
+            </>
+          )}
+          <Drawer.Screen
+            name="Configuracion"
+            component={Configuration}
+            initialParams={{
+              callBack: this.callBack.bind(this),
+              data: this.getUserData.bind(this),
+            }}
+          />
+        </Drawer.Navigator>
       </NavigationContainer>
+    ) : (
+      AuthLogin(this.callBack.bind(this))
     );
   }
 }

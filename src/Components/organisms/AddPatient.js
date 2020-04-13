@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
-import {StyleSheet, View} from 'react-native';
-import {Container, Header, Button, Icon} from 'native-base';
-import {FAB, Searchbar} from 'react-native-paper';
+import {View} from 'react-native';
+import {Searchbar} from 'react-native-paper';
 import AppHeader from '../../Components/organisms/Header';
 import AddPatientsList from '../../Components/organisms/AddPatientsList';
 
@@ -29,7 +28,10 @@ export default class AddPatient extends Component {
           value={firstQuery}
         />
         <View style={{flex: 1}}>
-          <AddPatientsList query={this.state.firstQuery} />
+          <AddPatientsList
+            query={this.state.firstQuery}
+            data={this.props.route.params}
+          />
         </View>
       </View>
     );

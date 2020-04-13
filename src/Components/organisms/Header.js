@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, Image, Text} from 'react-native';
 import {Appbar} from 'react-native-paper';
 
 export default class Header extends Component {
@@ -14,7 +13,9 @@ export default class Header extends Component {
     }
   };
   addAction = () => {
-    this.props.navigation.navigate(this.props.navigateRoute);
+    this.props.navigation.navigate(this.props.navigateRoute, {
+      data: this.props.data,
+    });
   };
   render() {
     if (this.props.showAddAction) {
