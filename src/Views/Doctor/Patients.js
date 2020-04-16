@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Container, Header, Icon} from 'native-base';
-import {Title, Searchbar} from 'react-native-paper';
+import {Searchbar} from 'react-native-paper';
 import AppHeader from '../../Components/organisms/Header';
 import PatientsList from '../../Components/organisms/PatientsList';
 

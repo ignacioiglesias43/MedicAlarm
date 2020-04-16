@@ -14,7 +14,7 @@ import {
   Thumbnail,
   Text,
 } from 'native-base';
-import {ScrollView, Alert} from 'react-native';
+import {Alert, FlatList} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import {IconButton} from 'react-native-paper';
 export default class PatientsList extends Component {
@@ -23,11 +23,15 @@ export default class PatientsList extends Component {
     this.state = {
       contacts: [],
       id: [],
+      refreshing: false,
     };
   }
   componentWillMount() {
     /**Aquí se muestran los pacientes registrados */
     console.log(this.props.data.id);
+    this.getContacts();
+  }
+  getContacts() {
     firestore()
       .collection('patient-doctor')
       .where('doctor.id', '==', this.props.data.id)
@@ -40,7 +44,7 @@ export default class PatientsList extends Component {
           dataBase.push(d.data().patient);
           id.push(d.id);
         });
-        this.setState({contacts: dataBase, id: id});
+        this.setState({contacts: dataBase, id: id, refreshing: false});
       })
       .catch(e => {
         console.log(e);
@@ -67,16 +71,27 @@ export default class PatientsList extends Component {
       })
       .catch(e => Alert.alert('Error', e.message));
   }
+  handleRefresh = () => {
+    this.setState(
+      {
+        refreshing: true,
+      },
+      () => {
+        this.getContacts();
+      },
+    );
+  };
   render() {
-    const {contacts, id} = this.state;
+    const {contacts, id, refreshing} = this.state;
     let filteredContacts = contacts.filter(contact => {
       return contact.name.indexOf(this.props.query) !== -1;
     });
     return (
       <Container>
-        <ScrollView>
-          {filteredContacts.map(item => (
-            <List style={{padding: 20}} key={item.email}>
+        <FlatList
+          data={filteredContacts}
+          renderItem={({item}) => (
+            <List style={{padding: 20}}>
               <ListItem thumbnail icon>
                 <Left>
                   <Thumbnail square source={require('../../img/usuario.png')} />
@@ -117,8 +132,11 @@ export default class PatientsList extends Component {
                 </Right>
               </ListItem>
             </List>
-          ))}
-        </ScrollView>
+          )}
+          refreshing={refreshing}
+          onRefresh={this.handleRefresh}
+          keyExtractor={item => item.email}
+        />
       </Container>
     );
   }

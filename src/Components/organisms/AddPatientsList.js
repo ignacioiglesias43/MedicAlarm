@@ -6,7 +6,7 @@
 import React, {Component} from 'react';
 import {Container, List, ListItem, Body, Right, Text} from 'native-base';
 import {IconButton} from 'react-native-paper';
-import {ScrollView, Alert} from 'react-native';
+import {FlatList, Alert} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 
 export default class AddPatientsList extends Component {
@@ -15,10 +15,14 @@ export default class AddPatientsList extends Component {
     this.state = {
       id: props.data.id,
       contacts: [],
+      refreshing: false,
     };
   }
   componentWillMount() {
     /**Aquí se muestran los pacientes registrados */
+    this.getUsers();
+  }
+  getUsers() {
     firestore()
       .collection('users')
       .where('type', '==', 'patient')
@@ -28,7 +32,7 @@ export default class AddPatientsList extends Component {
         data.forEach(d => {
           dataBase.push(d.data());
         });
-        this.setState({contacts: dataBase});
+        this.setState({contacts: dataBase, refreshing: false});
       })
       .catch(e => {
         console.log(e);
@@ -71,16 +75,27 @@ export default class AddPatientsList extends Component {
         Alert.alert('Error', e.message);
       });
   }
+  handleRefresh = () => {
+    this.setState(
+      {
+        refreshing: true,
+      },
+      () => {
+        this.getUsers();
+      },
+    );
+  };
   render() {
-    const {contacts} = this.state;
+    const {contacts, refreshing} = this.state;
     let filteredContacts = contacts.filter(contact => {
       return contact.name.indexOf(this.props.query) !== -1;
     });
     return (
       <Container>
-        <ScrollView>
-          {filteredContacts.map(item => (
-            <List style={{paddingTop: 20}} key={item.email}>
+        <FlatList
+          data={filteredContacts}
+          renderItem={({item}) => (
+            <List style={{paddingTop: 20}}>
               <ListItem icon>
                 <Body>
                   <Text>{`${item.name} ${item.last_name}`}</Text>
@@ -99,8 +114,11 @@ export default class AddPatientsList extends Component {
                 </Right>
               </ListItem>
             </List>
-          ))}
-        </ScrollView>
+          )}
+          refreshing={refreshing}
+          onRefresh={this.handleRefresh}
+          keyExtractor={item => item.email}
+        />
       </Container>
     );
   }
