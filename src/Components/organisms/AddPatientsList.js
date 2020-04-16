@@ -13,7 +13,7 @@ export default class AddPatientsList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      id: props.data.id,
+      id: props.data.data.id,
       contacts: [],
       refreshing: false,
     };
@@ -63,6 +63,7 @@ export default class AddPatientsList extends Component {
     firestore()
       .collection('patient-doctor')
       .where('patient.email', '==', patient.email)
+      .where('doctor.id', '==', this.state.id)
       .get()
       .then(data => {
         if (data.docs.length === 0) {
