@@ -82,13 +82,18 @@ function PatientsViews(userData) {
 }
 
 /**Descripcion: Almacena las ventanas de recetas */
-function Prescriptions() {
+function Prescriptions(userData) {
   return (
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
       }}>
-      <Stack.Screen name="Recetas" component={PrescriptionScreen} navigation />
+      <Stack.Screen
+        name="Recetas"
+        component={PrescriptionScreen}
+        navigation
+        initialParams={{data: userData}}
+      />
       <Stack.Screen name="AddReceta" component={AddPrescription} />
       <Stack.Screen name="EditReceta" component={EditPrescription} />
     </Stack.Navigator>
@@ -283,7 +288,10 @@ export default class App extends React.Component {
                 name="Pacientes"
                 children={() => PatientsViews(this.state.userData)}
               />
-              <Drawer.Screen name="Recetas" component={Prescriptions} />
+              <Drawer.Screen
+                name="Recetas"
+                children={() => Prescriptions(this.state.userData)}
+              />
               <Drawer.Screen name="Medicamentos" component={Medicines} />
               <Drawer.Screen name="Citas" component={Appointments} />
             </>

@@ -1,32 +1,80 @@
 import React, {Component, Fragment} from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import {View, StyleSheet, Text, Alert} from 'react-native';
 import {Content, Container, Textarea} from 'native-base';
 import {ActivityIndicator, Button} from 'react-native-paper';
 import AppHeader from '../../Components/organisms/Header';
 import SearchableDropdown from 'react-native-searchable-dropdown';
-import data from '../../JSON/patientsAdded.json';
-import medicines from '../../JSON/medicines.json';
+import firestore from '@react-native-firebase/firestore';
 export default class AddPrescription extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      patient: '',
-      medicine: '',
       sendForm: false,
-      addAnother: false,
       selectedPatient: [],
       selectedMedicines: [],
+      contacts: [],
+      medicines: [],
+      indications: [],
     };
+  }
+  getContacts() {
+    firestore()
+      .collection('patient-doctor')
+      .where('doctor.id', '==', this.props.route.params.data.id)
+      .get()
+      .then(data => {
+        let dataBase = [];
+        data.forEach(d => {
+          dataBase.push(d.data().patient);
+        });
+        this.setState({contacts: dataBase});
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  }
+  getMedicines() {
+    firestore()
+      .collection('medicines')
+      .get()
+      .then(data => {
+        let dataBase = [];
+        data.forEach(d => {
+          let dx = Object.assign(d.data(), {id: d.id});
+          dataBase.push(dx);
+        });
+        this.setState({medicines: dataBase});
+      })
+      .catch(e => {
+        console.log(e);
+      });
   }
   sendPrescription() {
     this.setState({sendForm: !this.state.sendForm});
     setTimeout(() => {
-      this.setState({sendForm: !this.state.sendForm});
-      this.props.navigation.goBack();
+      firestore()
+        .collection('prescriptions')
+        .add({
+          doctor: this.props.route.params.data,
+          medicines: this.state.selectedMedicines,
+          patient: {data: this.state.selectedPatient[0]},
+        })
+        .then(() => {
+          this.setState({sendForm: !this.state.sendForm});
+          this.props.navigation.goBack();
+        })
+        .catch(e => {
+          Alert.alert('Error', e.message);
+        });
     }, 1000);
   }
+  componentWillMount() {
+    /**Aquí se muestran los pacientes registrados y las medicinas */
+    this.getContacts();
+    this.getMedicines();
+  }
   render() {
-    const {sendForm} = this.state;
+    const {sendForm, contacts, medicines} = this.state;
     return (
       <Container>
         <AppHeader
@@ -54,7 +102,7 @@ export default class AddPrescription extends Component {
                 itemStyle={styles.itemStyle}
                 itemTextStyle={{color: '#222'}}
                 itemsContainerStyle={{maxHeight: 140}}
-                items={data}
+                items={contacts}
                 resetValue={false}
                 textInputProps={{
                   placeholder: 'Seleccione un paciente',
@@ -124,6 +172,15 @@ export default class AddPrescription extends Component {
                   bordered
                   placeholder="Indicaciones"
                   placeholderTextColor="#cc"
+                  onChangeText={text => {
+                    let indications = {indications: text.trim()};
+                    Object.assign(
+                      this.state.selectedMedicines[
+                        this.state.selectedMedicines.indexOf(item)
+                      ],
+                      indications,
+                    );
+                  }}
                 />
               </View>
             ))}
@@ -132,7 +189,25 @@ export default class AddPrescription extends Component {
                 color="#FF7058"
                 mode="contained"
                 dark={true}
-                onPress={() => this.sendPrescription()}>
+                onPress={() => {
+                  let done = false;
+                  this.state.selectedMedicines.forEach(med => {
+                    med.indications
+                      ? med.indications.length > 0
+                        ? (done = true)
+                        : (done = false)
+                      : (done = false);
+                  });
+                  if (
+                    done &&
+                    this.state.selectedPatient.length > 0 &&
+                    this.state.selectedMedicines.length > 0
+                  ) {
+                    this.sendPrescription();
+                  } else {
+                    Alert.alert('Error', 'Todos los campos son necesarios.');
+                  }
+                }}>
                 Enviar
               </Button>
             </View>

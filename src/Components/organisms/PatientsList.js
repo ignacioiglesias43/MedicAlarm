@@ -100,7 +100,7 @@ export default class PatientsList extends Component {
                     />
                   </Left>
                   <Body>
-                    <Text>{`${item.name} ${item.last_name}`}</Text>
+                    <Text>{item.name}</Text>
                   </Body>
                   <Right>
                     <IconButton
@@ -111,8 +111,6 @@ export default class PatientsList extends Component {
                           'Eliminar Paciente',
                           'Está por eliminar de su lista de contactos al paciente ' +
                             item.name +
-                            ' ' +
-                            item.last_name +
                             '.\n¿Desea Continuar?',
                           [
                             {

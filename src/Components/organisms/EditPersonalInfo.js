@@ -11,10 +11,6 @@ export default class EditPersonalInfo extends Component {
       sendForm: false,
       id: JSON.stringify(props.route.params.id).replace(/"/g, ''),
       nameText: JSON.stringify(props.route.params.name).replace(/"/g, ''),
-      lastNameText: JSON.stringify(props.route.params.lastname).replace(
-        /"/g,
-        '',
-      ),
       professionalIdText: JSON.stringify(
         this.props.route.params.professional_id,
       ).replace(/"/g, ''),
@@ -36,7 +32,6 @@ export default class EditPersonalInfo extends Component {
         .update({
           email: this.state.mailText.trim(),
           name: this.state.nameText.trim(),
-          last_name: this.state.lastNameText.trim(),
           professional_id: this.state.professionalIdText.trim(),
           specialty: this.state.specialityText.trim(),
           phone: this.state.phoneText.trim(),
@@ -47,7 +42,6 @@ export default class EditPersonalInfo extends Component {
             let data = {
               email: this.state.mailText.trim(),
               name: this.state.nameText.trim(),
-              last_name: this.state.lastNameText.trim(),
               professional_id: this.state.professionalIdText.trim(),
               specialty: this.state.specialityText.trim(),
               phone: this.state.phoneText.trim(),
@@ -65,7 +59,6 @@ export default class EditPersonalInfo extends Component {
         .update({
           email: this.state.mailText.trim(),
           name: this.state.nameText.trim(),
-          last_name: this.state.lastNameText.trim(),
           phone: this.state.phoneText.trim(),
         })
         .then(() => {
@@ -74,7 +67,6 @@ export default class EditPersonalInfo extends Component {
             let data = {
               email: this.state.mailText.trim(),
               name: this.state.nameText.trim(),
-              last_name: this.state.lastNameText.trim(),
               phone: this.state.phoneText.trim(),
               type: this.state.type,
             };
@@ -89,7 +81,6 @@ export default class EditPersonalInfo extends Component {
     const {
       sendForm,
       nameText,
-      lastNameText,
       professionalIdText,
       specialityText,
       phoneText,
@@ -107,18 +98,8 @@ export default class EditPersonalInfo extends Component {
               label="Nombre"
               value={nameText}
               returnKeyType={'next'}
-              onSubmitEditing={() => this.lastNameInput.focus()}
-              onChangeText={text => this.setState({nameText: text})}
-              mode="outlined"
-              style={{paddingTop: 5}}
-            />
-            <TextInput
-              label="Apellido"
-              value={lastNameText}
-              returnKeyType={'next'}
-              ref={input => (this.lastNameInput = input)}
-              onChangeText={text => this.setState({lastNameText: text})}
               onSubmitEditing={() => this.idInput.focus()}
+              onChangeText={text => this.setState({nameText: text})}
               mode="outlined"
               style={{paddingTop: 5}}
             />
@@ -183,18 +164,8 @@ export default class EditPersonalInfo extends Component {
               label="Nombre"
               value={nameText}
               returnKeyType={'next'}
-              onSubmitEditing={() => this.lastNameInput.focus()}
-              onChangeText={text => this.setState({nameText: text})}
-              mode="outlined"
-              style={{paddingTop: 5}}
-            />
-            <TextInput
-              label="Apellido"
-              value={lastNameText}
-              returnKeyType={'next'}
-              ref={input => (this.lastNameInput = input)}
-              onChangeText={text => this.setState({lastNameText: text})}
               onSubmitEditing={() => this.phoneInput.focus()}
+              onChangeText={text => this.setState({nameText: text})}
               mode="outlined"
               style={{paddingTop: 5}}
             />

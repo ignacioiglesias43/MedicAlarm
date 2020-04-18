@@ -47,8 +47,7 @@ export default class RegisterForm extends Component {
             .collection('users')
             .add({
               email: this.state.mail.trim(),
-              last_name: this.state.lastName.trim(),
-              name: this.state.name.trim(),
+              name: `${this.state.name.trim()} ${this.state.lastName.trim()}`,
               phone: this.state.phone.trim(),
               type: this.state.checked.trim(),
             })

@@ -80,7 +80,6 @@ export default class Home extends Component {
                       this.props.navigation.push('EditPersonalInfo', {
                         id: id,
                         name: data.name,
-                        lastname: data.last_name,
                         professional_id: data.professional_id,
                         specialty: data.specialty,
                         mail: data.email,
@@ -92,7 +91,7 @@ export default class Home extends Component {
                 </Right>
               </CardItem>
               <CardItem bordered>
-                <Text>Nombre: {`${data.name} ${data.last_name}`}</Text>
+                <Text>Nombre: {data.name}</Text>
               </CardItem>
               {data.type === 'doctor' && (
                 <>

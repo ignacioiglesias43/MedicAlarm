@@ -49,9 +49,7 @@ export default class AddPatientsList extends Component {
       .then(() => {
         Alert.alert(
           'Añadió un paciente',
-          `Usted ha añadido con éxito al paciente ${patient.name} ${
-            patient.last_name
-          }`,
+          `Usted ha añadido con éxito al paciente ${patient.name}`,
         );
       })
       .catch(e => {
@@ -99,7 +97,7 @@ export default class AddPatientsList extends Component {
             <List style={{paddingTop: 20}}>
               <ListItem icon>
                 <Body>
-                  <Text>{`${item.name} ${item.last_name}`}</Text>
+                  <Text>{`${item.name}`}</Text>
                 </Body>
                 <Right>
                   <IconButton

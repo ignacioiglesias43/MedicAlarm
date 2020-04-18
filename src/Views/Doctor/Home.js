@@ -48,8 +48,8 @@ export default class Home extends Component {
           <Title>
             {typeof data !== 'undefined'
               ? data.type === 'doctor'
-                ? `Dr. ${data.name} ${data.last_name}`
-                : `${data.name} ${data.last_name}`
+                ? `Dr. ${data.name}`
+                : `${data.name}`
               : ''}
           </Title>
         </View>
@@ -68,7 +68,6 @@ export default class Home extends Component {
                       this.props.navigation.push('EditPersonalInfo', {
                         id: id,
                         name: data.name,
-                        lastname: data.last_name,
                         professional_id: data.professional_id
                           ? data.professional_id
                           : '',
@@ -84,10 +83,7 @@ export default class Home extends Component {
               </CardItem>
               <CardItem bordered>
                 <Text>
-                  Nombre:{' '}
-                  {typeof data !== 'undefined'
-                    ? `${data.name} ${data.last_name}`
-                    : ''}
+                  Nombre: {typeof data !== 'undefined' ? `${data.name}` : ''}
                 </Text>
               </CardItem>
               {typeof data !== 'undefined' && data.type === 'doctor' && (

@@ -1,42 +1,72 @@
 import React, {Component, Fragment} from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import {View, StyleSheet, Text, Alert} from 'react-native';
 import {Content, Container, Textarea} from 'native-base';
 import {ActivityIndicator, Button} from 'react-native-paper';
 import AppHeader from '../../Components/organisms/Header';
 import SearchableDropdown from 'react-native-searchable-dropdown';
-import medicines from '../../JSON/medicines.json';
+import firestore from '@react-native-firebase/firestore';
 export default class EditPrescription extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      patient: '',
-      medicine: '',
       sendForm: false,
-      addAnother: false,
-      selectedPatient: '',
-      selectedMedicines: [],
+      selectedMedicines: props.route.params.medicines,
+      medicines: [],
+      indications: [],
     };
   }
   sendPrescription() {
+    const {route} = this.props;
+    const {selectedMedicines} = this.state;
     this.setState({sendForm: !this.state.sendForm});
     setTimeout(() => {
-      this.setState({sendForm: !this.state.sendForm});
-      this.props.navigation.goBack();
+      firestore()
+        .collection('prescriptions')
+        .doc(route.params.id)
+        .update({
+          doctor: route.params.doctor,
+          patient: route.params.patient,
+          medicines: selectedMedicines,
+        })
+        .then(() => {
+          this.setState({sendForm: !this.state.sendForm});
+          this.props.navigation.goBack();
+        })
+        .catch(e => {
+          this.setState({sendForm: !this.state.sendForm});
+          Alert.alert('Error', e.message);
+        });
     }, 1000);
   }
-  componentDidMount() {
+  componentWillMount() {
+    this.getMedicines();
+    let indications = [];
+    this.state.selectedMedicines.forEach(med => {
+      indications.push(med.indications);
+    });
     this.setState({
-      selectedMedicines: [
-        ...this.state.selectedMedicines,
-        {
-          id: this.props.route.params.id,
-          name: this.props.route.params.name,
-        },
-      ],
+      indications: indications,
     });
   }
+  getMedicines() {
+    firestore()
+      .collection('medicines')
+      .get()
+      .then(data => {
+        let dataBase = [];
+        data.forEach(d => {
+          let dx = Object.assign(d.data(), {id: d.id});
+          dataBase.push(dx);
+        });
+        this.setState({medicines: dataBase});
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  }
+
   render() {
-    const {sendForm} = this.state;
+    const {sendForm, medicines, selectedMedicines, indications} = this.state;
     return (
       <Container>
         <AppHeader
@@ -48,15 +78,15 @@ export default class EditPrescription extends Component {
           <Fragment>
             <SearchableDropdown
               multi={true}
-              selectedItems={this.state.selectedMedicines}
+              selectedItems={selectedMedicines}
               onItemSelect={item => {
-                const items = this.state.selectedMedicines;
+                const items = selectedMedicines;
                 items.push(item);
                 this.setState({selectedMedicines: items});
               }}
               containerStyle={{padding: 5}}
               onRemoveItem={item => {
-                const items = this.state.selectedMedicines.filter(
+                const items = selectedMedicines.filter(
                   sitem => sitem.id !== item.id,
                 );
                 this.setState({selectedMedicines: items});
@@ -81,7 +111,7 @@ export default class EditPrescription extends Component {
                 nestedScrollEnabled: true,
               }}
             />
-            {this.state.selectedMedicines.map(item => (
+            {selectedMedicines.map(item => (
               <View style={{padding: 5}} key={item.id}>
                 <Text>{item.name}</Text>
                 <Textarea
@@ -96,10 +126,20 @@ export default class EditPrescription extends Component {
                   bordered
                   placeholder="Indicaciones"
                   placeholderTextColor="#cc"
-                  value={
-                    item.id === this.props.route.params.id &&
-                    this.props.route.params.indications
-                  }
+                  value={indications[selectedMedicines.indexOf(item)]}
+                  onChangeText={text => {
+                    let newInd = indications;
+                    newInd.splice(newInd.indexOf(item), 1, text);
+                    this.setState({
+                      indications: newInd,
+                    });
+                    let ind = {indications: text.trim()};
+                    Object.assign(
+                      selectedMedicines[selectedMedicines.indexOf(item)],
+                      ind,
+                    );
+                    console.log(selectedMedicines);
+                  }}
                 />
               </View>
             ))}
@@ -108,7 +148,21 @@ export default class EditPrescription extends Component {
                 color="#FF7058"
                 mode="contained"
                 dark={true}
-                onPress={() => this.sendPrescription()}>
+                onPress={() => {
+                  let done = false;
+                  selectedMedicines.forEach(med => {
+                    med.indications
+                      ? med.indications.length > 0
+                        ? (done = true)
+                        : (done = false)
+                      : (done = false);
+                  });
+                  if (done && selectedMedicines.length > 0) {
+                    this.sendPrescription();
+                  } else {
+                    Alert.alert('Error', 'Todos los campos son necesarios.');
+                  }
+                }}>
                 Enviar
               </Button>
             </View>
