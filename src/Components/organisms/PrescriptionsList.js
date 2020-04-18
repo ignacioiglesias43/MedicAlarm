@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Container, Card, CardItem, Text, Body, Right} from 'native-base';
 import {View, FlatList, Alert} from 'react-native';
-import {IconButton, Title, Subheading} from 'react-native-paper';
+import {IconButton, Title} from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
 
 export default class PrescriptionsList extends Component {
@@ -105,7 +105,7 @@ export default class PrescriptionsList extends Component {
                         Alert.alert(
                           'Eliminar Receta',
                           'Está por eliminar la receta médica del paciente ' +
-                            `${item.data.patient.data.name}}` +
+                            `${item.data.patient.data.name}` +
                             '.\n¿Desea Continuar?',
                           [
                             {
@@ -114,6 +114,11 @@ export default class PrescriptionsList extends Component {
                             },
                             {
                               text: 'Eliminar',
+                              onPress: () =>
+                                this.deletePrescription(
+                                  item.id,
+                                  prescriptions.indexOf(item),
+                                ),
                             },
                           ],
                           {cancelable: false},

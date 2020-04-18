@@ -12,7 +12,6 @@ export default class EditPrescription extends Component {
       sendForm: false,
       selectedMedicines: props.route.params.medicines,
       medicines: [],
-      indications: [],
     };
   }
   sendPrescription() {
@@ -40,13 +39,6 @@ export default class EditPrescription extends Component {
   }
   componentWillMount() {
     this.getMedicines();
-    let indications = [];
-    this.state.selectedMedicines.forEach(med => {
-      indications.push(med.indications);
-    });
-    this.setState({
-      indications: indications,
-    });
   }
   getMedicines() {
     firestore()
@@ -66,7 +58,7 @@ export default class EditPrescription extends Component {
   }
 
   render() {
-    const {sendForm, medicines, selectedMedicines, indications} = this.state;
+    const {sendForm, medicines, selectedMedicines} = this.state;
     return (
       <Container>
         <AppHeader
@@ -126,19 +118,16 @@ export default class EditPrescription extends Component {
                   bordered
                   placeholder="Indicaciones"
                   placeholderTextColor="#cc"
-                  value={indications[selectedMedicines.indexOf(item)]}
+                  value={
+                    selectedMedicines[selectedMedicines.indexOf(item)]
+                      .indications
+                  }
                   onChangeText={text => {
-                    let newInd = indications;
-                    newInd.splice(newInd.indexOf(item), 1, text);
+                    let med = selectedMedicines;
+                    med[med.indexOf(item)].indications = text.trim();
                     this.setState({
-                      indications: newInd,
+                      selectedMedicines: med,
                     });
-                    let ind = {indications: text.trim()};
-                    Object.assign(
-                      selectedMedicines[selectedMedicines.indexOf(item)],
-                      ind,
-                    );
-                    console.log(selectedMedicines);
                   }}
                 />
               </View>
