@@ -14,9 +14,7 @@ export default class Medicines extends Component {
           addIcon="plus"
           navigateRoute="AddMedicine"
         />
-        <ScrollView style={{flex: 1}}>
-          <MedicineList navigation={this.props.navigation} />
-        </ScrollView>
+        <MedicineList navigation={this.props.navigation} />
       </View>
     );
   }

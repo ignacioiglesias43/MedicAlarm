@@ -1,9 +1,9 @@
-import React, {Component, useState} from 'react';
-import {View, Platform, Text} from 'react-native';
+import React, {Component} from 'react';
+import {View, Alert} from 'react-native';
 import {Content, Container} from 'native-base';
 import {ActivityIndicator, Button, TextInput} from 'react-native-paper';
 import AppHeader from '../../Components/organisms/Header';
-
+import firestore from '@react-native-firebase/firestore';
 export default class EditMedicine extends Component {
   constructor(props) {
     super(props);
@@ -17,9 +17,24 @@ export default class EditMedicine extends Component {
   }
   sendMedicine() {
     this.setState({sendForm: !this.state.sendForm});
+    const {nameText, administrationRouteText} = this.state;
+    const {route} = this.props;
     setTimeout(() => {
-      this.setState({sendForm: !this.state.sendForm});
-      this.props.navigation.goBack();
+      firestore()
+        .collection('medicines')
+        .doc(route.params.id)
+        .update({
+          name: nameText.trim(),
+          administration_route: administrationRouteText.trim(),
+        })
+        .then(() => {
+          this.setState({sendForm: !this.state.sendForm});
+          this.props.navigation.goBack();
+        })
+        .catch(e => {
+          this.setState({sendForm: !this.state.sendForm});
+          Alert.alert('Error', e.message);
+        });
     }, 1000);
   }
   render() {
@@ -36,6 +51,7 @@ export default class EditMedicine extends Component {
             label="Nombre"
             value={this.state.nameText}
             returnKeyType={'next'}
+            onChangeText={text => this.setState({nameText: text})}
             onSubmitEditing={() => this.administrationRouteInput.focus()}
             mode="outlined"
             style={{paddingTop: 5}}
@@ -44,6 +60,9 @@ export default class EditMedicine extends Component {
             label="Vía de asminitracion"
             autoCapitalize="none"
             returnKeyType={'go'}
+            onChangeText={text =>
+              this.setState({administrationRouteText: text})
+            }
             ref={input => (this.administrationRouteInput = input)}
             value={this.state.administrationRouteText}
             mode="outlined"
