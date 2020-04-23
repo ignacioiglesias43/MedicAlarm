@@ -1,18 +1,10 @@
-import React, {Component, useState} from 'react';
-import {View, Platform, Text} from 'react-native';
+import React, {Component} from 'react';
+import {View, Text, Alert} from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import {
-  Picker,
-  Content,
-  Form,
-  Item,
-  Container,
-  Icon,
-  Textarea,
-  DatePicker,
-} from 'native-base';
+import {Content, Form, Item, Container} from 'native-base';
 import {ActivityIndicator, Button} from 'react-native-paper';
 import AppHeader from '../../Components/organisms/Header';
+import firestore, {firebase} from '@react-native-firebase/firestore';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
 export default class EditAppointment extends Component {
@@ -23,7 +15,9 @@ export default class EditAppointment extends Component {
       sendForm: false,
       isDateVisible: false,
       isHourVisible: false,
-      chosenDate: new Date(),
+      chosenDate: new Date(
+        JSON.stringify(this.props.route.params.date).replace(/"/g, ''),
+      ),
       chosenHour: new Date(),
       dateText: JSON.stringify(this.props.route.params.date).replace(/"/g, ''),
       hourText: JSON.stringify(this.props.route.params.hour).replace(/"/g, ''),
@@ -31,16 +25,16 @@ export default class EditAppointment extends Component {
   }
   handleDatePicker = newDate => {
     this.setState({
-      isDateVisible: false,
+      isDateVisible: !this.state.isDateVisible,
       chosenDate: newDate,
-      dateText: newDate.toString().substr(4, 12),
+      dateText: newDate.toLocaleDateString(),
     });
   };
   handleHourPicker = newDate => {
     this.setState({
-      isHourVisible: false,
+      isHourVisible: !this.state.isHourVisible,
       chosenHour: newDate,
-      hourText: newDate.toString().substr(16, 5),
+      hourText: newDate.toLocaleTimeString(),
     });
   };
   showDatePicker = () => {
@@ -64,15 +58,42 @@ export default class EditAppointment extends Component {
     });
   };
   sendPrescription() {
-    this.setState({sendForm: !this.state.sendForm});
-    setTimeout(() => {
-      this.setState({sendForm: !this.state.sendForm});
-      this.props.navigation.goBack();
-    }, 1000);
+    const {route} = this.props;
+    const {sendForm, chosenHour, dateText, hourText} = this.state;
+    if (dateText && hourText) {
+      this.setState({sendForm: !sendForm});
+      setTimeout(() => {
+        let newDate = new Date(dateText);
+        newDate.setHours(chosenHour.getHours());
+        newDate.setMinutes(chosenHour.getMinutes());
+        newDate.setSeconds(chosenHour.getSeconds());
+        firestore()
+          .collection('appointments')
+          .doc(route.params.id)
+          .update({
+            date: firebase.firestore.Timestamp.fromDate(newDate),
+            doctor: route.params.doctor,
+            patient: route.params.patient,
+          })
+          .then(() => {
+            this.setState({sendForm: !sendForm});
+            this.props.navigation.goBack();
+          })
+          .catch(e => {
+            Alert.alert('Error', e.message);
+          });
+      }, 1000);
+    } else {
+      Alert.alert('Advertencia', 'Todos los campos son necesarios.');
+    }
   }
-
+  componentWillMount() {
+    this.setState({
+      chosenHour: new Date(this.state.hourText),
+    });
+  }
   render() {
-    const {sendForm} = this.state;
+    const {sendForm, chosenDate} = this.state;
 
     return (
       <Container>
@@ -92,6 +113,7 @@ export default class EditAppointment extends Component {
                 </TouchableOpacity>
                 <DateTimePickerModal
                   isVisible={this.state.isDateVisible}
+                  date={chosenDate}
                   mode="date"
                   onConfirm={this.handleDatePicker}
                   onCancel={this.hideDatePicker}

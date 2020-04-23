@@ -100,14 +100,19 @@ function Prescriptions(userData) {
   );
 }
 
-/**Descripcion: Almacena las ventanas de recetas */
-function Appointments() {
+/**Descripcion: Almacena las ventanas de citas */
+function Appointments(userData) {
   return (
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
       }}>
-      <Stack.Screen name="Citas" component={AppointmentsScreen} navigation />
+      <Stack.Screen
+        name="Citas"
+        component={AppointmentsScreen}
+        initialParams={{data: userData}}
+        navigation
+      />
       <Stack.Screen name="AddCita" component={AddAppointment} navigation />
       <Stack.Screen name="EditCita" component={EditAppointment} navigation />
     </Stack.Navigator>
@@ -293,7 +298,10 @@ export default class App extends React.Component {
                 children={() => Prescriptions(this.state.userData)}
               />
               <Drawer.Screen name="Medicamentos" component={Medicines} />
-              <Drawer.Screen name="Citas" component={Appointments} />
+              <Drawer.Screen
+                name="Citas"
+                children={() => Appointments(this.state.userData)}
+              />
             </>
           )}
           {this.state.userData.data.type === 'patient' && (
