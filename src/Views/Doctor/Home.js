@@ -135,7 +135,7 @@ export default class Home extends Component {
               </CardItem>
               {typeof data !== 'undefined' && data.type === 'doctor' ? (
                 <>
-                  <MedicalAppointment />
+                  <MedicalAppointment doctor={this.state.data} />
                 </>
               ) : (
                 <>
