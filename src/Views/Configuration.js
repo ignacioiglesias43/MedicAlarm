@@ -57,11 +57,7 @@ export default class Home extends Component {
           }}>
           <Avatar.Image
             size={130}
-            source={
-              data.type === 'doctor'
-                ? require('../img/avatar.png')
-                : require('../img/usuario.png')
-            }
+            source={require('../img/logo.png')}
             style={{backgroundColor: 'white'}}
           />
         </View>
@@ -70,45 +66,25 @@ export default class Home extends Component {
             <Card>
               <CardItem header bordered>
                 <Body>
-                  <Title>Mis Datos</Title>
+                  <Title>Configuración general</Title>
                 </Body>
-                <Right>
-                  <IconButton
-                    icon="pencil"
-                    size={25}
-                    onPress={() =>
-                      this.props.navigation.push('EditPersonalInfo', {
-                        id: id,
-                        name: data.name,
-                        professional_id: data.professional_id,
-                        specialty: data.specialty,
-                        mail: data.email,
-                        phone: data.phone,
-                        userType: data.type,
-                      })
-                    }
-                  />
-                </Right>
               </CardItem>
-              <CardItem bordered>
-                <Text>Nombre: {data.name}</Text>
-              </CardItem>
-              {data.type === 'doctor' && (
-                <>
-                  <CardItem bordered>
-                    <Text>Cédula: {data.professional_id}</Text>
-                  </CardItem>
-                  <CardItem bordered>
-                    <Text>Especialidad: {data.specialty}</Text>
-                  </CardItem>
-                </>
-              )}
-              <CardItem bordered>
-                <Text>Correo: {data.email}</Text>
-              </CardItem>
-              <CardItem bordered>
-                <Text>Teléfono: {data.phone}</Text>
-              </CardItem>
+              <Button
+                color="#FF7058"
+                icon={'pencil'}
+                onPress={() => {
+                  console.log('change password');
+                }}>
+                Actualizar Contraseña
+              </Button>
+              <Button
+                color="#FF7058"
+                icon={'eye'}
+                onPress={() => {
+                  console.log('info');
+                }}>
+                Información de la aplicación
+              </Button>
             </Card>
             <Card>
               <CardItem header bordered>
@@ -118,6 +94,7 @@ export default class Home extends Component {
               </CardItem>
               <Button
                 color="#FF7058"
+                icon={'logout'}
                 onPress={() => {
                   this.logout();
                 }}>

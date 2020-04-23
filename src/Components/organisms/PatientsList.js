@@ -141,7 +141,7 @@ export default class PatientsList extends Component {
         ) : (
           <View style={styles.noRegisterView}>
             <Text style={styles.noRegisterViewText}>
-              No hay registros de contactos
+              No hay registros de pacientes
             </Text>
           </View>
         )}
