@@ -1,15 +1,9 @@
 import React, {Component} from 'react';
-import {View, Text, Alert} from 'react-native';
-import {Container, Content, Card, CardItem, Body, Right} from 'native-base';
+import {View, Alert} from 'react-native';
+import {Container, Content, Card, CardItem, Body} from 'native-base';
 import auth from '@react-native-firebase/auth';
 import AppHeader from '../Components/organisms/Header';
-import {
-  Avatar,
-  Title,
-  IconButton,
-  Button,
-  ActivityIndicator,
-} from 'react-native-paper';
+import {Avatar, Title, Button, ActivityIndicator} from 'react-native-paper';
 export default class Configuration extends Component {
   constructor(props) {
     super(props);
@@ -89,7 +83,21 @@ export default class Configuration extends Component {
                 color="#FF7058"
                 icon={'pencil'}
                 onPress={() => {
-                  this.changePassword(data.email);
+                  Alert.alert(
+                    'Confirmación',
+                    '¿Enviar correo para recuperar contraseña?',
+                    [
+                      {
+                        text: 'Cancelar',
+                        style: 'cancel',
+                      },
+                      {
+                        text: 'Enviar',
+                        onPress: () => this.changePassword(data.email),
+                      },
+                    ],
+                    {cancelable: false},
+                  );
                 }}>
                 Actualizar Contraseña
               </Button>
@@ -97,7 +105,7 @@ export default class Configuration extends Component {
                 color="#FF7058"
                 icon={'eye'}
                 onPress={() => {
-                  console.log('info');
+                  Alert.alert('Información', 'MedicAlarm Beta Version');
                 }}>
                 Información de la aplicación
               </Button>
@@ -112,7 +120,21 @@ export default class Configuration extends Component {
                 color="#FF7058"
                 icon={'logout'}
                 onPress={() => {
-                  this.logout();
+                  Alert.alert(
+                    'Cerrar Sesión',
+                    'Está apunto de cerrar sesión, ¿desea continuar?',
+                    [
+                      {
+                        text: 'Cancelar',
+                        style: 'cancel',
+                      },
+                      {
+                        text: 'Enviar',
+                        onPress: () => this.logout(),
+                      },
+                    ],
+                    {cancelable: false},
+                  );
                 }}>
                 Cerrar Sesión
               </Button>
