@@ -202,7 +202,7 @@ function AlarmViews() {
   );
 }
 /**Descripcion: Almacena ventanas de Contactos de confianza */
-function TrustedContactViews() {
+function TrustedContactViews(userData) {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -211,6 +211,7 @@ function TrustedContactViews() {
       <Stack.Screen
         name="TrustedContact"
         component={TrustedContact}
+        initialParams={{data: userData}}
         navigation
       />
       <Stack.Screen name="AddContacto" component={AddTrustedContact} />
@@ -316,7 +317,7 @@ export default class App extends React.Component {
               <Drawer.Screen name="Alarmas" component={AlarmViews} />
               <Drawer.Screen
                 name="Contactos de Confianza"
-                component={TrustedContactViews}
+                children={() => TrustedContactViews(this.state.userData)}
               />
               <Drawer.Screen name="Recetas" component={PatientPrescriptions} />
               <Drawer.Screen

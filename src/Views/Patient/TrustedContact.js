@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Container, Header, Icon} from 'native-base';
 import {Button, Searchbar} from 'react-native-paper';
 import AppHeader from '../../Components/organisms/Header';
 import ContactList from '../../Components/organisms/ContactList';
@@ -24,6 +23,7 @@ export default class TrustedContact extends Component {
           navigation={this.props.navigation}
           icon="menu"
           showAddAction={true}
+          data={this.props.route.params.data}
           addIcon="account-plus-outline"
           navigateRoute="AddContacto"
         />
@@ -34,12 +34,11 @@ export default class TrustedContact extends Component {
           }}
           value={firstQuery}
         />
-        <View style={{flex: 1}}>
-          <ContactList
-            navigation={this.props.navigation}
-            query={this.state.firstQuery}
-          />
-        </View>
+        <ContactList
+          navigation={this.props.navigation}
+          query={this.state.firstQuery}
+          data={this.props.route.params.data}
+        />
       </View>
     );
   }
