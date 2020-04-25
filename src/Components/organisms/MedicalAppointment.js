@@ -43,6 +43,7 @@ export default class MedicalAppointment extends React.Component {
     );
   };
   render() {
+    this.getAppointments();
     const {refreshing, appointments} = this.state;
     return (
       <DataTable>

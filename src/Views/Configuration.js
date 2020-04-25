@@ -10,7 +10,7 @@ import {
   Button,
   ActivityIndicator,
 } from 'react-native-paper';
-export default class Home extends Component {
+export default class Configuration extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -18,6 +18,22 @@ export default class Home extends Component {
       data: {},
       loadNextPage: false,
     };
+  }
+  changePassword(email) {
+    auth()
+      .sendPasswordResetEmail(email)
+      .then(() => {
+        Alert.alert(
+          'Solicitud de cambio de contraseña enviada',
+          'Se le ha enviado un correo electrónico para actualizar su contraseña.',
+        );
+      })
+      .catch(() =>
+        Alert.alert(
+          'Error',
+          'No se ha podido mandar el correo para cambio de contraseña.',
+        ),
+      );
   }
   logout() {
     this.setState({loadNextPage: !this.state.loadNextPage});
@@ -73,7 +89,7 @@ export default class Home extends Component {
                 color="#FF7058"
                 icon={'pencil'}
                 onPress={() => {
-                  console.log('change password');
+                  this.changePassword(data.email);
                 }}>
                 Actualizar Contraseña
               </Button>

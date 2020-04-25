@@ -128,6 +128,15 @@ export default class LoginForm extends Component {
             <Text style={{color: 'white'}}>Iniciar Sesión</Text>
           </Button>
         </View>
+        <View style={styles.registerContainer}>
+          <Button
+            color="#FF7058"
+            onPress={() => {
+              this.props.navigation.push('ResetPassword');
+            }}>
+            Olvidé mi contraseña
+          </Button>
+        </View>
         <Text style={styles.hintText}>¿No tienes cuenta?</Text>
         <View style={styles.registerContainer}>
           <Button

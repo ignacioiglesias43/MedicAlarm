@@ -11,6 +11,7 @@ import {
 import Configuration from './src/Views/Configuration';
 /**Vistas del Doctor */
 import Login from './src/Views/Login';
+import ResetPassword from './src/Views/ResetPassword';
 import Home from './src/Views/Doctor/Home';
 import MyData from './src/Components/organisms/EditPersonalInfo';
 import Patients from './src/Views/Doctor/Patients';
@@ -153,6 +154,12 @@ function AuthLogin(callBack) {
           navigation
           initialParams={{callBack: callBack}}
           options={{gestureEnabled: false}}
+        />
+        <Stack.Screen
+          name="ResetPassword"
+          component={ResetPassword}
+          options={{gestureEnabled: false}}
+          navigation
         />
         <Stack.Screen
           name="Registro"
