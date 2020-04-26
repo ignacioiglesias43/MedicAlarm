@@ -244,10 +244,15 @@ function PatientAppointmentsViews(userData) {
 }
 
 /**Descripcion: Almacena vistas de seguimiento del paciente */
-function MonitoringViews() {
+function MonitoringViews(userData) {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen name="Monitoring" component={Monitoring} navigation />
+      <Stack.Screen
+        name="Monitoring"
+        component={Monitoring}
+        navigation
+        initialParams={{data: userData}}
+      />
       <Stack.Screen name="AddTrackingAlarm" component={AddTrackingAlarm} />
     </Stack.Navigator>
   );
@@ -328,12 +333,19 @@ export default class App extends React.Component {
                 name="Contactos de Confianza"
                 children={() => TrustedContactViews(this.state.userData)}
               />
-              <Drawer.Screen name="Recetas" component={PatientPrescriptions} />
+              <Drawer.Screen
+                name="Recetas"
+                component={PatientPrescriptions}
+                initialParams={{data: this.state.userData}}
+              />
               <Drawer.Screen
                 name="Citas"
                 children={() => PatientAppointmentsViews(this.state.userData)}
               />
-              <Drawer.Screen name="Seguimiento" component={MonitoringViews} />
+              <Drawer.Screen
+                name="Seguimiento"
+                children={() => MonitoringViews(this.state.userData)}
+              />
             </>
           )}
           <Drawer.Screen

@@ -10,8 +10,7 @@ export default class ExpandibleList extends Component {
     this.state = {
       displayCard: this.props.displayCard,
       name: this.props.name,
-      medicine: this.props.medicine,
-      indications: this.props.indications,
+      medicines: this.props.medicines,
     };
   }
   display(displayCard) {
@@ -20,9 +19,9 @@ export default class ExpandibleList extends Component {
     });
   }
   render() {
-    const {displayCard, id, name, medicine, indications} = this.state;
+    const {displayCard, name, medicines} = this.state;
     return (
-      <View key={id} style={styles.container}>
+      <View style={styles.container}>
         <TouchableOpacity
           style={styles.textView}
           onPress={() => this.display(!displayCard)}>
@@ -30,14 +29,23 @@ export default class ExpandibleList extends Component {
           <Icon name="chevron-down" size={30} style={styles.texto} />
         </TouchableOpacity>
         {displayCard && (
-          <Card>
-            <CardItem>
-              <Body>
-                <Subheading>Medicamento: {medicine}</Subheading>
-                <Subheading>Indicaciones: {indications}</Subheading>
-              </Body>
-            </CardItem>
-          </Card>
+          <FlatList
+            data={medicines}
+            renderItem={({item}) => (
+              <Card>
+                <CardItem>
+                  <Body>
+                    <Subheading>Medicamento: {item.name}</Subheading>
+                    <Subheading>
+                      Vía de administración: {item.administration_route}
+                    </Subheading>
+                    <Subheading>Indicaciones: {item.indications}</Subheading>
+                  </Body>
+                </CardItem>
+              </Card>
+            )}
+            keyExtractor={item => item.id}
+          />
         )}
       </View>
     );

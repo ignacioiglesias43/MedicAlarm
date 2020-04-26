@@ -2,25 +2,24 @@ import React, {Component} from 'react';
 import {View, StyleSheet, ScrollView} from 'react-native';
 import AppHeader from '../../Components/organisms/Header';
 import PatientPrescriptionList from '../../Components/organisms/PatientPrescriptionList';
-export default class Prescriptions extends Component {
+export default class PatientPrescriptions extends Component {
+  constructor(props) {
+    super(props);
+  }
   render() {
     return (
       <View style={{flex: 1}}>
         <AppHeader
           title="Recetas"
           navigation={this.props.navigation}
+          data={this.props.route.params.data}
           icon="menu"
         />
-        <ScrollView contentContainerStyle={styles.contentContainer}>
-          <PatientPrescriptionList navigation={this.props.navigation} />
-        </ScrollView>
+        <PatientPrescriptionList
+          navigation={this.props.navigation}
+          data={this.props.route.params.data}
+        />
       </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  contentContainer: {
-    paddingBottom: '30%',
-  },
-});
