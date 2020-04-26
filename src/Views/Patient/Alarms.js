@@ -16,10 +16,12 @@ export default class Alarms extends Component {
           showAddAction={true}
           addIcon="alarm-plus"
           navigateRoute="AddAlarm"
+          data={this.props.route.params.data}
         />
-        <View style={{flex: 1}}>
-          <AlarmList navigation={this.props.navigation} />
-        </View>
+        <AlarmList
+          navigation={this.props.navigation}
+          data={this.props.route.params.data}
+        />
       </View>
     );
   }

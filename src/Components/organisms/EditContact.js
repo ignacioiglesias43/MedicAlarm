@@ -13,9 +13,6 @@ export default class EditContact extends Component {
       phoneText: JSON.stringify(props.route.params.phone).replace(/"/g, ''),
     };
   }
-  componentWillMount() {
-    console.log(this.props.route.params.id);
-  }
   sendPrescription() {
     const {nameText, phoneText} = this.state;
     const {route} = this.props;

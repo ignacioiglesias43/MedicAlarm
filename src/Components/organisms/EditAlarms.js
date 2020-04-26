@@ -1,29 +1,43 @@
 import React, {Component} from 'react';
-import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
+import {View, TouchableOpacity, Text, StyleSheet, Alert} from 'react-native';
 import {Picker, Content, Form, Item, Container} from 'native-base';
 import {ActivityIndicator, Button, TextInput, Switch} from 'react-native-paper';
 import AppHeader from '../../Components/organisms/Header';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import SearchableDropdown from 'react-native-searchable-dropdown';
-import data from '../../JSON/trustedContacts.json';
-
+import firestore from '@react-native-firebase/firestore';
 export default class EditAlarms extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isSwitchOn: this.props.route.params.monitoring,
+      isSwitchOn: props.route.params.monitoring,
       patient: '',
+      user: props.route.params.user,
       sendForm: false,
       isHourVisible: false,
       chosenHour: new Date(),
-      selectedTrustedContact: [],
-      subjectText: JSON.stringify(this.props.route.params.subject).replace(
-        /"/g,
-        '',
-      ),
-      frequency: this.props.route.params.frequency,
-      hourText: JSON.stringify(this.props.route.params.hour).replace(/"/g, ''),
+      contacts: [],
+      selectedTrustedContact: props.route.params.trusted_contact,
+      subjectText: JSON.stringify(props.route.params.subject).replace(/"/g, ''),
+      frequency: props.route.params.frequency,
+      hourText: JSON.stringify(props.route.params.hour).replace(/"/g, ''),
     };
+  }
+  getContacts() {
+    const {user} = this.state;
+    firestore()
+      .collection('trusted-contacts')
+      .where('patient.email', '==', user.data.email)
+      .get()
+      .then(data => {
+        let dataBase = [];
+        data.forEach(d => {
+          let dx = Object.assign(d.data(), {id: d.id});
+          dataBase.push(dx);
+        });
+        this.setState({contacts: dataBase});
+      })
+      .catch(e => console.log(e));
   }
   handleHourPicker = newDate => {
     this.setState({
@@ -48,27 +62,51 @@ export default class EditAlarms extends Component {
     });
   };
   sendAlarm() {
-    this.setState({sendForm: !this.state.sendForm});
-    setTimeout(() => {
+    const {route} = this.props;
+    const {
+      selectedTrustedContact,
+      user,
+      isSwitchOn,
+      hourText,
+      subjectText,
+      frequency,
+    } = this.state;
+    if (subjectText.length > 0) {
       this.setState({sendForm: !this.state.sendForm});
-      this.props.navigation.goBack();
-    }, 1000);
+      setTimeout(() => {
+        firestore()
+          .collection('alarms')
+          .doc(route.params.id)
+          .update({
+            subject: subjectText,
+            frequency: frequency,
+            monitoring: isSwitchOn,
+            next_hour: hourText,
+            patient: user,
+            trusted_contact: selectedTrustedContact,
+          })
+          .then(() => {
+            this.setState({sendForm: !this.state.sendForm});
+            this.props.navigation.goBack();
+          })
+          .catch(e => {
+            this.setState({sendForm: !this.state.sendForm});
+            Alert.alert('Error', e.message);
+          });
+      }, 1000);
+    } else {
+      Alert.alert(
+        'Advertencia',
+        'El campo Asunto es necesario, no lo puede dejar vacío.',
+      );
+    }
   }
-  onValueChange(value: string) {
-    this.setState({
-      frequency: value,
-    });
-  }
-  componentDidMount() {
-    this.setState({
-      selectedTrustedContact: [
-        ...this.state.selectedTrustedContact,
-        this.props.route.params.trusted_contact,
-      ],
-    });
+  componentWillMount() {
+    this.getContacts();
   }
   render() {
-    const {sendForm, isSwitchOn} = this.state;
+    this.getContacts();
+    const {sendForm, isSwitchOn, contacts, selectedTrustedContact} = this.state;
     return (
       <Container>
         <AppHeader
@@ -81,6 +119,7 @@ export default class EditAlarms extends Component {
             <TextInput
               label="Asunto"
               defaultValue={this.state.subjectText}
+              onChangeText={text => this.setState({subjectText: text})}
               returnKeyType={'next'}
               mode="outlined"
               style={{paddingTop: 5}}
@@ -115,7 +154,9 @@ export default class EditAlarms extends Component {
                   mode="dropdown"
                   style={{width: 120}}
                   selectedValue={this.state.frequency}
-                  onValueChange={this.onValueChange.bind(this)}>
+                  onValueChange={value => {
+                    this.setState({frequency: value});
+                  }}>
                   <Picker.Item label="1 hora" value="1" />
                   <Picker.Item label="2 horas" value="2" />
                   <Picker.Item label="3 horas" value="3" />
@@ -144,50 +185,66 @@ export default class EditAlarms extends Component {
               </Item>
             </View>
             <View>
-              <SearchableDropdown
-                selectedItems={this.state.selectedTrustedContact}
-                onItemSelect={item => {
-                  const items = this.state.selectedTrustedContact;
-                  items.push(item);
-                  this.setState({selectedTrustedContact: items});
-                }}
-                containerStyle={{padding: 5}}
-                onRemoveItem={(item, index) => {
-                  const items = this.state.selectedTrustedContact.filter(
-                    sitem => sitem.id !== item.id,
-                  );
-                  this.setState({selectedTrustedContact: items});
-                }}
-                itemStyle={styles.itemStyle}
-                itemTextStyle={{color: '#222'}}
-                itemsContainerStyle={{maxHeight: 140}}
-                items={data}
-                resetValue={false}
-                textInputProps={{
-                  placeholder: 'Seleccione un contacto de emergencia',
-                  underlineColorAndroid: 'transparent',
-                  style: {
-                    padding: 12,
-                    borderWidth: 1,
-                    borderColor: '#ccc',
-                    borderRadius: 5,
-                  },
-                  onTextChange: text => console.log(text),
-                }}
-                listProps={{
-                  nestedScrollEnabled: true,
-                }}
-              />
-            </View>
-            <View style={styles.switchContainer}>
-              <Text>Monitorear alarma</Text>
-              <Switch
-                value={isSwitchOn}
-                color="#FF7058"
-                onValueChange={() => {
-                  this.setState({isSwitchOn: !isSwitchOn});
-                }}
-              />
+              <View style={styles.switchContainer}>
+                <Text>Monitorear alarma</Text>
+                <Switch
+                  value={isSwitchOn}
+                  color="#FF7058"
+                  onValueChange={() => {
+                    this.setState({
+                      isSwitchOn: !isSwitchOn,
+                      selectedTrustedContact: {},
+                    });
+                  }}
+                />
+              </View>
+              {isSwitchOn && (
+                <SearchableDropdown
+                  selectedItems={selectedTrustedContact}
+                  onItemSelect={item => {
+                    this.setState({
+                      selectedTrustedContact: {
+                        id: item.id,
+                        name: item.name,
+                        phone: item.phone,
+                      },
+                    });
+                  }}
+                  containerStyle={{padding: 5}}
+                  onRemoveItem={(item, index) => {
+                    const items = this.state.selectedTrustedContact.filter(
+                      sitem => sitem.id !== item.id,
+                    );
+                    this.setState({selectedTrustedContact: items});
+                  }}
+                  itemStyle={styles.itemStyle}
+                  itemTextStyle={{color: '#000'}}
+                  itemsContainerStyle={{maxHeight: 140}}
+                  items={contacts}
+                  chip={true}
+                  resetValue={false}
+                  placeholderTextColor="#000"
+                  textInputProps={{
+                    placeholder:
+                      selectedTrustedContact.name !== undefined
+                        ? `Contacto seleccionado: ${
+                            selectedTrustedContact.name
+                          }`
+                        : 'Seleccione un contacto de emergencia',
+                    underlineColorAndroid: 'transparent',
+                    style: {
+                      padding: 12,
+                      borderWidth: 1,
+                      borderColor: '#ccc',
+                      borderRadius: 5,
+                    },
+                    onTextChange: text => console.log(text),
+                  }}
+                  listProps={{
+                    nestedScrollEnabled: true,
+                  }}
+                />
+              )}
             </View>
           </Form>
           <View style={{paddingTop: 15}}>

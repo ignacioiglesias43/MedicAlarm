@@ -189,13 +189,18 @@ function PatientHome() {
   );
 }
 /**Descripcion: Almacena ventanas de Alarmas */
-function AlarmViews() {
+function AlarmViews(userData) {
   return (
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
       }}>
-      <Stack.Screen name="Alarms" component={Alarms} navigation />
+      <Stack.Screen
+        name="Alarms"
+        component={Alarms}
+        navigation
+        initialParams={{data: userData}}
+      />
       <Stack.Screen name="AddAlarm" component={AddAlarm} />
       <Stack.Screen name="EditAlarm" component={EditAlarmScreen} />
     </Stack.Navigator>
@@ -221,7 +226,7 @@ function TrustedContactViews(userData) {
 }
 
 /**Descripcion: Almacena ventanas de citas médicas del paciente */
-function PatientAppointmentsViews() {
+function PatientAppointmentsViews(userData) {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -231,6 +236,7 @@ function PatientAppointmentsViews() {
         name="PatientAppointments"
         component={PatientAppointments}
         navigation
+        initialParams={{data: userData}}
       />
       <Stack.Screen name="EditCita" component={EditAppointment} />
     </Stack.Navigator>
@@ -314,7 +320,10 @@ export default class App extends React.Component {
           )}
           {this.state.userData.data.type === 'patient' && (
             <>
-              <Drawer.Screen name="Alarmas" component={AlarmViews} />
+              <Drawer.Screen
+                name="Alarmas"
+                children={() => AlarmViews(this.state.userData)}
+              />
               <Drawer.Screen
                 name="Contactos de Confianza"
                 children={() => TrustedContactViews(this.state.userData)}
@@ -322,7 +331,7 @@ export default class App extends React.Component {
               <Drawer.Screen name="Recetas" component={PatientPrescriptions} />
               <Drawer.Screen
                 name="Citas"
-                component={PatientAppointmentsViews}
+                children={() => PatientAppointmentsViews(this.state.userData)}
               />
               <Drawer.Screen name="Seguimiento" component={MonitoringViews} />
             </>

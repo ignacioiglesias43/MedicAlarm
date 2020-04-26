@@ -129,7 +129,7 @@ export default class Configuration extends Component {
                         style: 'cancel',
                       },
                       {
-                        text: 'Enviar',
+                        text: 'Salir',
                         onPress: () => this.logout(),
                       },
                     ],

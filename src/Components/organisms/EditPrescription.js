@@ -38,6 +38,7 @@ export default class EditPrescription extends Component {
     }, 1000);
   }
   componentWillMount() {
+    console.log(this.state.selectedMedicines);
     this.getMedicines();
   }
   getMedicines() {
