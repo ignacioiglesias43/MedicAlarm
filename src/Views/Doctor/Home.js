@@ -139,7 +139,7 @@ export default class Home extends Component {
                 </>
               ) : (
                 <>
-                  <MedicalAlarms />
+                  <MedicalAlarms data={this.state.data} />
                 </>
               )}
             </Card>
