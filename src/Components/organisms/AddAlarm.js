@@ -41,7 +41,6 @@ export default class AddAlarm extends Component {
       .catch(e => console.log(e));
   }
   componentWillMount() {
-    console.log(this.props.route.params.data);
     this.getContacts();
   }
   handleHourPicker = newDate => {
@@ -71,27 +70,34 @@ export default class AddAlarm extends Component {
       frequency,
     } = this.state;
     if (subjectText.length > 0 && hourText !== 'Seleccione la hora inicial') {
-      this.setState({sendForm: !this.state.sendForm});
-      setTimeout(() => {
-        firestore()
-          .collection('alarms')
-          .add({
-            subject: subjectText,
-            frequency: frequency,
-            monitoring: isSwitchOn,
-            next_hour: hourText,
-            patient: user,
-            trusted_contact: selectedTrustedContact,
-          })
-          .then(() => {
-            this.setState({sendForm: !this.state.sendForm});
-            this.props.navigation.goBack();
-          })
-          .catch(e => {
-            this.setState({sendForm: !this.state.sendForm});
-            Alert.alert('Error', e.message);
-          });
-      }, 1000);
+      if (isSwitchOn && Object.entries(selectedTrustedContact).length > 0) {
+        this.setState({sendForm: !this.state.sendForm});
+        setTimeout(() => {
+          firestore()
+            .collection('alarms')
+            .add({
+              subject: subjectText,
+              frequency: frequency,
+              monitoring: isSwitchOn,
+              next_hour: hourText,
+              patient: user,
+              trusted_contact: selectedTrustedContact,
+            })
+            .then(() => {
+              this.setState({sendForm: !this.state.sendForm});
+              this.props.navigation.goBack();
+            })
+            .catch(e => {
+              this.setState({sendForm: !this.state.sendForm});
+              Alert.alert('Error', e.message);
+            });
+        }, 1000);
+      } else {
+        Alert.alert(
+          'Advertencia',
+          'Si desea monitorear una alarma, debe seleccionar un contacto de confianza.',
+        );
+      }
     } else {
       Alert.alert(
         'Advertencia',
