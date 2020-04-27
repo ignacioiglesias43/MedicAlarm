@@ -1,39 +1,61 @@
 import React, {Component} from 'react';
-import {
-  Container,
-  Header,
-  Content,
-  Card,
-  CardItem,
-  Body,
-  Text,
-  Right,
-} from 'native-base';
-import data from '../../JSON/alarmTracking.json';
-import {Title, IconButton, Subheading} from 'react-native-paper';
-import {FlatList, View, Alert, ProgressBarAndroid} from 'react-native';
+import {Container, Card, CardItem, Body, Right, Text} from 'native-base';
+import {Title, Subheading} from 'react-native-paper';
+import {FlatList, View, ProgressBarAndroid, StyleSheet} from 'react-native';
+import firestore from '@react-native-firebase/firestore';
 export default class AlarmTrackingList extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      user: props.data,
+      alarms: [],
+      refreshing: false,
+    };
   }
+  getAlarms() {
+    const {user} = this.state;
+    firestore()
+      .collection('alarms')
+      .where('patient.data.email', '==', user.data.email)
+      .where('monitoring', '==', true)
+      .get()
+      .then(data => {
+        let dataBase = [];
+        data.forEach(d => {
+          let dx = Object.assign(d.data(), {id: d.id});
+          dataBase.push(dx);
+        });
+        this.setState({alarms: dataBase, refreshing: false});
+      })
+      .catch(e => console.log(e));
+  }
+  componentWillMount() {
+    this.getAlarms();
+  }
+  handleRefresh = () => {
+    this.setState(
+      {
+        refreshing: true,
+      },
+      () => {
+        this.getAlarms();
+      },
+    );
+  };
   render() {
+    this.getAlarms();
+    const {alarms, refreshing} = this.state;
     return (
       <Container>
-        <View style={{flex: 1}}>
+        {alarms.length > 0 ? (
           <FlatList
-            data={data}
+            data={alarms}
             showsVerticalScrollIndicator={false}
             renderItem={({item}) => (
               <Card>
                 <CardItem>
                   <Body>
                     <Title>{item.subject}</Title>
-                    <Subheading>
-                      Comenzó a consumir: {item.initial_date}
-                    </Subheading>
-                    <Subheading>
-                      Termina de consumir: {item.last_date}
-                    </Subheading>
                     <Subheading>Días por consumir: {item.remaining}</Subheading>
                     <ProgressBarAndroid
                       styleAttr="Horizontal"
@@ -41,39 +63,31 @@ export default class AlarmTrackingList extends Component {
                       progress={0.5}
                     />
                   </Body>
-                  <Right>
-                    <IconButton
-                      icon="trash-can-outline"
-                      color="red"
-                      onPress={() =>
-                        Alert.alert(
-                          'Eliminar Alarma',
-                          'Está por eliminar la alarma ' +
-                            item.subject +
-                            ' de su lista de seguimiento' +
-                            '.\n¿Desea Continuar?',
-                          [
-                            {
-                              text: 'Cancelar',
-                              style: 'cancel',
-                            },
-                            {
-                              text: 'Eliminar',
-                              onPress: () => console.log('Eliminado'),
-                            },
-                          ],
-                          {cancelable: false},
-                        )
-                      }
-                    />
-                  </Right>
                 </CardItem>
               </Card>
             )}
-            keyExtractor={(item, index) => index.toString()}
+            refreshing={refreshing}
+            onRefresh={this.handleRefresh}
+            keyExtractor={item => item.id}
           />
-        </View>
+        ) : (
+          <View style={styles.noRegisterView}>
+            <Text style={styles.noRegisterViewText}>
+              No hay alarmas en seguimiento
+            </Text>
+          </View>
+        )}
       </Container>
     );
   }
 }
+const styles = StyleSheet.create({
+  mainStyle: {flex: 1, flexDirection: 'column'},
+  noRegisterView: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    top: 250,
+  },
+  noRegisterViewText: {color: 'gray', fontStyle: 'italic', fontSize: 20},
+});

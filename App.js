@@ -38,7 +38,6 @@ import AddTrustedContact from './src/Components/organisms/AddContact';
 import EditTrustedContact from './src/Components/organisms/EditContact';
 import PatientAppointments from './src/Views/Patient/PatientAppointments';
 import Monitoring from './src/Views/Patient/Monitoring';
-import AddTrackingAlarm from './src/Components/organisms/AddTrackingAlarm';
 import PatientPrescriptions from './src/Views/Patient/PatientPrescriptions';
 /**Termina Vistas del Paciente */
 /**Drawers */
@@ -252,7 +251,6 @@ function MonitoringViews(userData) {
         navigation
         initialParams={{data: userData}}
       />
-      <Stack.Screen name="AddTrackingAlarm" component={AddTrackingAlarm} />
     </Stack.Navigator>
   );
 }
