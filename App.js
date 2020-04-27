@@ -238,7 +238,6 @@ function PatientAppointmentsViews(userData) {
         navigation
         initialParams={{data: userData}}
       />
-      <Stack.Screen name="EditCita" component={EditAppointment} />
     </Stack.Navigator>
   );
 }

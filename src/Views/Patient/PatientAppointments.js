@@ -1,8 +1,11 @@
 import React, {Component} from 'react';
-import {View, FlatList} from 'react-native';
+import {View} from 'react-native';
 import AppHeader from '../../Components/organisms/Header';
 import PatientAppointmentsList from '../../Components/organisms/PatientAppointmentsList';
 export default class Appointments extends Component {
+  constructor(props) {
+    super(props);
+  }
   render() {
     return (
       <View style={{flex: 1}}>
@@ -11,9 +14,10 @@ export default class Appointments extends Component {
           navigation={this.props.navigation}
           icon="menu"
         />
-        <View style={{flex: 1}}>
-          <PatientAppointmentsList navigation={this.props.navigation} />
-        </View>
+        <PatientAppointmentsList
+          navigation={this.props.navigation}
+          data={this.props.route.params.data}
+        />
       </View>
     );
   }
