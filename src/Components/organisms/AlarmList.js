@@ -3,6 +3,7 @@ import {Container, Card, CardItem, Body, Right, Text} from 'native-base';
 import firestore from '@react-native-firebase/firestore';
 import {Title, IconButton, Subheading} from 'react-native-paper';
 import {FlatList, View, Alert, StyleSheet} from 'react-native';
+import PushNotification from 'react-native-push-notification';
 export default class AlarmList extends Component {
   constructor(props) {
     super(props);
@@ -56,6 +57,18 @@ export default class AlarmList extends Component {
       },
     );
   };
+  /**Ejemplo de alarma */
+  testPushNotification = subject => {
+    PushNotification.localNotificationSchedule({
+      //... You can use all the options from localNotifications
+      title: subject,
+      vibration: 300,
+      autoCancel: false,
+      message: `Hora de tomar su medicamento ${subject}`, // (required)
+      date: new Date(Date.now() + 5 * 1000), // in 5 secs
+      importance: 'high',
+    });
+  };
   render() {
     this.getAlarms();
     const {alarms, refreshing, user} = this.state;
@@ -96,8 +109,9 @@ export default class AlarmList extends Component {
                     <IconButton
                       icon="trash-can-outline"
                       color="red"
-                      onPress={() =>
-                        Alert.alert(
+                      onPress={
+                        () => this.testPushNotification(item.subject)
+                        /* Alert.alert(
                           'Eliminar Alarma',
                           'Está por eliminar la alarma ' +
                             item.subject +
@@ -114,7 +128,7 @@ export default class AlarmList extends Component {
                             },
                           ],
                           {cancelable: false},
-                        )
+                        ) */
                       }
                     />
                   </Right>

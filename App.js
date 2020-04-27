@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {StyleSheet, Text, View, SafeAreaView, Image} from 'react-native';
+import PushNotification from 'react-native-push-notification';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -263,6 +264,22 @@ export default class App extends React.Component {
       userData: {},
       isSignedIn: false,
     };
+    PushNotification.configure({
+      // (optional) Called when Token is generated (iOS and Android)
+      onRegister: function(token) {
+        console.log('TOKEN:', token);
+      },
+      onNotification: function(notification) {
+        console.log('NOTIFICATION:', notification);
+      },
+      permissions: {
+        alert: true,
+        badge: true,
+        sound: true,
+      },
+      popInitialNotification: true,
+      requestPermissions: true,
+    });
   }
   callBack(userData, isSignedIn) {
     this.setState({userData: userData, isSignedIn: isSignedIn});
@@ -332,7 +349,7 @@ export default class App extends React.Component {
               />
               <Drawer.Screen
                 name="Recetas"
-                component={PatientPrescriptions}
+                children={() => PatientPrescriptions(this.state.userData)}
                 initialParams={{data: this.state.userData}}
               />
               <Drawer.Screen
