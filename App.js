@@ -1,5 +1,12 @@
 import * as React from 'react';
-import {StyleSheet, Text, View, SafeAreaView, Image} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  Image,
+  DeviceEventEmitter,
+} from 'react-native';
 import PushNotification from 'react-native-push-notification';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
@@ -286,6 +293,17 @@ export default class App extends React.Component {
   }
   getUserData() {
     return this.state.userData;
+  }
+  componentWillMount() {
+    PushNotification.registerNotificationActions(['Listo']);
+    DeviceEventEmitter.addListener('notificationActionReceived', action => {
+      console.log('Notification action received: ' + action);
+      const info = JSON.parse(action.dataJSON);
+      if (info.action === 'Listo') {
+        console.log(0);
+        console.log('pitooo ', info.action);
+      }
+    });
   }
   render() {
     return this.state.isSignedIn ? (

@@ -6,6 +6,7 @@ import AppHeader from '../../Components/organisms/Header';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 import firestore from '@react-native-firebase/firestore';
+import PushNotification from 'react-native-push-notification';
 
 export default class AddAlarm extends Component {
   constructor(props) {
@@ -60,7 +61,22 @@ export default class AddAlarm extends Component {
       isHourVisible: true,
     });
   };
-  sendAlarm() {
+  /**Crear alarma */
+  sendPushNotification = (subject, time, interval) => {
+    PushNotification.localNotificationSchedule({
+      //... You can use all the options from localNotifications
+      title: subject,
+      /*  repeatType: 'time',
+      repeatTime: interval, */
+      vibration: 300,
+      autoCancel: false,
+      message: `Hora de tomar su medicamento ${subject}`, // (required)
+      date: time, // in 5 secs
+      importance: 'max',
+      actions: '["Listo"]',
+    });
+  };
+  addAlarm() {
     const {
       selectedTrustedContact,
       user,
@@ -68,35 +84,55 @@ export default class AddAlarm extends Component {
       hourText,
       subjectText,
       frequency,
+      chosenHour,
+    } = this.state;
+    this.setState({sendForm: !this.state.sendForm});
+    setTimeout(() => {
+      firestore()
+        .collection('alarms')
+        .add({
+          subject: subjectText,
+          frequency: frequency,
+          monitoring: isSwitchOn,
+          next_hour: hourText,
+          patient: user,
+          trusted_contact: selectedTrustedContact,
+        })
+        .then(() => {
+          let d = new Date(Date.now());
+          d.setHours(chosenHour.getHours());
+          d.setMinutes(chosenHour.getMinutes());
+          d.setSeconds(0);
+          let interval = parseInt(frequency, 10) * 3600000; //Obtener horas seleccionadas en milisegundos
+          this.setState({sendForm: !this.state.sendForm});
+          this.sendPushNotification(subjectText, d);
+          this.props.navigation.goBack();
+        })
+        .catch(e => {
+          this.setState({sendForm: !this.state.sendForm});
+          Alert.alert('Error', e.message);
+        });
+    }, 1000);
+  }
+  sendAlarm() {
+    const {
+      selectedTrustedContact,
+      isSwitchOn,
+      hourText,
+      subjectText,
     } = this.state;
     if (subjectText.length > 0 && hourText !== 'Seleccione la hora inicial') {
-      if (isSwitchOn && Object.entries(selectedTrustedContact).length > 0) {
-        this.setState({sendForm: !this.state.sendForm});
-        setTimeout(() => {
-          firestore()
-            .collection('alarms')
-            .add({
-              subject: subjectText,
-              frequency: frequency,
-              monitoring: isSwitchOn,
-              next_hour: hourText,
-              patient: user,
-              trusted_contact: selectedTrustedContact,
-            })
-            .then(() => {
-              this.setState({sendForm: !this.state.sendForm});
-              this.props.navigation.goBack();
-            })
-            .catch(e => {
-              this.setState({sendForm: !this.state.sendForm});
-              Alert.alert('Error', e.message);
-            });
-        }, 1000);
+      if (isSwitchOn) {
+        if (Object.entries(selectedTrustedContact).length > 0) {
+          this.addAlarm();
+        } else {
+          Alert.alert(
+            'Advertencia',
+            'Si desea monitorear una alarma, debe seleccionar un contacto de confianza.',
+          );
+        }
       } else {
-        Alert.alert(
-          'Advertencia',
-          'Si desea monitorear una alarma, debe seleccionar un contacto de confianza.',
-        );
+        this.addAlarm();
       }
     } else {
       Alert.alert(

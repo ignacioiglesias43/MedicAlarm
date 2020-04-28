@@ -57,18 +57,6 @@ export default class AlarmList extends Component {
       },
     );
   };
-  /**Ejemplo de alarma */
-  testPushNotification = subject => {
-    PushNotification.localNotificationSchedule({
-      //... You can use all the options from localNotifications
-      title: subject,
-      vibration: 300,
-      autoCancel: false,
-      message: `Hora de tomar su medicamento ${subject}`, // (required)
-      date: new Date(Date.now() + 5 * 1000), // in 5 secs
-      importance: 'high',
-    });
-  };
   render() {
     this.getAlarms();
     const {alarms, refreshing, user} = this.state;
@@ -109,9 +97,8 @@ export default class AlarmList extends Component {
                     <IconButton
                       icon="trash-can-outline"
                       color="red"
-                      onPress={
-                        () => this.testPushNotification(item.subject)
-                        /* Alert.alert(
+                      onPress={() =>
+                        Alert.alert(
                           'Eliminar Alarma',
                           'Está por eliminar la alarma ' +
                             item.subject +
@@ -128,7 +115,7 @@ export default class AlarmList extends Component {
                             },
                           ],
                           {cancelable: false},
-                        ) */
+                        )
                       }
                     />
                   </Right>
