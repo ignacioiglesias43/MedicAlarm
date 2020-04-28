@@ -289,7 +289,10 @@ export default class App extends React.Component {
     });
   }
   callBack(userData, isSignedIn) {
-    this.setState({userData: userData, isSignedIn: isSignedIn});
+    this.setState({
+      userData: userData,
+      isSignedIn: isSignedIn,
+    });
   }
   getUserData() {
     return this.state.userData;
@@ -304,6 +307,23 @@ export default class App extends React.Component {
         console.log('pitooo ', info.action);
       }
     });
+  }
+  componentDidMount() {
+    DeviceEventEmitter.addListener('OnNotificationDismissed', async function(
+      e,
+    ) {
+      const obj = JSON.parse(e);
+      console.log('dismiss: ', obj);
+    });
+
+    DeviceEventEmitter.addListener('OnNotificationOpened', async function(e) {
+      const obj = JSON.parse(e);
+      console.log(obj);
+    });
+  }
+  componentWillUnmount() {
+    DeviceEventEmitter.removeListener('OnNotificationDismissed');
+    DeviceEventEmitter.removeListener('OnNotificationOpened');
   }
   render() {
     return this.state.isSignedIn ? (
@@ -325,8 +345,20 @@ export default class App extends React.Component {
                   style={{height: 60, width: 60}}
                 />
                 <View style={styles.title}>
-                  <Text style={{fontSize: 25, color: 'white'}}>Medic</Text>
-                  <Text style={{fontSize: 25, color: '#FF7058'}}>Alarm</Text>
+                  <Text
+                    style={{
+                      fontSize: 25,
+                      color: 'white',
+                    }}>
+                    Medic
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 25,
+                      color: '#FF7058',
+                    }}>
+                    Alarm
+                  </Text>
                 </View>
               </View>
               <DrawerContentScrollView {...props}>
@@ -368,7 +400,9 @@ export default class App extends React.Component {
               <Drawer.Screen
                 name="Recetas"
                 children={() => PatientPrescriptions(this.state.userData)}
-                initialParams={{data: this.state.userData}}
+                initialParams={{
+                  data: this.state.userData,
+                }}
               />
               <Drawer.Screen
                 name="Citas"

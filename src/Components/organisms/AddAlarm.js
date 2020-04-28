@@ -7,7 +7,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 import firestore from '@react-native-firebase/firestore';
 import PushNotification from 'react-native-push-notification';
-
+import ReactNativeAN from 'react-native-alarm-notification';
 export default class AddAlarm extends Component {
   constructor(props) {
     super(props);
@@ -34,7 +34,9 @@ export default class AddAlarm extends Component {
       .then(data => {
         let dataBase = [];
         data.forEach(d => {
-          let dx = Object.assign(d.data(), {id: d.id});
+          let dx = Object.assign(d.data(), {
+            id: d.id,
+          });
           dataBase.push(dx);
         });
         this.setState({contacts: dataBase});
@@ -61,7 +63,8 @@ export default class AddAlarm extends Component {
       isHourVisible: true,
     });
   };
-  /**Crear alarma */
+
+  /**Crear notificacion */
   sendPushNotification = (subject, time, interval) => {
     PushNotification.localNotificationSchedule({
       //... You can use all the options from localNotifications
@@ -76,6 +79,21 @@ export default class AddAlarm extends Component {
       actions: '["Listo"]',
     });
   };
+  /**Crear alarma */
+  createAlarm = (date, id, subject) => {
+    const fireDate = ReactNativeAN.parseDate(date);
+    const alarmNotifData = {
+      alarm_id: id,
+      title: subject,
+      message: `Hora de tomar su medicamento ${subject}`,
+      channel: 'my_channel_id',
+      small_icon: 'ic_launcher',
+      fire_date: fireDate,
+      sound_name: 'clock',
+      data: {foo: 'bar'},
+    };
+    ReactNativeAN.scheduleAlarm(alarmNotifData);
+  };
   addAlarm() {
     const {
       selectedTrustedContact,
@@ -86,7 +104,9 @@ export default class AddAlarm extends Component {
       frequency,
       chosenHour,
     } = this.state;
-    this.setState({sendForm: !this.state.sendForm});
+    this.setState({
+      sendForm: !this.state.sendForm,
+    });
     setTimeout(() => {
       firestore()
         .collection('alarms')
@@ -99,17 +119,22 @@ export default class AddAlarm extends Component {
           trusted_contact: selectedTrustedContact,
         })
         .then(() => {
-          let d = new Date(Date.now());
-          d.setHours(chosenHour.getHours());
-          d.setMinutes(chosenHour.getMinutes());
-          d.setSeconds(0);
+          let date = new Date(Date.now());
+          date.setHours(chosenHour.getHours());
+          date.setMinutes(chosenHour.getMinutes());
+          date.setSeconds(0);
           let interval = parseInt(frequency, 10) * 3600000; //Obtener horas seleccionadas en milisegundos
-          this.setState({sendForm: !this.state.sendForm});
-          this.sendPushNotification(subjectText, d);
+          this.setState({
+            sendForm: !this.state.sendForm,
+          });
+          // this.sendPushNotification(subjectText, date);
+          this.createAlarm(date, '1', subjectText);
           this.props.navigation.goBack();
         })
         .catch(e => {
-          this.setState({sendForm: !this.state.sendForm});
+          this.setState({
+            sendForm: !this.state.sendForm,
+          });
           Alert.alert('Error', e.message);
         });
     }, 1000);
@@ -195,7 +220,9 @@ export default class AddAlarm extends Component {
                   style={{width: 120}}
                   selectedValue={this.state.frequency}
                   onValueChange={value => {
-                    this.setState({frequency: value});
+                    this.setState({
+                      frequency: value,
+                    });
                   }}>
                   <Picker.Item label="1 hora" value="1" />
                   <Picker.Item label="2 horas" value="2" />
@@ -242,18 +269,24 @@ export default class AddAlarm extends Component {
                 <SearchableDropdown
                   selectedItems={this.state.selectedTrustedContact}
                   onItemSelect={item => {
-                    this.setState({selectedTrustedContact: item});
+                    this.setState({
+                      selectedTrustedContact: item,
+                    });
                   }}
                   containerStyle={{padding: 5}}
                   onRemoveItem={(item, index) => {
                     const items = this.state.selectedTrustedContact.filter(
                       sitem => sitem.id !== item.id,
                     );
-                    this.setState({selectedTrustedContact: items});
+                    this.setState({
+                      selectedTrustedContact: items,
+                    });
                   }}
                   itemStyle={styles.itemStyle}
                   itemTextStyle={{color: '#222'}}
-                  itemsContainerStyle={{maxHeight: 140}}
+                  itemsContainerStyle={{
+                    maxHeight: 140,
+                  }}
                   items={contacts}
                   resetValue={false}
                   textInputProps={{
