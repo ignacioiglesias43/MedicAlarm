@@ -35,7 +35,7 @@ export default class Configuration extends Component {
       auth()
         .signOut()
         .then(() => {
-          this.props.route.params.callBack(1, false);
+          this.props.route.params.callBack({}, false);
           this.setState({loadNextPage: !this.state.loadNextPage});
         })
         .catch(error => {

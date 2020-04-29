@@ -6,7 +6,7 @@ import AppHeader from '../../Components/organisms/Header';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 import firestore from '@react-native-firebase/firestore';
-//Change
+
 export default class AddAlarm extends Component {
   constructor(props) {
     super(props);
@@ -33,9 +33,7 @@ export default class AddAlarm extends Component {
       .then(data => {
         let dataBase = [];
         data.forEach(d => {
-          let dx = Object.assign(d.data(), {
-            id: d.id,
-          });
+          let dx = Object.assign(d.data(), {id: d.id});
           dataBase.push(dx);
         });
         this.setState({contacts: dataBase});
@@ -62,25 +60,7 @@ export default class AddAlarm extends Component {
       isHourVisible: true,
     });
   };
-
-  /**Crear notificacion */
-  sendPushNotification = (subject, time, interval) => {
-    PushNotification.localNotificationSchedule({
-      //... You can use all the options from localNotifications
-      title: subject,
-      /*  repeatType: 'time',
-      repeatTime: interval, */
-      vibration: 300,
-      autoCancel: false,
-      message: `Hora de tomar su medicamento ${subject}`, // (required)
-      date: time, // in 5 secs
-      importance: 'max',
-      actions: '["Listo"]',
-    });
-  };
-  /**Crear alarma */
-
-  addAlarm() {
+  sendAlarm() {
     const {
       selectedTrustedContact,
       user,
@@ -88,61 +68,35 @@ export default class AddAlarm extends Component {
       hourText,
       subjectText,
       frequency,
-      chosenHour,
-    } = this.state;
-    this.setState({
-      sendForm: !this.state.sendForm,
-    });
-    setTimeout(() => {
-      firestore()
-        .collection('alarms')
-        .add({
-          subject: subjectText,
-          frequency: frequency,
-          monitoring: isSwitchOn,
-          next_hour: hourText,
-          patient: user,
-          trusted_contact: selectedTrustedContact,
-        })
-        .then(() => {
-          let date = new Date(Date.now());
-          date.setHours(chosenHour.getHours());
-          date.setMinutes(chosenHour.getMinutes());
-          date.setSeconds(0);
-          let interval = parseInt(frequency, 10) * 3600000; //Obtener horas seleccionadas en milisegundos
-          this.setState({
-            sendForm: !this.state.sendForm,
-          });
-          // this.sendPushNotification(subjectText, date);
-          this.props.navigation.goBack();
-        })
-        .catch(e => {
-          this.setState({
-            sendForm: !this.state.sendForm,
-          });
-          Alert.alert('Error', e.message);
-        });
-    }, 1000);
-  }
-  sendAlarm() {
-    const {
-      selectedTrustedContact,
-      isSwitchOn,
-      hourText,
-      subjectText,
     } = this.state;
     if (subjectText.length > 0 && hourText !== 'Seleccione la hora inicial') {
-      if (isSwitchOn) {
-        if (Object.entries(selectedTrustedContact).length > 0) {
-          this.addAlarm();
-        } else {
-          Alert.alert(
-            'Advertencia',
-            'Si desea monitorear una alarma, debe seleccionar un contacto de confianza.',
-          );
-        }
+      if (isSwitchOn && Object.entries(selectedTrustedContact).length > 0) {
+        this.setState({sendForm: !this.state.sendForm});
+        setTimeout(() => {
+          firestore()
+            .collection('alarms')
+            .add({
+              subject: subjectText,
+              frequency: frequency,
+              monitoring: isSwitchOn,
+              next_hour: hourText,
+              patient: user,
+              trusted_contact: selectedTrustedContact,
+            })
+            .then(() => {
+              this.setState({sendForm: !this.state.sendForm});
+              this.props.navigation.goBack();
+            })
+            .catch(e => {
+              this.setState({sendForm: !this.state.sendForm});
+              Alert.alert('Error', e.message);
+            });
+        }, 1000);
       } else {
-        this.addAlarm();
+        Alert.alert(
+          'Advertencia',
+          'Si desea monitorear una alarma, debe seleccionar un contacto de confianza.',
+        );
       }
     } else {
       Alert.alert(
@@ -205,9 +159,7 @@ export default class AddAlarm extends Component {
                   style={{width: 120}}
                   selectedValue={this.state.frequency}
                   onValueChange={value => {
-                    this.setState({
-                      frequency: value,
-                    });
+                    this.setState({frequency: value});
                   }}>
                   <Picker.Item label="1 hora" value="1" />
                   <Picker.Item label="2 horas" value="2" />
@@ -254,24 +206,18 @@ export default class AddAlarm extends Component {
                 <SearchableDropdown
                   selectedItems={this.state.selectedTrustedContact}
                   onItemSelect={item => {
-                    this.setState({
-                      selectedTrustedContact: item,
-                    });
+                    this.setState({selectedTrustedContact: item});
                   }}
                   containerStyle={{padding: 5}}
                   onRemoveItem={(item, index) => {
                     const items = this.state.selectedTrustedContact.filter(
                       sitem => sitem.id !== item.id,
                     );
-                    this.setState({
-                      selectedTrustedContact: items,
-                    });
+                    this.setState({selectedTrustedContact: items});
                   }}
                   itemStyle={styles.itemStyle}
                   itemTextStyle={{color: '#222'}}
-                  itemsContainerStyle={{
-                    maxHeight: 140,
-                  }}
+                  itemsContainerStyle={{maxHeight: 140}}
                   items={contacts}
                   resetValue={false}
                   textInputProps={{

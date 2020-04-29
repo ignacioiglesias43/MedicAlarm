@@ -1,13 +1,5 @@
 import * as React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  Image,
-  DeviceEventEmitter,
-} from 'react-native';
-import PushNotification from 'react-native-push-notification';
+import {StyleSheet, Text, View, SafeAreaView, Image} from 'react-native';
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -271,59 +263,12 @@ export default class App extends React.Component {
       userData: {},
       isSignedIn: false,
     };
-    PushNotification.configure({
-      // (optional) Called when Token is generated (iOS and Android)
-      onRegister: function(token) {
-        console.log('TOKEN:', token);
-      },
-      onNotification: function(notification) {
-        console.log('NOTIFICATION:', notification);
-      },
-      permissions: {
-        alert: true,
-        badge: true,
-        sound: true,
-      },
-      popInitialNotification: true,
-      requestPermissions: true,
-    });
   }
   callBack(userData, isSignedIn) {
-    this.setState({
-      userData: userData,
-      isSignedIn: isSignedIn,
-    });
+    this.setState({userData: userData, isSignedIn: isSignedIn});
   }
   getUserData() {
     return this.state.userData;
-  }
-  componentWillMount() {
-    PushNotification.registerNotificationActions(['Listo']);
-    DeviceEventEmitter.addListener('notificationActionReceived', action => {
-      console.log('Notification action received: ' + action);
-      const info = JSON.parse(action.dataJSON);
-      if (info.action === 'Listo') {
-        console.log(0);
-        console.log('pitooo ', info.action);
-      }
-    });
-  }
-  componentDidMount() {
-    DeviceEventEmitter.addListener('OnNotificationDismissed', async function(
-      e,
-    ) {
-      const obj = JSON.parse(e);
-      console.log('dismiss: ', obj);
-    });
-
-    DeviceEventEmitter.addListener('OnNotificationOpened', async function(e) {
-      const obj = JSON.parse(e);
-      console.log(obj);
-    });
-  }
-  componentWillUnmount() {
-    DeviceEventEmitter.removeListener('OnNotificationDismissed');
-    DeviceEventEmitter.removeListener('OnNotificationOpened');
   }
   render() {
     return this.state.isSignedIn ? (
@@ -345,20 +290,8 @@ export default class App extends React.Component {
                   style={{height: 60, width: 60}}
                 />
                 <View style={styles.title}>
-                  <Text
-                    style={{
-                      fontSize: 25,
-                      color: 'white',
-                    }}>
-                    Medic
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 25,
-                      color: '#FF7058',
-                    }}>
-                    Alarm
-                  </Text>
+                  <Text style={{fontSize: 25, color: 'white'}}>Medic</Text>
+                  <Text style={{fontSize: 25, color: '#FF7058'}}>Alarm</Text>
                 </View>
               </View>
               <DrawerContentScrollView {...props}>
@@ -399,10 +332,8 @@ export default class App extends React.Component {
               />
               <Drawer.Screen
                 name="Recetas"
-                children={() => PatientPrescriptions(this.state.userData)}
-                initialParams={{
-                  data: this.state.userData,
-                }}
+                component={PatientPrescriptions}
+                initialParams={{data: this.state.userData}}
               />
               <Drawer.Screen
                 name="Citas"

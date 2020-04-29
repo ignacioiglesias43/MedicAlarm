@@ -2,15 +2,7 @@ import React, {Component} from 'react';
 import {Container, Card, CardItem, Body, Right, Text} from 'native-base';
 import firestore from '@react-native-firebase/firestore';
 import {Title, IconButton, Subheading} from 'react-native-paper';
-import {
-  FlatList,
-  View,
-  Alert,
-  StyleSheet,
-  DeviceEventEmitter,
-} from 'react-native';
-import PushNotification from 'react-native-push-notification';
-import ReactNativeAN from 'react-native-alarm-notification';
+import {FlatList, View, Alert, StyleSheet} from 'react-native';
 export default class AlarmList extends Component {
   constructor(props) {
     super(props);
@@ -29,15 +21,10 @@ export default class AlarmList extends Component {
       .then(data => {
         let dataBase = [];
         data.forEach(d => {
-          let dx = Object.assign(d.data(), {
-            id: d.id,
-          });
+          let dx = Object.assign(d.data(), {id: d.id});
           dataBase.push(dx);
         });
-        this.setState({
-          alarms: dataBase,
-          refreshing: false,
-        });
+        this.setState({alarms: dataBase, refreshing: false});
       })
       .catch(e => console.log(e));
   }
@@ -59,10 +46,6 @@ export default class AlarmList extends Component {
   componentDidMount() {
     this.getAlarms();
   }
-  componentWillUnmount() {
-    DeviceEventEmitter.removeListener('OnNotificationDismissed');
-    DeviceEventEmitter.removeListener('OnNotificationOpened');
-  }
   handleRefresh = () => {
     this.setState(
       {
@@ -73,7 +56,6 @@ export default class AlarmList extends Component {
       },
     );
   };
-
   render() {
     this.getAlarms();
     const {alarms, refreshing, user} = this.state;
