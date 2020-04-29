@@ -6,8 +6,7 @@ import AppHeader from '../../Components/organisms/Header';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 import firestore from '@react-native-firebase/firestore';
-import PushNotification from 'react-native-push-notification';
-import ReactNativeAN from 'react-native-alarm-notification';
+//Change
 export default class AddAlarm extends Component {
   constructor(props) {
     super(props);
@@ -80,20 +79,7 @@ export default class AddAlarm extends Component {
     });
   };
   /**Crear alarma */
-  createAlarm = (date, id, subject) => {
-    const fireDate = ReactNativeAN.parseDate(date);
-    const alarmNotifData = {
-      alarm_id: id,
-      title: subject,
-      message: `Hora de tomar su medicamento ${subject}`,
-      channel: 'my_channel_id',
-      small_icon: 'ic_launcher',
-      fire_date: fireDate,
-      sound_name: 'clock',
-      data: {foo: 'bar'},
-    };
-    ReactNativeAN.scheduleAlarm(alarmNotifData);
-  };
+
   addAlarm() {
     const {
       selectedTrustedContact,
@@ -128,7 +114,6 @@ export default class AddAlarm extends Component {
             sendForm: !this.state.sendForm,
           });
           // this.sendPushNotification(subjectText, date);
-          this.createAlarm(date, '1', subjectText);
           this.props.navigation.goBack();
         })
         .catch(e => {
