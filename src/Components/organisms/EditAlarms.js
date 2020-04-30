@@ -61,7 +61,7 @@ export default class EditAlarms extends Component {
       isHourVisible: false,
     });
   };
-  sendAlarm() {
+  editAlarm() {
     const {route} = this.props;
     const {
       selectedTrustedContact,
@@ -71,35 +71,43 @@ export default class EditAlarms extends Component {
       subjectText,
       frequency,
     } = this.state;
+    this.setState({sendForm: !this.state.sendForm});
+    setTimeout(() => {
+      firestore()
+        .collection('alarms')
+        .doc(route.params.id)
+        .update({
+          subject: subjectText,
+          frequency: frequency,
+          monitoring: isSwitchOn,
+          next_hour: hourText,
+          patient: user,
+          trusted_contact: selectedTrustedContact,
+        })
+        .then(() => {
+          this.setState({sendForm: !this.state.sendForm});
+          this.props.navigation.goBack();
+        })
+        .catch(e => {
+          this.setState({sendForm: !this.state.sendForm});
+          Alert.alert('Error', e.message);
+        });
+    }, 1000);
+  }
+  sendAlarm() {
+    const {selectedTrustedContact, isSwitchOn, subjectText} = this.state;
     if (subjectText.length > 0) {
-      if (isSwitchOn && Object.entries(selectedTrustedContact).length > 0) {
-        this.setState({sendForm: !this.state.sendForm});
-        setTimeout(() => {
-          firestore()
-            .collection('alarms')
-            .doc(route.params.id)
-            .update({
-              subject: subjectText,
-              frequency: frequency,
-              monitoring: isSwitchOn,
-              next_hour: hourText,
-              patient: user,
-              trusted_contact: selectedTrustedContact,
-            })
-            .then(() => {
-              this.setState({sendForm: !this.state.sendForm});
-              this.props.navigation.goBack();
-            })
-            .catch(e => {
-              this.setState({sendForm: !this.state.sendForm});
-              Alert.alert('Error', e.message);
-            });
-        }, 1000);
+      if (isSwitchOn) {
+        if (Object.entries(selectedTrustedContact).length > 0) {
+          this.editAlarm();
+        } else {
+          Alert.alert(
+            'Advertencia',
+            'Si desea monitorear una alarma, debe seleccionar un contacto de confianza.',
+          );
+        }
       } else {
-        Alert.alert(
-          'Advertencia',
-          'Si desea monitorear una alarma, debe seleccionar un contacto de confianza.',
-        );
+        this.editAlarm();
       }
     } else {
       Alert.alert(

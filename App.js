@@ -1,6 +1,14 @@
 import * as React from 'react';
-import {StyleSheet, Text, View, SafeAreaView, Image} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  Image,
+  DeviceEventEmitter,
+} from 'react-native';
 import 'react-native-gesture-handler';
+import PushNotification from 'react-native-push-notification';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {
@@ -8,6 +16,7 @@ import {
   DrawerItemList,
   DrawerContentScrollView,
 } from '@react-navigation/drawer';
+import messaging from '@react-native-firebase/messaging';
 import Configuration from './src/Views/Configuration';
 /**Vistas del Doctor */
 import Login from './src/Views/Login';
@@ -255,7 +264,13 @@ function MonitoringViews(userData) {
   );
 }
 /**Termina Ventanas de Paciente */
+async function requestUserPermission() {
+  const settings = await messaging().requestPermission();
 
+  if (settings) {
+    console.log('Permission settings:', settings);
+  }
+}
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -263,9 +278,49 @@ export default class App extends React.Component {
       userData: {},
       isSignedIn: false,
     };
+    PushNotification.configure({
+      // (optional) Called when Token is generated (iOS and Android)
+      onRegister: function(token) {
+        console.log('TOKEN:', token);
+      },
+      // (required) Called when a remote or local notification is opened or received
+      onNotification: function(notification) {
+        console.log('NOTIFICATION:', notification);
+      },
+      permissions: {
+        alert: true,
+        badge: true,
+        sound: true,
+      },
+      popInitialNotification: true,
+      requestPermissions: true,
+    });
+  }
+
+  componentDidMount() {
+    DeviceEventEmitter.addListener('OnNotificationDismissed', async function(
+      e,
+    ) {
+      const obj = JSON.parse(e);
+      console.log(obj);
+    });
+
+    DeviceEventEmitter.addListener('OnNotificationOpened', async function(e) {
+      const obj = JSON.parse(e);
+      console.log(obj);
+    });
+    requestUserPermission();
+  }
+
+  componentWillUnmount() {
+    DeviceEventEmitter.removeListener('OnNotificationDismissed');
+    DeviceEventEmitter.removeListener('OnNotificationOpened');
   }
   callBack(userData, isSignedIn) {
-    this.setState({userData: userData, isSignedIn: isSignedIn});
+    this.setState({
+      userData: userData,
+      isSignedIn: isSignedIn,
+    });
   }
   getUserData() {
     return this.state.userData;
@@ -290,8 +345,20 @@ export default class App extends React.Component {
                   style={{height: 60, width: 60}}
                 />
                 <View style={styles.title}>
-                  <Text style={{fontSize: 25, color: 'white'}}>Medic</Text>
-                  <Text style={{fontSize: 25, color: '#FF7058'}}>Alarm</Text>
+                  <Text
+                    style={{
+                      fontSize: 25,
+                      color: 'white',
+                    }}>
+                    Medic
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 25,
+                      color: '#FF7058',
+                    }}>
+                    Alarm
+                  </Text>
                 </View>
               </View>
               <DrawerContentScrollView {...props}>
@@ -333,7 +400,9 @@ export default class App extends React.Component {
               <Drawer.Screen
                 name="Recetas"
                 component={PatientPrescriptions}
-                initialParams={{data: this.state.userData}}
+                initialParams={{
+                  data: this.state.userData,
+                }}
               />
               <Drawer.Screen
                 name="Citas"

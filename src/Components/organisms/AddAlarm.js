@@ -6,7 +6,8 @@ import AppHeader from '../../Components/organisms/Header';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 import firestore from '@react-native-firebase/firestore';
-
+import PushNotification from 'react-native-push-notification';
+import ReactNativeAN from 'react-native-alarm-notification';
 export default class AddAlarm extends Component {
   constructor(props) {
     super(props);
@@ -60,7 +61,34 @@ export default class AddAlarm extends Component {
       isHourVisible: true,
     });
   };
-  sendAlarm() {
+  handleAlarmManager = (subject, date) => {
+    const fireDate = ReactNativeAN.parseDate(date);
+    const alarmNotifData = {
+      alarm_id: '12345',
+      title: 'Continuar con su tratamiento',
+      message: `Hora de tomar su medicamento ${subject}`,
+      sound_name: 'clock',
+      channel: 'my_channel_id',
+      fire_date: fireDate,
+      small_icon: 'ic_launcher',
+      data: {foo: 'bar'},
+    };
+    ReactNativeAN.scheduleAlarm(alarmNotifData);
+  };
+  pushNotif = (subject, date) => {
+    PushNotification.localNotification({
+      title: 'Continuar con su tratamiento',
+      color: 'red',
+      vibration: 300,
+      autoCancel: false,
+      importance: 'max',
+      actions: '["Listo"]',
+      message: `Hora de tomar su medicamento ${subject}`,
+      soundName: 'clock.mp3',
+      date: new Date(Date.now() + 5 * 1000), // in 60 secs
+    });
+  };
+  addAlarm() {
     const {
       selectedTrustedContact,
       user,
@@ -68,35 +96,51 @@ export default class AddAlarm extends Component {
       hourText,
       subjectText,
       frequency,
+      chosenHour,
+    } = this.state;
+    this.setState({sendForm: !this.state.sendForm});
+    setTimeout(() => {
+      firestore()
+        .collection('alarms')
+        .add({
+          subject: subjectText,
+          frequency: frequency,
+          monitoring: isSwitchOn,
+          next_hour: hourText,
+          patient: user,
+          trusted_contact: selectedTrustedContact,
+        })
+        .then(() => {
+          this.setState({sendForm: !this.state.sendForm});
+          this.pushNotif(subjectText, chosenHour);
+          // this.handleAlarmManager(subjectText, chosenHour);
+          this.props.navigation.goBack();
+        })
+        .catch(e => {
+          this.setState({sendForm: !this.state.sendForm});
+          Alert.alert('Error', e.message);
+        });
+    }, 1000);
+  }
+  sendAlarm() {
+    const {
+      selectedTrustedContact,
+      isSwitchOn,
+      hourText,
+      subjectText,
     } = this.state;
     if (subjectText.length > 0 && hourText !== 'Seleccione la hora inicial') {
-      if (isSwitchOn && Object.entries(selectedTrustedContact).length > 0) {
-        this.setState({sendForm: !this.state.sendForm});
-        setTimeout(() => {
-          firestore()
-            .collection('alarms')
-            .add({
-              subject: subjectText,
-              frequency: frequency,
-              monitoring: isSwitchOn,
-              next_hour: hourText,
-              patient: user,
-              trusted_contact: selectedTrustedContact,
-            })
-            .then(() => {
-              this.setState({sendForm: !this.state.sendForm});
-              this.props.navigation.goBack();
-            })
-            .catch(e => {
-              this.setState({sendForm: !this.state.sendForm});
-              Alert.alert('Error', e.message);
-            });
-        }, 1000);
+      if (isSwitchOn) {
+        if (Object.entries(selectedTrustedContact).length > 0) {
+          this.addAlarm();
+        } else {
+          Alert.alert(
+            'Advertencia',
+            'Si desea monitorear una alarma, debe seleccionar un contacto de confianza.',
+          );
+        }
       } else {
-        Alert.alert(
-          'Advertencia',
-          'Si desea monitorear una alarma, debe seleccionar un contacto de confianza.',
-        );
+        this.addAlarm();
       }
     } else {
       Alert.alert(
