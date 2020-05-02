@@ -8,6 +8,7 @@ import {
   DeviceEventEmitter,
   Alert,
 } from 'react-native';
+import Snackbar from 'react-native-paper';
 import 'react-native-gesture-handler';
 import PushNotification from 'react-native-push-notification';
 import {NavigationContainer} from '@react-navigation/native';
@@ -272,13 +273,13 @@ async function requestUserPermission() {
     console.log('Permission settings:', settings);
   }
 }
-
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       userData: {},
       isSignedIn: false,
+      visible: true,
     };
     PushNotification.configure({
       // (optional) Called when Token is generated (iOS and Android)
@@ -288,24 +289,21 @@ export default class App extends React.Component {
       // (required) Called when a remote or local notification is opened or received
       onNotification: function(notification) {
         console.log('NOTIFICATION:', notification);
-        const id = 1;
         if (notification.action === 'Listo') {
           // Alert.alert('Ex', notification.action);
-          PushNotification.cancelLocalNotifications({id: '123'});
+          console.log(notification.notificationId);
+          PushNotification.clearLocalNotification(notification.notificationId);
         } else if (notification.action === 'Posponer') {
-          PushNotification.cancelLocalNotifications({id: '123'});
+          PushNotification.clearLocalNotification(notification.notificationId);
           PushNotification.localNotificationSchedule({
-            id: '123',
             title: 'Continuar con su tratamiento',
             userInfo: {
-              id: '123', //IMPORTANT!! adding the userInfo, so that the cancel will work!
               user: notification.userInfo.user,
               trustedContact: notification.userInfo.trustedContact,
               monitoring: notification.userInfo.monitoring,
             },
-            number: 0,
             color: 'red',
-            // ongoing: true,
+            ongoing: true,
             vibration: 300,
             autoCancel: false,
             importance: 'max',

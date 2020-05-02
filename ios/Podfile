@@ -34,7 +34,6 @@ target 'MedicAlarm' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
-  pod 'react-native-alarm-notification', :path => '../node_modules/react-native-alarm-notification'
 
   target 'MedicAlarmTests' do
     inherit! :search_paths

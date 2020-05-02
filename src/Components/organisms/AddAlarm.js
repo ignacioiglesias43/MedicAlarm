@@ -7,7 +7,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 import firestore from '@react-native-firebase/firestore';
 import PushNotification from 'react-native-push-notification';
-import ReactNativeAN from 'react-native-alarm-notification';
+// import ReactNativeAN from 'react-native-alarm-notification';
 export default class AddAlarm extends Component {
   constructor(props) {
     super(props);
@@ -61,33 +61,16 @@ export default class AddAlarm extends Component {
       isHourVisible: true,
     });
   };
-  handleAlarmManager = (subject, date) => {
-    const fireDate = ReactNativeAN.parseDate(date);
-    const alarmNotifData = {
-      alarm_id: '12345',
-      title: 'Continuar con su tratamiento',
-      message: `Hora de tomar su medicamento ${subject}`,
-      sound_name: 'clock',
-      channel: 'my_channel_id',
-      fire_date: fireDate,
-      small_icon: 'ic_launcher',
-      data: {foo: 'bar'},
-    };
-    ReactNativeAN.scheduleAlarm(alarmNotifData);
-  };
   pushNotif = (subject, date, user, trustedContact, monitoring) => {
-    const id = 1;
     PushNotification.localNotificationSchedule({
-      id: '123',
       title: 'Continuar con su tratamiento',
       userInfo: {
-        id: '123', //IMPORTANT!! adding the userInfo, so that the cancel will work!
         user: user,
         trustedContact: trustedContact,
         monitoring: monitoring,
       },
       color: 'red',
-      // ongoing: true,
+      ongoing: true,
       vibrate: true,
       vibration: 300,
       autoCancel: false,
@@ -95,7 +78,7 @@ export default class AddAlarm extends Component {
       actions: '["Listo", "Posponer"]',
       message: `Hora de tomar su medicamento ${subject}`,
       soundName: 'clock.mp3',
-      date: new Date(Date.now() + 5 * 1000), // in 60 secs
+      date: new Date(Date.now() + 5 * 1000),
     });
   };
   addAlarm() {
