@@ -1,13 +1,24 @@
 /**
  * @format
  */
-
+import React, {Component} from 'react';
 import {AppRegistry} from 'react-native';
-import messaging from '@react-native-firebase/messaging';
 import App from './App';
+import Splash from './src/Views/Splash';
 import {name as appName} from './app.json';
-messaging().setBackgroundMessageHandler(async remoteMessage => {
-  console.log('Message handled in the background!', remoteMessage);
-});
-
-AppRegistry.registerComponent(appName, () => App);
+class Main extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentScreen: 'Splash',
+    };
+    setTimeout(() => {
+      this.setState({currentScreen: 'App'});
+    }, 3000);
+  }
+  render() {
+    const {currentScreen} = this.state;
+    return currentScreen === 'Splash' ? <Splash /> : <App />;
+  }
+}
+AppRegistry.registerComponent(appName, () => Main);
