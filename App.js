@@ -1,14 +1,5 @@
 import * as React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  Image,
-  DeviceEventEmitter,
-  Alert,
-} from 'react-native';
-import Snackbar from 'react-native-paper';
+import {StyleSheet, Text, View, SafeAreaView, Image} from 'react-native';
 import 'react-native-gesture-handler';
 import PushNotification from 'react-native-push-notification';
 import {NavigationContainer} from '@react-navigation/native';
@@ -288,7 +279,7 @@ export default class App extends React.Component {
       },
       // (required) Called when a remote or local notification is opened or received
       onNotification: function(notification) {
-        console.log('NOTIFICATION:', notification);
+        console.log('NOTIFICATION:', notification.userInfo.user.data.name);
         if (notification.action === 'Listo') {
           console.log(notification.notificationId);
           PushNotification.clearLocalNotification(notification.notificationId);
@@ -300,6 +291,7 @@ export default class App extends React.Component {
               user: notification.userInfo.user,
               trustedContact: notification.userInfo.trustedContact,
               monitoring: notification.userInfo.monitoring,
+              subject: notification.userInfo.subject,
             },
             color: 'red',
             ongoing: true,

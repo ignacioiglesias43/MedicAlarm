@@ -68,6 +68,7 @@ export default class AddAlarm extends Component {
         user: user,
         trustedContact: trustedContact,
         monitoring: monitoring,
+        subject: subject,
       },
       color: 'red',
       ongoing: true,
