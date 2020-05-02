@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   Image,
   DeviceEventEmitter,
+  Alert,
 } from 'react-native';
 import 'react-native-gesture-handler';
 import PushNotification from 'react-native-push-notification';
@@ -271,6 +272,7 @@ async function requestUserPermission() {
     console.log('Permission settings:', settings);
   }
 }
+
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -286,6 +288,33 @@ export default class App extends React.Component {
       // (required) Called when a remote or local notification is opened or received
       onNotification: function(notification) {
         console.log('NOTIFICATION:', notification);
+        const id = 1;
+        if (notification.action === 'Listo') {
+          // Alert.alert('Ex', notification.action);
+          PushNotification.cancelLocalNotifications({id: '123'});
+        } else if (notification.action === 'Posponer') {
+          PushNotification.cancelLocalNotifications({id: '123'});
+          PushNotification.localNotificationSchedule({
+            id: '123',
+            title: 'Continuar con su tratamiento',
+            userInfo: {
+              id: '123', //IMPORTANT!! adding the userInfo, so that the cancel will work!
+              user: notification.userInfo.user,
+              trustedContact: notification.userInfo.trustedContact,
+              monitoring: notification.userInfo.monitoring,
+            },
+            number: 0,
+            color: 'red',
+            // ongoing: true,
+            vibration: 300,
+            autoCancel: false,
+            importance: 'max',
+            actions: '["Listo", "Posponer"]',
+            message: notification.message,
+            soundName: 'clock.mp3',
+            date: new Date(Date.now() + 5 * 1000), // in 60 secs
+          });
+        }
       },
       permissions: {
         alert: true,
@@ -296,25 +325,8 @@ export default class App extends React.Component {
       requestPermissions: true,
     });
   }
-
   componentDidMount() {
-    DeviceEventEmitter.addListener('OnNotificationDismissed', async function(
-      e,
-    ) {
-      const obj = JSON.parse(e);
-      console.log(obj);
-    });
-
-    DeviceEventEmitter.addListener('OnNotificationOpened', async function(e) {
-      const obj = JSON.parse(e);
-      console.log(obj);
-    });
-    requestUserPermission();
-  }
-
-  componentWillUnmount() {
-    DeviceEventEmitter.removeListener('OnNotificationDismissed');
-    DeviceEventEmitter.removeListener('OnNotificationOpened');
+    // PushNotification.cancelAllLocalNotifications();
   }
   callBack(userData, isSignedIn) {
     this.setState({

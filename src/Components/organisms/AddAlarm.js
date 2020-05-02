@@ -75,14 +75,24 @@ export default class AddAlarm extends Component {
     };
     ReactNativeAN.scheduleAlarm(alarmNotifData);
   };
-  pushNotif = (subject, date) => {
-    PushNotification.localNotification({
+  pushNotif = (subject, date, user, trustedContact, monitoring) => {
+    const id = 1;
+    PushNotification.localNotificationSchedule({
+      id: '123',
       title: 'Continuar con su tratamiento',
+      userInfo: {
+        id: '123', //IMPORTANT!! adding the userInfo, so that the cancel will work!
+        user: user,
+        trustedContact: trustedContact,
+        monitoring: monitoring,
+      },
       color: 'red',
+      // ongoing: true,
+      vibrate: true,
       vibration: 300,
       autoCancel: false,
       importance: 'max',
-      actions: '["Listo"]',
+      actions: '["Listo", "Posponer"]',
       message: `Hora de tomar su medicamento ${subject}`,
       soundName: 'clock.mp3',
       date: new Date(Date.now() + 5 * 1000), // in 60 secs
@@ -112,7 +122,13 @@ export default class AddAlarm extends Component {
         })
         .then(() => {
           this.setState({sendForm: !this.state.sendForm});
-          this.pushNotif(subjectText, chosenHour);
+          this.pushNotif(
+            subjectText,
+            chosenHour,
+            user,
+            selectedTrustedContact,
+            isSwitchOn,
+          );
           // this.handleAlarmManager(subjectText, chosenHour);
           this.props.navigation.goBack();
         })
