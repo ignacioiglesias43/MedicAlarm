@@ -78,7 +78,7 @@ export default class AddAlarm extends Component {
       actions: '["Listo", "Posponer"]',
       message: `Hora de tomar su medicamento ${subject}`,
       soundName: 'clock.mp3',
-      date: new Date(Date.now() + 5 * 1000),
+      date: date,
     });
   };
   addAlarm() {
@@ -104,15 +104,18 @@ export default class AddAlarm extends Component {
           trusted_contact: selectedTrustedContact,
         })
         .then(() => {
+          let date = new Date(Date.now());
+          date.setHours(chosenHour.getHours());
+          date.setMinutes(chosenHour.getMinutes());
+          date.setSeconds(0);
           this.setState({sendForm: !this.state.sendForm});
           this.pushNotif(
             subjectText,
-            chosenHour,
+            date,
             user,
             selectedTrustedContact,
             isSwitchOn,
           );
-          // this.handleAlarmManager(subjectText, chosenHour);
           this.props.navigation.goBack();
         })
         .catch(e => {

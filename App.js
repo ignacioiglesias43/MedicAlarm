@@ -290,7 +290,6 @@ export default class App extends React.Component {
       onNotification: function(notification) {
         console.log('NOTIFICATION:', notification);
         if (notification.action === 'Listo') {
-          // Alert.alert('Ex', notification.action);
           console.log(notification.notificationId);
           PushNotification.clearLocalNotification(notification.notificationId);
         } else if (notification.action === 'Posponer') {
@@ -310,7 +309,7 @@ export default class App extends React.Component {
             actions: '["Listo", "Posponer"]',
             message: notification.message,
             soundName: 'clock.mp3',
-            date: new Date(Date.now() + 5 * 1000), // in 60 secs
+            date: new Date(Date.now() + 300000), //Cada 5 minutos
           });
         }
       },
