@@ -1,6 +1,16 @@
 import * as React from 'react';
-import {StyleSheet, Text, View, SafeAreaView, Image} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  Image,
+  NativeModules,
+  PermissionsAndroid,
+} from 'react-native';
 import 'react-native-gesture-handler';
+// import SendAndroidSMS from 'send-android-sms';
+// import SendSms from '@lemos97/rn-send-sms';
 import PushNotification from 'react-native-push-notification';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -264,6 +274,30 @@ async function requestUserPermission() {
     console.log('Permission settings:', settings);
   }
 }
+const sendDirectSms = async (phone, message) => {
+  const DirectSms = NativeModules.DirectSms;
+  try {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.SEND_SMS,
+      {
+        title: 'MedicAlarm SMS Permission',
+        message:
+          'MedicAlarm necesita acceder a sus mensajes ' +
+          'para poder avisar a sus contactos de confianza.',
+        buttonNegative: 'Cancelar',
+        buttonPositive: 'Aceptar',
+      },
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      console.log('send');
+      DirectSms.sendDirectSms(phone, message);
+    } else {
+      console.log('SMS permission denied');
+    }
+  } catch (err) {
+    console.warn(err);
+  }
+};
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -284,6 +318,24 @@ export default class App extends React.Component {
           console.log(notification.notificationId);
           PushNotification.clearLocalNotification(notification.notificationId);
         } else if (notification.action === 'Posponer') {
+          sendDirectSms(
+            '6122216102',
+            `Este es el servicio de MedicAlarm. Le informamos que ${
+              notification.userInfo.user.data.name
+            } no ha tomado su medicamento ${notification.userInfo.subject}`,
+          );
+          /* SendAndroidSMS.sendMessage(
+            `Este es el servicio de MedicAlarm. Le informamos que ${
+              notification.userInfo.user.data.name
+            } no ha tomado su medicamento ${notification.userInfo.subject}`,
+            '6122192275',
+            () => {
+              console.log("it's work! :)");
+            },
+            error => {
+              console.log('occured error... :(', error);
+            },
+          ); */
           PushNotification.clearLocalNotification(notification.notificationId);
           PushNotification.localNotificationSchedule({
             title: 'Continuar con su tratamiento',
