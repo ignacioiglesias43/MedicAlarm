@@ -318,6 +318,7 @@ export default class App extends React.Component {
       },
       // Se llama cuando una notificacion es abierta
       onNotification: function(notification) {
+        // PushNotification.clearLocalNotification(notification.notificationId);
         console.log('NOTIFICATION:', notification.notificationId);
         if (notification.action === 'Listo') {
           /**Calcula si el numero de veces que ha tomado el medicamento supera lo establecido */

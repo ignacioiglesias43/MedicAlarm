@@ -1,10 +1,14 @@
 import React, {Component} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, ToastAndroid} from 'react-native';
 import {Container, Content, Card, CardItem, Body, Right} from 'native-base';
 import AppHeader from '../../Components/organisms/Header';
 import MedicalAppointment from '../../Components/organisms/MedicalAppointment';
 import MedicalAlarms from '../../Components/organisms/MedicalAlarms';
 import {Avatar, Title, IconButton} from 'react-native-paper';
+import {utils} from '@react-native-firebase/app';
+import storage from '@react-native-firebase/storage';
+import ImagePicker from 'react-native-image-picker';
+
 export default class Home extends Component {
   constructor(props) {
     super(props);
@@ -19,6 +23,56 @@ export default class Home extends Component {
       data: data,
     });
   }
+  handleImagePicker = () => {
+    const options = {
+      title: 'Seleccione una imagen de perfil',
+      chooseFromLibraryButtonTitle: 'Abrir galería',
+      takePhotoButtonTitle: 'Abrir cámara',
+      mediaType: 'photo',
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+    };
+
+    /**
+     * The first arg is the options object for customization (it can also be null or omitted for default options),
+     * The second arg is the callback which sends object: response (more info in the API Reference)
+     */
+    ImagePicker.showImagePicker(options, response => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      } else {
+        const source = {uri: response.uri};
+
+        // You can also display the image using data:
+        // const source = { uri: 'data:image/jpeg;base64,' + response.data };
+
+        this.setState({
+          avatarSource: source,
+        });
+      }
+    });
+  };
+  uploadFile = async () => {
+    const reference = storage().ref(`${this.state.id}.png`);
+    const pathToFile = `${utils.FilePath.PICTURES_DIRECTORY}/${
+      this.state.id
+    }.png`;
+    await (await reference.putFile(pathToFile)).task.then(() => {
+      ToastAndroid.showWithGravity(
+        'Se ha subido su imagen de perfil.',
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER,
+      );
+    });
+  };
   render() {
     const {data, id} = this.state;
     return (
@@ -35,15 +89,28 @@ export default class Home extends Component {
             alignItems: 'center',
           }}>
           {typeof data !== 'undefined' && (
-            <Avatar.Image
-              size={130}
-              source={
-                data.type === 'doctor'
-                  ? require('../../img/avatar.png')
-                  : require('../../img/usuario.png')
-              }
-              style={{backgroundColor: 'white'}}
-            />
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+              }}>
+              <Avatar.Image
+                size={130}
+                source={
+                  data.type === 'doctor'
+                    ? require('../../img/avatar.png')
+                    : require('../../img/usuario.png')
+                }
+                style={{backgroundColor: 'white'}}
+              />
+              <View style={{marginTop: 100, marginLeft: -35}}>
+                <IconButton
+                  icon="pencil"
+                  size={25}
+                  onPress={() => this.handleImagePicker()}
+                />
+              </View>
+            </View>
           )}
           <Title>
             {typeof data !== 'undefined'
