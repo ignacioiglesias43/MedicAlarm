@@ -78,7 +78,7 @@ export default class AlarmTrackingList extends Component {
                       Total de veces consumido: {item.cont_shots}
                     </Subheading>
                     <Subheading>
-                      Total de veces consumido: {item.total_shots}
+                      Total a consumir: {item.total_shots}
                     </Subheading>
                   </Body>
                 </CardItem>
