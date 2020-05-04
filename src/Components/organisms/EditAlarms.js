@@ -21,6 +21,10 @@ export default class EditAlarms extends Component {
       subjectText: JSON.stringify(props.route.params.subject).replace(/"/g, ''),
       frequency: props.route.params.frequency,
       hourText: JSON.stringify(props.route.params.hour).replace(/"/g, ''),
+      dateText: JSON.stringify(props.route.params.total_of_days).replace(
+        /"/g,
+        '',
+      ),
     };
   }
   getContacts() {
@@ -137,67 +141,50 @@ export default class EditAlarms extends Component {
               onChangeText={text => this.setState({subjectText: text})}
               returnKeyType={'next'}
               mode="outlined"
-              style={{paddingTop: 5}}
+              onSubmitEditing={() => this.numberDaysInput.focus()}
+              style={{paddingTop: 5, paddingBottom: 10}}
             />
             <View>
-              <Item picker style={{padding: 10}}>
-                <TouchableOpacity onPress={this.showHourPicker}>
-                  <Text style={{color: 'green'}}>
-                    Hora: {this.state.hourText}
-                  </Text>
-                </TouchableOpacity>
-                <DateTimePickerModal
-                  isVisible={this.state.isHourVisible}
-                  mode="time"
-                  onConfirm={this.handleHourPicker}
-                  onCancel={this.hideHourPicker}
-                />
-              </Item>
+              <Button
+                color="#FF7058"
+                mode="outlined"
+                dark={true}
+                onPress={() => this.showHourPicker()}>
+                {this.state.hourText.length === 0
+                  ? 'Seleccionar hora inicial'
+                  : `Hora seleccionada: ${this.state.hourText}`}
+              </Button>
+              <DateTimePickerModal
+                isVisible={this.state.isHourVisible}
+                mode="time"
+                onConfirm={this.handleHourPicker}
+                onCancel={this.hideHourPicker}
+              />
             </View>
             <View>
-              <Item picker>
-                <View
-                  style={{
-                    padding: 10,
-                    display: 'flex',
-                    flexDirection: 'column',
-                  }}>
-                  <Text>Seleccione la frecuencia de su alarma:</Text>
-                </View>
-                <Picker
-                  note
-                  mode="dropdown"
-                  style={{width: 120}}
-                  selectedValue={this.state.frequency}
-                  onValueChange={value => {
-                    this.setState({frequency: value});
-                  }}>
-                  <Picker.Item label="1 hora" value="1" />
-                  <Picker.Item label="2 horas" value="2" />
-                  <Picker.Item label="3 horas" value="3" />
-                  <Picker.Item label="4 horas" value="4" />
-                  <Picker.Item label="5 horas" value="5" />
-                  <Picker.Item label="6 horas" value="6" />
-                  <Picker.Item label="7 horas" value="7" />
-                  <Picker.Item label="8 horas" value="8" />
-                  <Picker.Item label="9 horas" value="9" />
-                  <Picker.Item label="10 horas" value="10" />
-                  <Picker.Item label="11 horas" value="11" />
-                  <Picker.Item label="12 horas" value="12" />
-                  <Picker.Item label="13 horas" value="13" />
-                  <Picker.Item label="14 horas" value="14" />
-                  <Picker.Item label="15 horas" value="15" />
-                  <Picker.Item label="16 horas" value="16" />
-                  <Picker.Item label="17 horas" value="17" />
-                  <Picker.Item label="18 horas" value="18" />
-                  <Picker.Item label="19 horas" value="19" />
-                  <Picker.Item label="20 horas" value="20" />
-                  <Picker.Item label="21 horas" value="21" />
-                  <Picker.Item label="22 horas" value="22" />
-                  <Picker.Item label="23 horas" value="23" />
-                  <Picker.Item label="24 horas" value="24" />
-                </Picker>
-              </Item>
+              <TextInput
+                label="Cuantos días sonará su alarma"
+                value={this.state.dateText}
+                onChangeText={text => this.setState({dateText: text})}
+                keyboardType="numeric"
+                ref={input => (this.numberDaysInput = input)}
+                returnKeyType={'next'}
+                onSubmitEditing={() => this.frequencyInput.focus()}
+                mode="outlined"
+                style={{paddingBottom: 5}}
+              />
+            </View>
+            <View>
+              <TextInput
+                label="Frecuencia de su alarma (horas)"
+                value={this.state.frequency}
+                ref={input => (this.frequencyInput = input)}
+                onChangeText={text => this.setState({frequency: text})}
+                keyboardType="numeric"
+                returnKeyType={'done'}
+                mode="outlined"
+                style={{paddingBottom: 5}}
+              />
             </View>
             <View>
               <View style={styles.switchContainer}>

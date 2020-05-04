@@ -7,10 +7,9 @@ import {
   Image,
   NativeModules,
   PermissionsAndroid,
+  ToastAndroid,
 } from 'react-native';
 import 'react-native-gesture-handler';
-// import SendAndroidSMS from 'send-android-sms';
-// import SendSms from '@lemos97/rn-send-sms';
 import PushNotification from 'react-native-push-notification';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -19,7 +18,6 @@ import {
   DrawerItemList,
   DrawerContentScrollView,
 } from '@react-navigation/drawer';
-import messaging from '@react-native-firebase/messaging';
 import Configuration from './src/Views/Configuration';
 /**Vistas del Doctor */
 import Login from './src/Views/Login';
@@ -41,7 +39,6 @@ import AddMedicine from './src/Components/organisms/AddMedicine';
 /**Termina Vistas del Doctor */
 
 /**Vistas del Paciente */
-import HomePatient from './src/Views/Patient/HomePatient';
 import Alarms from './src/Views/Patient/Alarms';
 import AddAlarm from './src/Components/organisms/AddAlarm';
 import EditAlarmScreen from './src/Components/organisms/EditAlarms';
@@ -187,18 +184,6 @@ function AuthLogin(callBack) {
 /**Termina ventanas de todos */
 
 /**Iinicia Ventanas de Paciente */
-/**Descripcion: Almacena las ventanas de inicio y editar datos del paciente */
-function PatientHome() {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}>
-      <Stack.Screen name="Home" component={HomePatient} navigation />
-      <Stack.Screen name="EditPersonalInfo" component={MyData} />
-    </Stack.Navigator>
-  );
-}
 /**Descripcion: Almacena ventanas de Alarmas */
 function AlarmViews(userData) {
   return (
@@ -267,13 +252,6 @@ function MonitoringViews(userData) {
   );
 }
 /**Termina Ventanas de Paciente */
-async function requestUserPermission() {
-  const settings = await messaging().requestPermission();
-
-  if (settings) {
-    console.log('Permission settings:', settings);
-  }
-}
 const sendDirectSms = async (phone, message) => {
   const DirectSms = NativeModules.DirectSms;
   try {
@@ -289,7 +267,6 @@ const sendDirectSms = async (phone, message) => {
       },
     );
     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-      console.log('send');
       DirectSms.sendDirectSms(phone, message);
     } else {
       console.log('SMS permission denied');
@@ -298,6 +275,11 @@ const sendDirectSms = async (phone, message) => {
     console.warn(err);
   }
 };
+/* const requestPermissions = async => {
+  try {
+    const granted = await PermissionsAndroid.requestMultiple()
+  } catch (e) {}
+}; */
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -313,29 +295,25 @@ export default class App extends React.Component {
       },
       // (required) Called when a remote or local notification is opened or received
       onNotification: function(notification) {
-        console.log('NOTIFICATION:', notification.userInfo.user.data.name);
+        console.log('NOTIFICATION:', notification.userInfo.trustedContact);
         if (notification.action === 'Listo') {
+          //TODO: Generar nueva alarma para dar continuidad
           console.log(notification.notificationId);
           PushNotification.clearLocalNotification(notification.notificationId);
         } else if (notification.action === 'Posponer') {
-          sendDirectSms(
-            '6122216102',
-            `Este es el servicio de MedicAlarm. Le informamos que ${
-              notification.userInfo.user.data.name
-            } no ha tomado su medicamento ${notification.userInfo.subject}`,
-          );
-          /* SendAndroidSMS.sendMessage(
-            `Este es el servicio de MedicAlarm. Le informamos que ${
-              notification.userInfo.user.data.name
-            } no ha tomado su medicamento ${notification.userInfo.subject}`,
-            '6122192275',
-            () => {
-              console.log("it's work! :)");
-            },
-            error => {
-              console.log('occured error... :(', error);
-            },
-          ); */
+          if (notification.userInfo.monitoring) {
+            sendDirectSms(
+              notification.userInfo.trustedContact.phone,
+              `MedicAlarm: ${
+                notification.userInfo.user.data.name
+              } olvidó tomar su medicamento`,
+            );
+            ToastAndroid.showWithGravity(
+              'Se avisará a su contacto de confianza.',
+              ToastAndroid.SHORT,
+              ToastAndroid.CENTER,
+            );
+          }
           PushNotification.clearLocalNotification(notification.notificationId);
           PushNotification.localNotificationSchedule({
             title: 'Continuar con su tratamiento',
@@ -344,6 +322,7 @@ export default class App extends React.Component {
               trustedContact: notification.userInfo.trustedContact,
               monitoring: notification.userInfo.monitoring,
               subject: notification.userInfo.subject,
+              frequency: notification.userInfo.frequency,
             },
             color: 'red',
             ongoing: true,

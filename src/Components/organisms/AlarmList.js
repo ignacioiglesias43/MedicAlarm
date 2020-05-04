@@ -4,6 +4,7 @@ import firestore from '@react-native-firebase/firestore';
 
 import {Title, IconButton, Subheading} from 'react-native-paper';
 import {FlatList, View, Alert, StyleSheet} from 'react-native';
+
 export default class AlarmList extends Component {
   constructor(props) {
     super(props);
@@ -73,6 +74,9 @@ export default class AlarmList extends Component {
                     <Title>{item.subject}</Title>
                     <Subheading>Siguiente hora: {item.next_hour}</Subheading>
                     <Subheading>Frecuencia: {item.frequency} hrs</Subheading>
+                    <Subheading>
+                      Repetir: {item.total_of_days} día(s)
+                    </Subheading>
                     {item.trusted_contact.name !== undefined && (
                       <Subheading>
                         Avisar a: {item.trusted_contact.name}
@@ -86,6 +90,7 @@ export default class AlarmList extends Component {
                         this.props.navigation.push('EditAlarm', {
                           id: item.id,
                           subject: item.subject,
+                          total_of_days: item.total_of_days,
                           hour: item.next_hour,
                           frequency: item.frequency,
                           trusted_contact: item.trusted_contact,
