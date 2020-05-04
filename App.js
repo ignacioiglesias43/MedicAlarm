@@ -346,7 +346,7 @@ export default class App extends React.Component {
                   .collection('alarms')
                   .doc(id)
                   .update({
-                    next_hour: date,
+                    next_hour: date.toString().substr(16, 5),
                     cont_shots: cont,
                   })
                   .then(() => console.log('updated'))
