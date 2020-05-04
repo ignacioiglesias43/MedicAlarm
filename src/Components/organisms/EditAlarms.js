@@ -5,12 +5,14 @@ import {ActivityIndicator, Button, TextInput, Switch} from 'react-native-paper';
 import AppHeader from '../../Components/organisms/Header';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import SearchableDropdown from 'react-native-searchable-dropdown';
+import PushNotification from 'react-native-push-notification';
 import firestore from '@react-native-firebase/firestore';
 export default class EditAlarms extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isSwitchOn: props.route.params.monitoring,
+      id_alarm: props.route.params.id_alarm,
       patient: '',
       user: props.route.params.user,
       sendForm: false,
@@ -36,7 +38,9 @@ export default class EditAlarms extends Component {
       .then(data => {
         let dataBase = [];
         data.forEach(d => {
-          let dx = Object.assign(d.data(), {id: d.id});
+          let dx = Object.assign(d.data(), {
+            id: d.id,
+          });
           dataBase.push(dx);
         });
         this.setState({contacts: dataBase});
@@ -65,6 +69,41 @@ export default class EditAlarms extends Component {
       isHourVisible: false,
     });
   };
+  pushNotif = (
+    id,
+    subject,
+    date,
+    user,
+    trustedContact,
+    monitoring,
+    frequency,
+    totalShots,
+  ) => {
+    PushNotification.localNotificationSchedule({
+      id: `${id}`,
+      title: 'Continuar con su tratamiento',
+      userInfo: {
+        user: user,
+        trustedContact: trustedContact,
+        monitoring: monitoring,
+        subject: subject,
+        frequency: frequency,
+        totalShots: totalShots,
+        cont: 0,
+      },
+      color: 'red',
+      ongoing: true,
+      vibrate: true,
+      vibration: 300,
+      autoCancel: false,
+      allowWhileIdle: true,
+      importance: 'max',
+      actions: '["Listo", "Posponer"]',
+      message: `Hora de tomar su medicamento ${subject}`,
+      soundName: 'clock.mp3',
+      date: date,
+    });
+  };
   editAlarm() {
     const {route} = this.props;
     const {
@@ -75,9 +114,12 @@ export default class EditAlarms extends Component {
       subjectText,
       frequency,
       dateText,
+      chosenHour,
     } = this.state;
     let totalShots = (parseInt(dateText, 10) * 24) / parseInt(frequency, 10);
-    this.setState({sendForm: !this.state.sendForm});
+    this.setState({
+      sendForm: !this.state.sendForm,
+    });
     setTimeout(() => {
       firestore()
         .collection('alarms')
@@ -91,13 +133,33 @@ export default class EditAlarms extends Component {
           trusted_contact: selectedTrustedContact,
           total_of_days: dateText,
           total_shots: totalShots,
+          id_alarm: this.state.id_alarm,
         })
         .then(() => {
-          this.setState({sendForm: !this.state.sendForm});
+          let date = new Date(Date.now());
+          date.setHours(chosenHour.getHours());
+          date.setMinutes(chosenHour.getMinutes());
+          date.setSeconds(0);
+          this.setState({
+            sendForm: !this.state.sendForm,
+          });
+          PushNotification.clearLocalNotification(this.state.id_alarm);
+          this.pushNotif(
+            this.state.id_alarm,
+            subjectText,
+            date,
+            user,
+            selectedTrustedContact,
+            isSwitchOn,
+            frequency,
+            totalShots,
+          );
           this.props.navigation.goBack();
         })
         .catch(e => {
-          this.setState({sendForm: !this.state.sendForm});
+          this.setState({
+            sendForm: !this.state.sendForm,
+          });
           Alert.alert('Error', e.message);
         });
     }, 1000);
@@ -158,25 +220,11 @@ export default class EditAlarms extends Component {
               returnKeyType={'next'}
               mode="outlined"
               onSubmitEditing={() => this.numberDaysInput.focus()}
-              style={{paddingTop: 5, paddingBottom: 10}}
+              style={{
+                paddingTop: 5,
+                paddingBottom: 5,
+              }}
             />
-            <View>
-              <Button
-                color="#FF7058"
-                mode="outlined"
-                dark={true}
-                onPress={() => this.showHourPicker()}>
-                {this.state.hourText.length === 0
-                  ? 'Seleccionar hora inicial'
-                  : `Hora seleccionada: ${this.state.hourText}`}
-              </Button>
-              <DateTimePickerModal
-                isVisible={this.state.isHourVisible}
-                mode="time"
-                onConfirm={this.handleHourPicker}
-                onCancel={this.hideHourPicker}
-              />
-            </View>
             <View>
               <TextInput
                 label="Cuantos días sonará su alarma"
@@ -199,7 +247,24 @@ export default class EditAlarms extends Component {
                 keyboardType="numeric"
                 returnKeyType={'done'}
                 mode="outlined"
-                style={{paddingBottom: 5}}
+                style={{paddingBottom: 10}}
+              />
+            </View>
+            <View>
+              <Button
+                color="#FF7058"
+                mode="outlined"
+                dark={true}
+                onPress={() => this.showHourPicker()}>
+                {this.state.hourText.length === 0
+                  ? 'Seleccionar hora inicial'
+                  : `Hora seleccionada: ${this.state.hourText}`}
+              </Button>
+              <DateTimePickerModal
+                isVisible={this.state.isHourVisible}
+                mode="time"
+                onConfirm={this.handleHourPicker}
+                onCancel={this.hideHourPicker}
               />
             </View>
             <View>
@@ -233,11 +298,15 @@ export default class EditAlarms extends Component {
                     const items = this.state.selectedTrustedContact.filter(
                       sitem => sitem.id !== item.id,
                     );
-                    this.setState({selectedTrustedContact: items});
+                    this.setState({
+                      selectedTrustedContact: items,
+                    });
                   }}
                   itemStyle={styles.itemStyle}
                   itemTextStyle={{color: '#000'}}
-                  itemsContainerStyle={{maxHeight: 140}}
+                  itemsContainerStyle={{
+                    maxHeight: 140,
+                  }}
                   items={contacts}
                   chip={true}
                   resetValue={false}

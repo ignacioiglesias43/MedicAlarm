@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Container, Card, CardItem, Body, Right, Text} from 'native-base';
 import firestore from '@react-native-firebase/firestore';
-
+import PushNotification from 'react-native-push-notification';
 import {Title, IconButton, Subheading} from 'react-native-paper';
 import {FlatList, View, Alert, StyleSheet} from 'react-native';
 
@@ -30,7 +30,7 @@ export default class AlarmList extends Component {
       })
       .catch(e => console.log(e));
   }
-  deleteAlarm(id, index) {
+  deleteAlarm(id, index, alarmId) {
     firestore()
       .collection('alarms')
       .doc(id)
@@ -41,6 +41,7 @@ export default class AlarmList extends Component {
         this.setState({
           alarms: newData,
         });
+        // PushNotification.clearLocalNotification(alarmId);
         Alert.alert('Alarma eliminada', 'Ha eliminado una alarma con éxito.');
       })
       .catch(e => Alert.alert('Error', e.message));
@@ -86,6 +87,7 @@ export default class AlarmList extends Component {
                       onPress={() =>
                         this.props.navigation.push('EditAlarm', {
                           id: item.id,
+                          id_alarm: item.id_alarm,
                           subject: item.subject,
                           total_of_days: item.total_of_days,
                           hour: item.next_hour,
@@ -113,7 +115,11 @@ export default class AlarmList extends Component {
                             {
                               text: 'Eliminar',
                               onPress: () =>
-                                this.deleteAlarm(item.id, alarms.indexOf(item)),
+                                this.deleteAlarm(
+                                  item.id,
+                                  alarms.indexOf(item),
+                                  item.id_alarm,
+                                ),
                             },
                           ],
                           {cancelable: false},

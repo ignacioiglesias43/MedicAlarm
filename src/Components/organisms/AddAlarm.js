@@ -7,10 +7,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 import firestore from '@react-native-firebase/firestore';
 import PushNotification from 'react-native-push-notification';
-import crypto from 'crypto';
-function randU32Sync() {
-  return crypto.randomBytes(4).readUInt32BE(0, true);
-}
+
 export default class AddAlarm extends Component {
   constructor(props) {
     super(props);
@@ -28,7 +25,6 @@ export default class AddAlarm extends Component {
       selectedTrustedContact: {},
       contacts: [],
     };
-    console.log('number: ', randU32Sync());
   }
   getContacts() {
     const {user} = this.state;
@@ -72,7 +68,7 @@ export default class AddAlarm extends Component {
     totalShots,
   ) => {
     PushNotification.localNotificationSchedule({
-      id: id,
+      id: `${id}`,
       title: 'Continuar con su tratamiento',
       userInfo: {
         user: user,
@@ -108,8 +104,10 @@ export default class AddAlarm extends Component {
       dateText,
     } = this.state;
     this.setState({sendForm: !this.state.sendForm});
+    /**Calcula el numero de veces que tiene que ingerir el medicamento */
     let totalShots = (parseInt(dateText, 10) * 24) / parseInt(frequency, 10);
-    // const alarmId = crypto.getRandomValues
+    /**Genera un id unico para las alarmas */
+    const alarmId = Math.floor(Math.random() * 100);
     setTimeout(() => {
       firestore()
         .collection('alarms')
@@ -123,6 +121,7 @@ export default class AddAlarm extends Component {
           total_of_days: dateText,
           total_shots: totalShots,
           id_alarm: alarmId,
+          cont_shots: 0,
         })
         .then(() => {
           let date = new Date(Date.now());
@@ -203,25 +202,8 @@ export default class AddAlarm extends Component {
               returnKeyType={'next'}
               mode="outlined"
               onSubmitEditing={() => this.numberDaysInput.focus()}
-              style={{paddingTop: 5, paddingBottom: 10}}
+              style={{paddingTop: 5, paddingBottom: 5}}
             />
-            <View>
-              <Button
-                color="#FF7058"
-                mode="outlined"
-                dark={true}
-                onPress={() => this.showHourPicker()}>
-                {this.state.hourText.length === 0
-                  ? 'Seleccionar hora inicial'
-                  : `Hora seleccionada: ${this.state.hourText}`}
-              </Button>
-              <DateTimePickerModal
-                isVisible={this.state.isHourVisible}
-                mode="time"
-                onConfirm={this.handleHourPicker}
-                onCancel={this.hideHourPicker}
-              />
-            </View>
             <View>
               <TextInput
                 label="Cuantos días sonará su alarma"
@@ -244,7 +226,24 @@ export default class AddAlarm extends Component {
                 keyboardType="numeric"
                 returnKeyType={'done'}
                 mode="outlined"
-                style={{paddingBottom: 5}}
+                style={{paddingBottom: 10}}
+              />
+            </View>
+            <View>
+              <Button
+                color="#FF7058"
+                mode="outlined"
+                dark={true}
+                onPress={() => this.showHourPicker()}>
+                {this.state.hourText.length === 0
+                  ? 'Seleccionar hora inicial'
+                  : `Hora seleccionada: ${this.state.hourText}`}
+              </Button>
+              <DateTimePickerModal
+                isVisible={this.state.isHourVisible}
+                mode="time"
+                onConfirm={this.handleHourPicker}
+                onCancel={this.hideHourPicker}
               />
             </View>
             <View>

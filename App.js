@@ -9,6 +9,7 @@ import {
   PermissionsAndroid,
   ToastAndroid,
 } from 'react-native';
+import firestore from '@react-native-firebase/firestore';
 import 'react-native-gesture-handler';
 import {Provider as PaperProvider} from 'react-native-paper';
 import PushNotification from 'react-native-push-notification';
@@ -280,6 +281,7 @@ const sendDirectSms = async (phone, message) => {
 const newNotif = (notification, date, cont) => {
   PushNotification.clearLocalNotification(notification.notificationId);
   PushNotification.localNotificationSchedule({
+    id: notification.notificationId,
     title: 'Continuar con su tratamiento',
     userInfo: {
       user: notification.userInfo.user,
@@ -317,7 +319,7 @@ export default class App extends React.Component {
       },
       // Se llama cuando una notificacion es abierta
       onNotification: function(notification) {
-        console.log('NOTIFICATION:', notification);
+        console.log('NOTIFICATION:', notification.notificationId);
         if (notification.action === 'Listo') {
           /**Calcula si el numero de veces que ha tomado el medicamento supera lo establecido */
           PushNotification.clearLocalNotification(notification.notificationId);
@@ -330,6 +332,27 @@ export default class App extends React.Component {
               date.getHours() + parseInt(notification.userInfo.frequency, 10),
             );
             newNotif(notification, date, cont);
+            /**Se actualiza la informacion en la bd */
+            firestore()
+              .collection('alarms')
+              .where('id_alarm', '==', notification.notificationId)
+              .get()
+              .then(data => {
+                let id = '';
+                data.forEach(d => {
+                  id = d.id;
+                });
+                firestore()
+                  .collection('alarms')
+                  .doc(id)
+                  .update({
+                    next_hour: date,
+                    cont_shots: cont,
+                  })
+                  .then(() => console.log('updated'))
+                  .catch(e => console.log(e));
+              })
+              .catch(e => console.log(e));
           }
         } else if (notification.action === 'Posponer') {
           /**Si el usuario decidió monitorear su alarma, se manda mensaje a su contacto de confianza. */
