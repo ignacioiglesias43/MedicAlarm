@@ -74,9 +74,6 @@ export default class AlarmList extends Component {
                     <Title>{item.subject}</Title>
                     <Subheading>Siguiente hora: {item.next_hour}</Subheading>
                     <Subheading>Frecuencia: {item.frequency} hrs</Subheading>
-                    <Subheading>
-                      Repetir: {item.total_of_days} día(s)
-                    </Subheading>
                     {item.trusted_contact.name !== undefined && (
                       <Subheading>
                         Avisar a: {item.trusted_contact.name}

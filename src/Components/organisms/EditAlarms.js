@@ -74,7 +74,9 @@ export default class EditAlarms extends Component {
       hourText,
       subjectText,
       frequency,
+      dateText,
     } = this.state;
+    let totalShots = (parseInt(dateText, 10) * 24) / parseInt(frequency, 10);
     this.setState({sendForm: !this.state.sendForm});
     setTimeout(() => {
       firestore()
@@ -87,6 +89,8 @@ export default class EditAlarms extends Component {
           next_hour: hourText,
           patient: user,
           trusted_contact: selectedTrustedContact,
+          total_of_days: dateText,
+          total_shots: totalShots,
         })
         .then(() => {
           this.setState({sendForm: !this.state.sendForm});
@@ -99,8 +103,20 @@ export default class EditAlarms extends Component {
     }, 1000);
   }
   sendAlarm() {
-    const {selectedTrustedContact, isSwitchOn, subjectText} = this.state;
-    if (subjectText.length > 0) {
+    const {
+      selectedTrustedContact,
+      isSwitchOn,
+      subjectText,
+      hourText,
+      dateText,
+      frequency,
+    } = this.state;
+    if (
+      subjectText.length > 0 &&
+      hourText.length > 0 &&
+      dateText.length > 0 &&
+      frequency.length > 0
+    ) {
       if (isSwitchOn) {
         if (Object.entries(selectedTrustedContact).length > 0) {
           this.editAlarm();

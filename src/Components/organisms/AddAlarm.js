@@ -7,7 +7,10 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import SearchableDropdown from 'react-native-searchable-dropdown';
 import firestore from '@react-native-firebase/firestore';
 import PushNotification from 'react-native-push-notification';
-// import ReactNativeAN from 'react-native-alarm-notification';
+import crypto from 'crypto';
+function randU32Sync() {
+  return crypto.randomBytes(4).readUInt32BE(0, true);
+}
 export default class AddAlarm extends Component {
   constructor(props) {
     super(props);
@@ -25,6 +28,7 @@ export default class AddAlarm extends Component {
       selectedTrustedContact: {},
       contacts: [],
     };
+    console.log('number: ', randU32Sync());
   }
   getContacts() {
     const {user} = this.state;
@@ -57,8 +61,18 @@ export default class AddAlarm extends Component {
       isHourVisible: true,
     });
   };
-  pushNotif = (subject, date, user, trustedContact, monitoring, frequency) => {
+  pushNotif = (
+    id,
+    subject,
+    date,
+    user,
+    trustedContact,
+    monitoring,
+    frequency,
+    totalShots,
+  ) => {
     PushNotification.localNotificationSchedule({
+      id: id,
       title: 'Continuar con su tratamiento',
       userInfo: {
         user: user,
@@ -66,12 +80,15 @@ export default class AddAlarm extends Component {
         monitoring: monitoring,
         subject: subject,
         frequency: frequency,
+        totalShots: totalShots,
+        cont: 0,
       },
       color: 'red',
       ongoing: true,
       vibrate: true,
       vibration: 300,
       autoCancel: false,
+      allowWhileIdle: true,
       importance: 'max',
       actions: '["Listo", "Posponer"]',
       message: `Hora de tomar su medicamento ${subject}`,
@@ -88,8 +105,11 @@ export default class AddAlarm extends Component {
       subjectText,
       frequency,
       chosenHour,
+      dateText,
     } = this.state;
     this.setState({sendForm: !this.state.sendForm});
+    let totalShots = (parseInt(dateText, 10) * 24) / parseInt(frequency, 10);
+    // const alarmId = crypto.getRandomValues
     setTimeout(() => {
       firestore()
         .collection('alarms')
@@ -100,6 +120,9 @@ export default class AddAlarm extends Component {
           next_hour: hourText,
           patient: user,
           trusted_contact: selectedTrustedContact,
+          total_of_days: dateText,
+          total_shots: totalShots,
+          id_alarm: alarmId,
         })
         .then(() => {
           let date = new Date(Date.now());
@@ -108,12 +131,14 @@ export default class AddAlarm extends Component {
           date.setSeconds(0);
           this.setState({sendForm: !this.state.sendForm});
           this.pushNotif(
+            alarmId,
             subjectText,
             date,
             user,
             selectedTrustedContact,
             isSwitchOn,
             frequency,
+            totalShots,
           );
           this.props.navigation.goBack();
         })

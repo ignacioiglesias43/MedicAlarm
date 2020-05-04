@@ -10,6 +10,7 @@ import {
   ToastAndroid,
 } from 'react-native';
 import 'react-native-gesture-handler';
+import {Provider as PaperProvider} from 'react-native-paper';
 import PushNotification from 'react-native-push-notification';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -252,6 +253,7 @@ function MonitoringViews(userData) {
   );
 }
 /**Termina Ventanas de Paciente */
+/**Metodo que envia SMS */
 const sendDirectSms = async (phone, message) => {
   const DirectSms = NativeModules.DirectSms;
   try {
@@ -275,11 +277,31 @@ const sendDirectSms = async (phone, message) => {
     console.warn(err);
   }
 };
-/* const requestPermissions = async => {
-  try {
-    const granted = await PermissionsAndroid.requestMultiple()
-  } catch (e) {}
-}; */
+const newNotif = (notification, date, cont) => {
+  PushNotification.clearLocalNotification(notification.notificationId);
+  PushNotification.localNotificationSchedule({
+    title: 'Continuar con su tratamiento',
+    userInfo: {
+      user: notification.userInfo.user,
+      trustedContact: notification.userInfo.trustedContact,
+      monitoring: notification.userInfo.monitoring,
+      subject: notification.userInfo.subject,
+      frequency: notification.userInfo.frequency,
+      totalShots: notification.userInfo.totalShots,
+      cont: cont,
+    },
+    color: 'red',
+    ongoing: true,
+    vibration: 300,
+    autoCancel: false,
+    importance: 'max',
+    actions: '["Listo", "Posponer"]',
+    message: notification.message,
+    allowWhileIdle: true,
+    soundName: 'clock.mp3',
+    date: date,
+  });
+};
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -293,14 +315,24 @@ export default class App extends React.Component {
       onRegister: function(token) {
         console.log('TOKEN:', token);
       },
-      // (required) Called when a remote or local notification is opened or received
+      // Se llama cuando una notificacion es abierta
       onNotification: function(notification) {
-        console.log('NOTIFICATION:', notification.userInfo.trustedContact);
+        console.log('NOTIFICATION:', notification);
         if (notification.action === 'Listo') {
-          //TODO: Generar nueva alarma para dar continuidad
-          console.log(notification.notificationId);
+          /**Calcula si el numero de veces que ha tomado el medicamento supera lo establecido */
           PushNotification.clearLocalNotification(notification.notificationId);
+          let cont = notification.userInfo.cont;
+          cont++;
+          if (cont < notification.userInfo.totalShots) {
+            /**Configura la siguiente hora de la alarma */
+            let date = new Date(Date.now());
+            date.setHours(
+              date.getHours() + parseInt(notification.userInfo.frequency, 10),
+            );
+            newNotif(notification, date, cont);
+          }
         } else if (notification.action === 'Posponer') {
+          /**Si el usuario decidió monitorear su alarma, se manda mensaje a su contacto de confianza. */
           if (notification.userInfo.monitoring) {
             sendDirectSms(
               notification.userInfo.trustedContact.phone,
@@ -314,26 +346,11 @@ export default class App extends React.Component {
               ToastAndroid.CENTER,
             );
           }
-          PushNotification.clearLocalNotification(notification.notificationId);
-          PushNotification.localNotificationSchedule({
-            title: 'Continuar con su tratamiento',
-            userInfo: {
-              user: notification.userInfo.user,
-              trustedContact: notification.userInfo.trustedContact,
-              monitoring: notification.userInfo.monitoring,
-              subject: notification.userInfo.subject,
-              frequency: notification.userInfo.frequency,
-            },
-            color: 'red',
-            ongoing: true,
-            vibration: 300,
-            autoCancel: false,
-            importance: 'max',
-            actions: '["Listo", "Posponer"]',
-            message: notification.message,
-            soundName: 'clock.mp3',
-            date: new Date(Date.now() + 300000), //Cada 5 minutos
-          });
+          newNotif(
+            notification,
+            new Date(Date.now() + 300000),
+            notification.userInfo.cont,
+          ); //Se repite cada 5 minutos
         }
       },
       permissions: {
@@ -359,103 +376,105 @@ export default class App extends React.Component {
   }
   render() {
     return this.state.isSignedIn ? (
-      <NavigationContainer>
-        <Drawer.Navigator
-          initialRouteName="Inicio"
-          drawerContent={props => (
-            <SafeAreaView style={{flex: 1}}>
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  backgroundColor: '#afc9ff',
-                  padding: 10,
-                }}>
-                <Image
-                  source={require('./src/img/logo.png')}
-                  style={{height: 60, width: 60}}
-                />
-                <View style={styles.title}>
-                  <Text
-                    style={{
-                      fontSize: 25,
-                      color: 'white',
-                    }}>
-                    Medic
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 25,
-                      color: '#FF7058',
-                    }}>
-                    Alarm
-                  </Text>
+      <PaperProvider>
+        <NavigationContainer>
+          <Drawer.Navigator
+            initialRouteName="Inicio"
+            drawerContent={props => (
+              <SafeAreaView style={{flex: 1}}>
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    backgroundColor: '#afc9ff',
+                    padding: 10,
+                  }}>
+                  <Image
+                    source={require('./src/img/logo.png')}
+                    style={{height: 60, width: 60}}
+                  />
+                  <View style={styles.title}>
+                    <Text
+                      style={{
+                        fontSize: 25,
+                        color: 'white',
+                      }}>
+                      Medic
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 25,
+                        color: '#FF7058',
+                      }}>
+                      Alarm
+                    </Text>
+                  </View>
                 </View>
-              </View>
-              <DrawerContentScrollView {...props}>
-                <DrawerItemList {...props} />
-              </DrawerContentScrollView>
-            </SafeAreaView>
-          )}>
-          <Drawer.Screen
-            name="Inicio"
-            children={() => DoctorHome(this.state.userData)}
-          />
-          {this.state.userData.data.type === 'doctor' && (
-            <>
-              <Drawer.Screen
-                name="Pacientes"
-                children={() => PatientsViews(this.state.userData)}
-              />
-              <Drawer.Screen
-                name="Recetas"
-                children={() => Prescriptions(this.state.userData)}
-              />
-              <Drawer.Screen name="Medicamentos" component={Medicines} />
-              <Drawer.Screen
-                name="Citas"
-                children={() => Appointments(this.state.userData)}
-              />
-            </>
-          )}
-          {this.state.userData.data.type === 'patient' && (
-            <>
-              <Drawer.Screen
-                name="Alarmas"
-                children={() => AlarmViews(this.state.userData)}
-              />
-              <Drawer.Screen
-                name="Contactos de Confianza"
-                children={() => TrustedContactViews(this.state.userData)}
-              />
-              <Drawer.Screen
-                name="Recetas"
-                component={PatientPrescriptions}
-                initialParams={{
-                  data: this.state.userData,
-                }}
-              />
-              <Drawer.Screen
-                name="Citas"
-                children={() => PatientAppointmentsViews(this.state.userData)}
-              />
-              <Drawer.Screen
-                name="Seguimiento"
-                children={() => MonitoringViews(this.state.userData)}
-              />
-            </>
-          )}
-          <Drawer.Screen
-            name="Configuracion"
-            component={Configuration}
-            initialParams={{
-              callBack: this.callBack.bind(this),
-              data: this.getUserData.bind(this),
-            }}
-          />
-        </Drawer.Navigator>
-      </NavigationContainer>
+                <DrawerContentScrollView {...props}>
+                  <DrawerItemList {...props} />
+                </DrawerContentScrollView>
+              </SafeAreaView>
+            )}>
+            <Drawer.Screen
+              name="Inicio"
+              children={() => DoctorHome(this.state.userData)}
+            />
+            {this.state.userData.data.type === 'doctor' && (
+              <>
+                <Drawer.Screen
+                  name="Pacientes"
+                  children={() => PatientsViews(this.state.userData)}
+                />
+                <Drawer.Screen
+                  name="Recetas"
+                  children={() => Prescriptions(this.state.userData)}
+                />
+                <Drawer.Screen name="Medicamentos" component={Medicines} />
+                <Drawer.Screen
+                  name="Citas"
+                  children={() => Appointments(this.state.userData)}
+                />
+              </>
+            )}
+            {this.state.userData.data.type === 'patient' && (
+              <>
+                <Drawer.Screen
+                  name="Alarmas"
+                  children={() => AlarmViews(this.state.userData)}
+                />
+                <Drawer.Screen
+                  name="Contactos de Confianza"
+                  children={() => TrustedContactViews(this.state.userData)}
+                />
+                <Drawer.Screen
+                  name="Recetas"
+                  component={PatientPrescriptions}
+                  initialParams={{
+                    data: this.state.userData,
+                  }}
+                />
+                <Drawer.Screen
+                  name="Citas"
+                  children={() => PatientAppointmentsViews(this.state.userData)}
+                />
+                <Drawer.Screen
+                  name="Seguimiento"
+                  children={() => MonitoringViews(this.state.userData)}
+                />
+              </>
+            )}
+            <Drawer.Screen
+              name="Configuracion"
+              component={Configuration}
+              initialParams={{
+                callBack: this.callBack.bind(this),
+                data: this.getUserData.bind(this),
+              }}
+            />
+          </Drawer.Navigator>
+        </NavigationContainer>
+      </PaperProvider>
     ) : (
       AuthLogin(this.callBack.bind(this))
     );
