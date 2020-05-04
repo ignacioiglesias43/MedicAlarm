@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Container, Card, CardItem, Body, Right, Text} from 'native-base';
-import {Title, Subheading} from 'react-native-paper';
-import {FlatList, View, ProgressBarAndroid, StyleSheet} from 'react-native';
+import {Title, Subheading, ProgressBar} from 'react-native-paper';
+import {FlatList, View, StyleSheet} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 export default class AlarmTrackingList extends Component {
   constructor(props) {
@@ -9,8 +9,25 @@ export default class AlarmTrackingList extends Component {
     this.state = {
       user: props.data,
       alarms: [],
+      colors: [],
       refreshing: false,
     };
+  }
+  setColors(alarms) {
+    let colorsDB = this.state.colors;
+    alarms.forEach(alarm => {
+      const progress = alarm.cont_shots / alarm.total_shots;
+      if (progress === 0) {
+        colorsDB.push('red');
+      } else if (progress > 0 && progress <= alarm.total_shots / 2) {
+        colorsDB.push('gold');
+      } else {
+        colorsDB.push('green');
+      }
+      this.setState({
+        colors: colorsDB,
+      });
+    });
   }
   getAlarms() {
     const {user} = this.state;
@@ -25,6 +42,7 @@ export default class AlarmTrackingList extends Component {
           let dx = Object.assign(d.data(), {id: d.id});
           dataBase.push(dx);
         });
+        this.setColors(dataBase);
         this.setState({alarms: dataBase, refreshing: false});
       })
       .catch(e => console.log(e));
@@ -44,7 +62,7 @@ export default class AlarmTrackingList extends Component {
   };
   render() {
     this.getAlarms();
-    const {alarms, refreshing} = this.state;
+    const {alarms, refreshing, colors} = this.state;
     return (
       <Container>
         {alarms.length > 0 ? (
@@ -56,14 +74,19 @@ export default class AlarmTrackingList extends Component {
                 <CardItem>
                   <Body>
                     <Title>{item.subject}</Title>
-                    <Subheading>Días por consumir: {item.remaining}</Subheading>
-                    <ProgressBarAndroid
-                      styleAttr="Horizontal"
-                      indeterminate={false}
-                      progress={0.5}
-                    />
+                    <Subheading>
+                      Total de veces consumido: {item.cont_shots}
+                    </Subheading>
+                    <Subheading>
+                      Total de veces consumido: {item.total_shots}
+                    </Subheading>
                   </Body>
                 </CardItem>
+                <ProgressBar
+                  indeterminate={false}
+                  progress={item.cont_shots / item.total_shots}
+                  color={colors[alarms.indexOf(item)]}
+                />
               </Card>
             )}
             refreshing={refreshing}

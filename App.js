@@ -279,7 +279,6 @@ const sendDirectSms = async (phone, message) => {
   }
 };
 const newNotif = (notification, date, cont) => {
-  PushNotification.clearLocalNotification(notification.notificationId);
   PushNotification.localNotificationSchedule({
     id: notification.notificationId,
     title: 'Continuar con su tratamiento',
@@ -356,6 +355,7 @@ export default class App extends React.Component {
           }
         } else if (notification.action === 'Posponer') {
           /**Si el usuario decidió monitorear su alarma, se manda mensaje a su contacto de confianza. */
+          PushNotification.clearLocalNotification(notification.notificationId);
           if (notification.userInfo.monitoring) {
             sendDirectSms(
               notification.userInfo.trustedContact.phone,
