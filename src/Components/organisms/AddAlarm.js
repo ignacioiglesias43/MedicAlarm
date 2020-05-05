@@ -105,7 +105,9 @@ export default class AddAlarm extends Component {
     } = this.state;
     this.setState({sendForm: !this.state.sendForm});
     /**Calcula el numero de veces que tiene que ingerir el medicamento */
-    let totalShots = (parseInt(dateText, 10) * 24) / parseInt(frequency, 10);
+    let totalShots = Math.floor(
+      (parseInt(dateText, 10) * 24) / parseInt(frequency, 10),
+    );
     /**Genera un id unico para las alarmas */
     const alarmId = Math.floor(Math.random() * 100);
     setTimeout(() => {
