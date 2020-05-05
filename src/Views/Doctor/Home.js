@@ -34,44 +34,40 @@ export default class Home extends Component {
         path: 'images',
       },
     };
-
-    /**
-     * The first arg is the options object for customization (it can also be null or omitted for default options),
-     * The second arg is the callback which sends object: response (more info in the API Reference)
-     */
     ImagePicker.showImagePicker(options, response => {
-      console.log('Response = ', response);
-
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
         console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
       } else {
         const source = {uri: response.uri};
-
         // You can also display the image using data:
         // const source = { uri: 'data:image/jpeg;base64,' + response.data };
-
+        this.uploadFile(source.uri);
         this.setState({
           avatarSource: source,
         });
       }
     });
   };
-  uploadFile = async () => {
-    const reference = storage().ref(`${this.state.id}.png`);
-    const pathToFile = `${utils.FilePath.PICTURES_DIRECTORY}/${
-      this.state.id
-    }.png`;
-    await (await reference.putFile(pathToFile)).task.then(() => {
-      ToastAndroid.showWithGravity(
-        'Se ha subido su imagen de perfil.',
-        ToastAndroid.SHORT,
-        ToastAndroid.CENTER,
-      );
-    });
+  uploadFile = async uri => {
+    const reference = storage().ref(`${this.state.id}`);
+    const pathToFile = `${uri}`;
+    await (await reference.putFile(pathToFile)).task
+      .then(() => {
+        ToastAndroid.showWithGravity(
+          'Se ha subido su imagen de perfil.',
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER,
+        );
+      })
+      .catch(() => {
+        ToastAndroid.showWithGravity(
+          'Ha ocurrido un error.',
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER,
+        );
+      });
   };
   render() {
     const {data, id} = this.state;
@@ -103,13 +99,13 @@ export default class Home extends Component {
                 }
                 style={{backgroundColor: 'white'}}
               />
-              <View style={{marginTop: 100, marginLeft: -35}}>
+              {/*  <View style={{marginTop: 100, marginLeft: -35}}>
                 <IconButton
                   icon="pencil"
                   size={25}
                   onPress={() => this.handleImagePicker()}
                 />
-              </View>
+              </View> */}
             </View>
           )}
           <Title>

@@ -104,7 +104,7 @@ export default class LoginForm extends Component {
           value={this.state.password}
           onChangeText={password => this.setState({password: password})}
         />
-        <View style={styles.switchContainer}>
+        {/* <View style={styles.switchContainer}>
           <Text style={{color: 'white'}}>Recordarme</Text>
           <Switch
             value={isSwitchOn}
@@ -113,7 +113,7 @@ export default class LoginForm extends Component {
               this.setState({isSwitchOn: !isSwitchOn});
             }}
           />
-        </View>
+        </View> */}
         <View style={styles.buttonContainer}>
           <Button
             mode="contained"
