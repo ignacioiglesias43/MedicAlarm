@@ -125,7 +125,7 @@ export default class EditPrescription extends Component {
                   }
                   onChangeText={text => {
                     let med = selectedMedicines;
-                    med[med.indexOf(item)].indications = text.trim();
+                    med[med.indexOf(item)].indications = text;
                     this.setState({
                       selectedMedicines: med,
                     });

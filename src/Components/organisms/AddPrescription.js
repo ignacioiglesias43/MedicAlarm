@@ -173,7 +173,7 @@ export default class AddPrescription extends Component {
                   placeholder="Indicaciones"
                   placeholderTextColor="#cc"
                   onChangeText={text => {
-                    let indications = {indications: text.trim()};
+                    let indications = {indications: text};
                     Object.assign(
                       this.state.selectedMedicines[
                         this.state.selectedMedicines.indexOf(item)
