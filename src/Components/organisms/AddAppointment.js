@@ -196,7 +196,7 @@ export default class AddAppointment extends Component {
               mode="contained"
               dark={true}
               onPress={() => this.sendPrescription()}>
-              Enviar
+              Guardar
             </Button>
           </View>
           <ActivityIndicator

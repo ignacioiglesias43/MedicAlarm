@@ -80,7 +80,7 @@ export default class EditContact extends Component {
                   );
                 }
               }}>
-              Enviar
+              Guardar
             </Button>
           </View>
           <ActivityIndicator

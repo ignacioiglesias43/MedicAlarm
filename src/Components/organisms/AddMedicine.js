@@ -72,7 +72,7 @@ export default class AddMedicine extends Component {
                       'Todos los campos son necesarios.',
                     )
               }>
-              Enviar
+              Guardar
             </Button>
           </View>
           <ActivityIndicator

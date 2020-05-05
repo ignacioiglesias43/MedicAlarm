@@ -78,7 +78,7 @@ export default class AddContact extends Component {
                   );
                 }
               }}>
-              Enviar
+              Guardar
             </Button>
           </View>
           <ActivityIndicator

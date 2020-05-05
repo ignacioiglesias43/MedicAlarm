@@ -74,7 +74,7 @@ export default class EditMedicine extends Component {
               mode="contained"
               dark={true}
               onPress={() => this.sendMedicine()}>
-              Enviar
+              Guardar
             </Button>
           </View>
           <ActivityIndicator

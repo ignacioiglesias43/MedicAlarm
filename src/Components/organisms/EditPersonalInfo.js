@@ -139,7 +139,7 @@ export default class EditPersonalInfo extends Component {
                 mode="contained"
                 dark={true}
                 onPress={() => this.sendPrescription()}>
-                Enviar
+                Guardar
               </Button>
             </View>
             <ActivityIndicator
@@ -185,7 +185,7 @@ export default class EditPersonalInfo extends Component {
                 mode="contained"
                 dark={true}
                 onPress={() => this.sendPrescription()}>
-                Enviar
+                Guardar
               </Button>
             </View>
             <ActivityIndicator

@@ -302,7 +302,7 @@ export default class AddAlarm extends Component {
               mode="contained"
               dark={true}
               onPress={() => this.sendAlarm()}>
-              Enviar
+              Guardar
             </Button>
           </View>
           <ActivityIndicator

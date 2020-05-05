@@ -208,7 +208,7 @@ export default class AddPrescription extends Component {
                     Alert.alert('Error', 'Todos los campos son necesarios.');
                   }
                 }}>
-                Enviar
+                Guardar
               </Button>
             </View>
             <ActivityIndicator
