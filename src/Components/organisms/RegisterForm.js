@@ -68,7 +68,7 @@ export default class RegisterForm extends Component {
               message =
                 'El correo electrónico ingresado ya está registrado por otro usuario.';
               break;
-            case 'auth/waek-password':
+            case 'auth/weak-password':
               message =
                 'La contraseña ingresada es demasiado débil, debe tener por lo menos 6 caracteres.';
               break;

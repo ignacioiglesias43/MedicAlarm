@@ -211,7 +211,7 @@ export default class AddAlarm extends Component {
                 label="Cuantos días sonará su alarma"
                 value={this.state.dateText}
                 onChangeText={text => this.setState({dateText: text})}
-                keyboardType="numeric"
+                keyboardType="number-pad"
                 ref={input => (this.numberDaysInput = input)}
                 returnKeyType={'next'}
                 mode="outlined"
