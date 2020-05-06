@@ -55,7 +55,7 @@ export default class Configuration extends Component {
     return (
       <View style={{flex: 1, backgroundColor: 'white'}}>
         <AppHeader
-          title="Configuració"
+          title="Configuración"
           navigation={this.props.navigation}
           icon="menu"
         />
