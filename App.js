@@ -489,7 +489,7 @@ export default class App extends React.Component {
               </>
             )}
             <Drawer.Screen
-              name="Configuracion"
+              name="Configuración"
               component={Configuration}
               initialParams={{
                 callBack: this.callBack.bind(this),

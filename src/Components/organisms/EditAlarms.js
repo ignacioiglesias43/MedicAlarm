@@ -317,7 +317,7 @@ export default class EditAlarms extends Component {
                         ? `Contacto seleccionado: ${
                             selectedTrustedContact.name
                           }`
-                        : 'Seleccione un contacto de emergencia',
+                        : 'Seleccione un contacto de confianza',
                     underlineColorAndroid: 'transparent',
                     style: {
                       padding: 12,

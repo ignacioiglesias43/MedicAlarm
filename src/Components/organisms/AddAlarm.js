@@ -281,7 +281,7 @@ export default class AddAlarm extends Component {
                   items={contacts}
                   resetValue={false}
                   textInputProps={{
-                    placeholder: 'Seleccione un contacto de emergencia',
+                    placeholder: 'Seleccione un contacto de confianza',
                     underlineColorAndroid: 'transparent',
                     style: {
                       padding: 12,
