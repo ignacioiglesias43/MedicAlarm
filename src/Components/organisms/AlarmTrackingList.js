@@ -19,10 +19,10 @@ export default class AlarmTrackingList extends Component {
       const progress = alarm.cont_shots / alarm.total_shots;
       if (progress === 0) {
         colorsDB.push('red');
-      } else if (progress > 0 && progress <= alarm.total_shots / 2) {
-        colorsDB.push('gold');
-      } else {
+      } else if (progress >= 0.5) {
         colorsDB.push('green');
+      } else if (progress > 0 && progress < 0.5) {
+        colorsDB.push('gold');
       }
       this.setState({
         colors: colorsDB,
